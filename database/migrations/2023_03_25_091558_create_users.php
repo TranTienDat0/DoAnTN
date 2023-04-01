@@ -18,11 +18,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email_address');
-            $table->date('date_of_birth');
-            $table->tinyInteger('gender');
             $table->string('address');
             $table->string('password');
             $table->string('phone');
+            $table->string('remember_token');
             $table->tinyInteger('role')->default(0);
             $table->timestamps();
             $table->softDeletes();
