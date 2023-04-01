@@ -23,11 +23,10 @@ class UserFactory extends Factory
             'name' => $this->faker->name(),
             'address' => $this->faker->address(),
             'password' => Hash::make(12345678),
-            'gender' => $this->faker->randomElement(array_keys(User::$genders)),
-            'date_of_birth' => $this->faker->date(),
             'email_address' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->numerify('0#########'),
-            'role' => $this->faker->randomElement(array_keys(User::$roles))
+            'role' => $this->faker->randomElement(array_keys(User::$roles)),
+            'remember_token' => '',
         ];
     }
 
