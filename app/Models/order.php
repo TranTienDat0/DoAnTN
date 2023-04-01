@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class order extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
+    protected $table = 'order';
      // status
      public const STATUS_WAIT = 0;
      public const STATUS_DO = 1;
@@ -19,26 +21,20 @@ class order extends Model
          self::STATUS_DO => 'Đang giao hàng',
          self::STATUS_DONE => 'Giao hàng thành công',
      ];
- 
-     /**
-      * The attributes that are mass assignable.
-      *
-      * @var array<int, string>
-      */
-     protected $fillable = [
-         'status',
-         'total',
-     ];
- 
-     /**
-      * The attributes that should be hidden for serialization.
-      *
-      * @var array<int, string>
-      */
-     protected $dates = [
+
+    protected $fillable = [
+        'status',
+        'total',
+        'shipping_id',
+        'payment_id',
+        'user_id',
+    ];
+
+    protected $dates = [
         'date',
         'created_at',
         'updated_at',
-        'deleted_at_at'
-     ];
+        'deleted_at',
+    ];
 }
+
