@@ -27,7 +27,7 @@ class ChangePassword extends Controller
         $result = $this->authService->changePassword($currentPassword, $newPassword);
 
         if ($result) {
-            return view('backend.layouts.master');
+            return redirect()->route('home')->with('success', 'Thay đổi mật khẩu thành công.');
         } else {
             return redirect()->back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
         }

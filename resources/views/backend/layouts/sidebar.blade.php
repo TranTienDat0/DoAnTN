@@ -125,14 +125,9 @@
     <div class="sidebar-heading">
         General Settings
     </div>
-    <li class="nav-item">
-        <a class="nav-link" href="">
-            <i class="fas fa-table"></i>
-            <span>Coupon</span></a>
-    </li>
     <!-- Users -->
     <li class="nav-item">
-        <a class="nav-link" href="">
+        <a class="nav-link" href="{{ route('users') }}">
             <i class="fas fa-users"></i>
             <span>Users</span></a>
     </li>

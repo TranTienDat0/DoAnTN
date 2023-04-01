@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\auth;
+use App\Http\Controllers\HomeAdminController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,5 +39,16 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-
-Route::get('/home', [App\Http\Controllers\HomeAdminController::class, 'index'])->name('home');
+Route::prefix('admin')->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeAdminController::class, 'index'])->name('home');
+    route::controller(HomeAdminController::class)->group(function (){
+        route::get('/home', 'index')->name('home');
+    });
+    route::controller(UserController::class)->group(function (){
+        Route::get('/user', 'index')->name('users');
+        Route::get('/user-create', 'create')->name('users.create');
+        route::post('/user-store', 'store')->name('users.store');
+        Route::get('/user-edit/{id}', 'edit')->name('users.edit');
+        route::patch('/user-update', 'update')->name('users.update');
+    });
+});
