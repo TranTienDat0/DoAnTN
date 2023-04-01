@@ -27,7 +27,7 @@ class LoginController extends Controller
         if ($user) {
             if ($this->authServices->isAdmin($user)) {
 
-                return view('backend.layouts.master');
+                return redirect()->route('home');
             } else {
 
                 return redirect()->back()->with([
