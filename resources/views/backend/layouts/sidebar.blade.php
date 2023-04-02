@@ -38,7 +38,7 @@
             <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Banner Options:</h6>
-                    <a class="collapse-item" href="">Banners</a>
+                    <a class="collapse-item" href="{{ route('banner') }}">Banners</a>
                     <a class="collapse-item" href="">Add Banners</a>
                 </div>
             </div>
