@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\auth;
+use App\Http\Controllers\BannerController;
 use App\Http\Controllers\HomeAdminController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -52,5 +53,13 @@ Route::prefix('admin')->group(function () {
         Route::get('/user-edit/{id}', 'edit')->name('users.edit');
         route::put('/user-update/{id}', 'update')->name('users.update');
         route::delete('/user-delete/{id}', 'delete')->name('users.delete');
+    });
+    route::controller(BannerController::class)->middleware('checkLogin')->group(function (){
+        route::get('/banner', 'index')->name('banner');
+        Route::get('/banner-create', 'create')->name('banner.create');
+        route::post('/banner-store', 'store')->name('banner.store');
+        Route::get('/banner-edit/{id}', 'edit')->name('banner.edit');
+        route::put('/banner-update/{id}', 'update')->name('banner.update');
+        route::delete('/banner-delete/{id}', 'delete')->name('banner.delete');
     });
 });
