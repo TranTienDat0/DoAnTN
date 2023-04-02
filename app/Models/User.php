@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     //role
     public const ROLE_CUSTOMER = 0;
@@ -27,7 +28,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'address_email',
+        'email_address',
         'phone',
         'password',
         'address',

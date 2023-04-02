@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class ResetPasswordController extends Controller
 {
-    //use ResetsPasswords;
+    use ResetsPasswords;
 
     /**
      * Where to redirect users after resetting their password.

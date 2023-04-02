@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Services\UserServices;
-use App\Http\Requests\UserRequest;
+use App\Http\Requests\UpdateRequest;
+use App\Http\Requests\createRequest;
 use App\Models\User;
 use Exception;
 
@@ -24,34 +25,45 @@ class UserController extends Controller
     {
         return view('backend.users.create');
     }
-    public function store(UserRequest $request)
+    public function store(createRequest $request)
     {
-        // try{
-        $result = $this->userServices->store($request);
-        if ($result) {
-            return redirect()->route('users')->with('success', 'Thêm mới người dùng thành công.');
-        } else {
-            return back()->with('error', 'Thêm mới người dùng k thành công.');
+        try {
+            $result = $this->userServices->store($request);
+            if ($result) {
+                return redirect()->route('users')->with('success', 'Thêm mới người dùng thành công.');
+            } else {
+                return back()->with('error', 'Thêm mới người dùng không thành công.');
+            }
+        } catch (Exception $exception) {
+            dd($exception);
+            throw new Exception("Error Processing Request", 1);
         }
-        // }catch(Exception $ex){
-        //     throw new Exception('Error Processing Request');
-        // }
     }
 
     public function edit($id)
     {
-        $user = $this->userServices->findId($id);
+        $user = User::find($id);
         return view('backend.users.edit', compact('user'));
     }
 
-    public function update(UserRequest $request, $id)
+    public function update(UpdateRequest $request, $id)
     {
         $result = $this->userServices->update($request, $id);
-
-        if ($result){
-            return redirect()->route('user.list')->with('success', 'Sửa người dùng thành công.');
+        if ($result) {
+            return redirect()->route('users')->with('success', 'Sửa thông tin tài khoản người dùng thành công.');
         } else {
-            return back()->with('error', 'Sửa người dùng k thành công.');
+            return back()->with('error', 'Sửa thông tin tài khoản người dùng không thành công.');
+        }
+    }
+
+    public function delete($id)
+    {
+        $result = $this->userServices->delete($id);
+
+        if ($result) {
+            return redirect()->route('users')->with('success', 'Xóa tài khoản người dùng thành công.');
+        } else {
+            return redirect()->back()->with('eror', 'Xóa thông tin tài khoản người dùng không thành công.');
         }
     }
 }

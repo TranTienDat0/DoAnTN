@@ -8,7 +8,7 @@
                 @csrf
                 <div class="form-group">
                     <label for="inputTitle" class="col-form-label">Name</label>
-                    <input id="inputTitle" type="text" name="name" placeholder="Enter name" class="form-control">
+                    <input id="inputTitle" type="text" name="name" placeholder="Enter name" value="{{ old('name') }}" class="form-control">
                     @error('name')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
@@ -16,7 +16,7 @@
 
                 <div class="form-group">
                     <label for="inputEmail" class="col-form-label">Email</label>
-                    <input id="inputEmail" type="text" name="email_address" placeholder="Enter email"
+                    <input id="inputEmail" type="text" name="email_address" value="{{ old('email_address') }}" placeholder="Enter email"
                         class="form-control">
                     @error('email_address')
                         <span class="text-danger">{{ $message }}</span>
@@ -25,7 +25,7 @@
 
                 <div class="form-group">
                     <label for="inputPassword" class="col-form-label">Password</label>
-                    <input id="inputPassword" type="password" name="password" placeholder="Enter password"
+                    <input id="inputPassword" type="password" name="password" value="{{ old('password') }}" placeholder="Enter password"
                         class="form-control">
                     @error('password')
                         <span class="text-danger">{{ $message }}</span>
@@ -33,14 +33,14 @@
                 </div>
                 <div class="form-group">
                     <label for="address" class="col-form-label">Address</label>
-                    <input id="address" type="text" name="address" placeholder="Enter address" class="form-control">
+                    <input id="address" type="text" name="address" value="{{ old('address') }}" placeholder="Enter address" class="form-control">
                     @error('address')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="phone" class="col-form-label">Phone</label>
-                    <input id="phone" type="text" name="phone" placeholder="Enter phone" class="form-control">
+                    <input id="phone" type="text" name="phone" value="{{ old('phone') }}" placeholder="Enter phone" class="form-control">
                     @error('phone')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror

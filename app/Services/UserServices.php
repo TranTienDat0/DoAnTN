@@ -14,7 +14,6 @@ class UserServices
     {
 
         $users = User::orderBy('id', 'ASC')->paginate(25);
-
         return $users;
     }
 
@@ -25,27 +24,19 @@ class UserServices
         } else {
             $role = 0;
         }
-        // try {
-        //     DB::beginTransaction();
-        $users = new User([
+
+        $users = User::create([
             'name' => $request->name,
             'email_address' => $request->email_address,
             'password' => Hash::make($request->password),
             'address' => $request->address,
             'phone' => $request->phone,
-            'role' => $role
+            'role' => $role,
         ]);
-        //     DB::commit();
-        // } catch (Exception $ex) {
-        //     DB::rollBack();
-        // }
-        $users->save();
+
         return $users;
     }
-    public function findId($id)
-    {
-        return User::find($id);
-    }
+
     public function update(Request $request, $id)
     {
         if ($request->role == 'admin') {
@@ -53,6 +44,7 @@ class UserServices
         } else {
             $role = 0;
         }
+
         $users = User::find($id)->update([
             'name' => $request->name,
             'address' => $request->address,
@@ -61,5 +53,20 @@ class UserServices
         ]);
 
         return $users;
+    }
+
+    public function delete($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $user = User::find($id)->delete();
+
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
+        }
+
+        return $user;
     }
 }

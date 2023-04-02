@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class ForgotPasswordController extends Controller
 {
-    //use SendsPasswordResetEmails;
+    use SendsPasswordResetEmails;
 
     /**
      * Create a new controller instance.
@@ -27,7 +27,7 @@ class ForgotPasswordController extends Controller
    
     public function sendResetLinkEmail(Request $request, AuthServices $AuthServices)
     {
-        //$this->validateEmail($request);
+        $this->validateEmail($request);
 
         $sent = $AuthServices->sendResetLinkEmail($request->email);
 

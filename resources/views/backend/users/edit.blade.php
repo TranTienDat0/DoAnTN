@@ -6,7 +6,7 @@
         <div class="card-body">
             <form method="post" action="{{ route('users.update', $user->id) }}">
                 @csrf
-                @method('patch')
+                @method('put')
                 <div class="form-group">
                     <label for="inputTitle" class="col-form-label">Name</label>
                     <input id="inputTitle" type="text" name="name" placeholder="Enter name"
