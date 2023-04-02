@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\auth;
+use App\Http\Controllers\HomeAdminController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,7 +26,7 @@ Route::prefix('auth')->group(function () {
     });
     route::controller(auth\ChangePassword::class)->group(function () {
         //change password
-        Route::get('/view_change_password', 'viewChangePassword')->name('view-change-password');
+        Route::get('/view_change_password', 'viewChangePassword')->name('view-change-password')->middleware('checkLogin');
         Route::post('/change_password', 'changePassword')->name('change-password');
     });
     route::controller(auth\ForgotPasswordController::class)->group(function () {
@@ -37,5 +39,16 @@ Route::prefix('auth')->group(function () {
     });
 });
 
-
-Route::get('/home', [App\Http\Controllers\HomeAdminController::class, 'index'])->name('home');
+Route::prefix('admin')->group(function () {
+    route::controller(HomeAdminController::class)->group(function (){
+        route::get('/home', 'index')->name('home')->middleware('checkLogin');
+    });
+    route::controller(UserController::class)->middleware('checkLogin')->group(function (){
+        Route::get('/user', 'index')->name('users');
+        Route::get('/user-create', 'create')->name('users.create');
+        route::post('/user-store', 'store')->name('users.store');
+        Route::get('/user-edit/{id}', 'edit')->name('users.edit');
+        route::put('/user-update/{id}', 'update')->name('users.update');
+        route::delete('/user-delete/{id}', 'delete')->name('users.delete');
+    });
+});
