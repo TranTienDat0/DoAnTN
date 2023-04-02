@@ -7,6 +7,7 @@ use App\Models\order;
 use App\Models\sub_categories;
 use App\Models\products;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class HomeAdminServices
 {
@@ -55,5 +56,16 @@ class HomeAdminServices
             return $countAdmin;
         }
         return 0;
+    }
+
+    public function updateProfile(Request $request, $id)
+    {
+        $profile = User::find($id)->update([
+            'name' => $request->name,
+            'address' => $request->address,
+            'phone' => $request->phone
+        ]);
+
+        return $profile;
     }
 }

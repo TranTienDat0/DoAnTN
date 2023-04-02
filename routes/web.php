@@ -40,8 +40,10 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::prefix('admin')->group(function () {
-    route::controller(HomeAdminController::class)->group(function (){
-        route::get('/home', 'index')->name('home')->middleware('checkLogin');
+    route::controller(HomeAdminController::class)->middleware('checkLogin')->group(function (){
+        route::get('/home', 'index')->name('home');
+        route::get('/admin-profile', 'profile')->name('admin.profile');
+        route::post('/admin-profile/{id}', 'updateProfile')->name('admin.update.profile');
     });
     route::controller(UserController::class)->middleware('checkLogin')->group(function (){
         Route::get('/user', 'index')->name('users');
