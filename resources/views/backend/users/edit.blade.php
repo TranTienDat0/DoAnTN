@@ -54,6 +54,7 @@
                     @enderror
                 </div>
                 <div class="form-group mb-3">
+                    <button type="reset" class="btn btn-warning">Reset</button>
                     <button class="btn btn-success" type="submit">Update</button>
                 </div>
             </form>

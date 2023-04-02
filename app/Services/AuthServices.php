@@ -28,7 +28,7 @@ class AuthServices
     public function isAdmin($user)
     {
 
-        return $user->role === 1;
+        return in_array($user->role, [1,2]);
     }
 
     // function login
