@@ -18,33 +18,45 @@
                 @if (count($banners) > 0)
                     <table class="table table-bordered" id="banner-dataTable" width="100%" cellspacing="0">
                         <thead>
-                            <tr>
+                            <tr style="text-align: center">
                                 <th>S.N.</th>
                                 <th>Title</th>
+                                <th>Slug</th>
                                 <th>Image</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tfoot>
-                            <tr>
+                            <tr  style="text-align: center">
                                 <th>S.N.</th>
                                 <th>Title</th>
+                                <th>Slug</th>
                                 <th>Image</th>
-                                <th>Action</th>
+                                <th>Status</th>
+                                <th style="width: 100px">Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @foreach ($banners as $banner)
-                                <tr>
+                                <tr  style="text-align: center">
                                     <td>{{ $banner->id }}</td>
                                     <td>{{ $banner->title }}</td>
+                                    <td>{{ $banner->slug }}</td>
                                     <td>
                                         @if ($banner->image)
-                                            <img src="{{ asset('image/' . $banner->image) }}" class="img-fluid zoom" style="max-width:80px"
-                                                alt="{{ $banner->image }}">
+                                            <img src="{{ asset('image/' . $banner->image) }}" class="img-fluid zoom"
+                                                style="max-width:80px" alt="{{ $banner->image }}">
                                         @else
                                             <img src="{{ asset('backend/img/thumbnail-default.jpg') }}"
                                                 class="img-fluid zoom" style="max-width:20%" alt="avatar.png">
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if ($banner->status == 1)
+                                            <span class="badge badge-success">Active</span>
+                                        @else
+                                            <span class="badge badge-warning">Inactive</span>
                                         @endif
                                     </td>
                                     <td>
@@ -61,7 +73,6 @@
                                                     class="fas fa-trash-alt"></i></button>
                                         </form>
                                     </td>
-
                                 </tr>
                             @endforeach
                         </tbody>

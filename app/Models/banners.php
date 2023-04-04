@@ -9,11 +9,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class banners extends Model
 {
     use HasFactory, SoftDeletes;
+    protected $table = 'banners';
+    // status
+    public const STATUS_NO = 0;
+    public const STATUS_YES = 1;
 
+    public static $status = [
+        self::STATUS_NO => 'Inactive',
+        self::STATUS_YES => 'Active',
+    ];
     protected $fillable = [
-        'name',
+        'title',
+        'slug',
         'image',
-        'description'
+        'description',
+        'status'
     ];
     protected $dates = [
         'created_at',

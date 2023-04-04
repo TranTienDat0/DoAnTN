@@ -59,9 +59,10 @@
                                     @endif
                                 </td>
                                 <td>{{ $user->created_at ? $user->created_at->diffForHumans() : '' }}</td>
-                                <td>{{ $user->role }}</td>           
+                                <td>{{ $user->role }}</td>
                                 <td>
-                                    <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary btn-sm float-left mr-1"
+                                    <a href="{{ route('users.edit', $user->id) }}"
+                                        class="btn btn-primary btn-sm float-left mr-1"
                                         style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                         title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>
                                     <form method="POST" action="{{ route('users.delete', $user->id) }}">
@@ -69,7 +70,9 @@
                                         @method('delete')
                                         <button class="btn btn-danger btn-sm dltBtn"
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                            data-placement="bottom" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                                            data-placement="bottom" title="Delete"
+                                            onclick="return confirm('Bạn chắc chắn muốn xóa không ?')"><i
+                                                class="fas fa-trash-alt"></i></button>
                                     </form>
                                 </td>
                             </tr>

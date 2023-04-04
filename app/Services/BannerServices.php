@@ -6,7 +6,8 @@ use App\Models\banners;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class BannerServices
 {
@@ -19,40 +20,63 @@ class BannerServices
 
     public function store(Request $request)
     {
-        if ($request->role == 'admin') {
-            $role = 1;
-        } else {
-            $role = 0;
-        }
-
-        $users = User::create([
-            'name' => $request->name,
-            'email_address' => $request->email_address,
-            'password' => Hash::make($request->password),
-            'address' => $request->address,
-            'phone' => $request->phone,
-            'role' => $role,
-        ]);
-
-        return $users;
+        try {
+            DB::beginTransaction();
+            if ($request->status == 'Active') {
+                $status = 1;
+            } else {
+                $status = 0;
+            }
+    
+            $banner = new banners();
+            $banner->title = $request->title;
+            $banner->description = $request->description;
+            $banner->slug = str::slug($request->title);
+            $banner->status = $status;
+    
+            if ($request->hasFile('image')) {
+                $image = $request->file('image');
+                $filename = $image->getClientOriginalName();
+                $image->move('image', $filename);
+                $banner->image = $filename;
+            }
+            $banner->save();
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
+        } 
+        return $banner;
     }
 
     public function update(Request $request, $id)
     {
-        if ($request->role == 'admin') {
-            $role = 1;
-        } else {
-            $role = 0;
+        try {
+            DB::beginTransaction();
+
+            if ($request->status == 'Active') {
+                $status = 1;
+            } else {
+                $status = 0;
+            }
+            $banner = banners::find($id);
+            $banner->title = $request->title;
+            $banner->description = $request->description;
+            $banner->slug = str::slug($request->title);
+            $banner->status = $status;
+            if ($request->hasFile('image')) {
+                Storage::delete('public/image/' . $banner->image);
+                $image = $request->file('image');
+                $filename = $image->getClientOriginalName();
+                $image->move('image', $filename);
+                $banner->image = $filename;
+            }
+            $banner->save();
+
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
         }
-
-        $users = User::find($id)->update([
-            'name' => $request->name,
-            'address' => $request->address,
-            'phone' => $request->phone,
-            'role' => $role
-        ]);
-
-        return $users;
+        return $banner;
     }
 
     public function delete($id)
@@ -60,13 +84,13 @@ class BannerServices
         try {
             DB::beginTransaction();
 
-            $user = User::find($id)->delete();
+            $banner = banners::find($id)->delete();
 
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
         }
 
-        return $user;
+        return $banner;
     }
 }

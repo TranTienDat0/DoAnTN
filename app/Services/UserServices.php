@@ -19,39 +19,51 @@ class UserServices
 
     public function store(Request $request)
     {
-        if ($request->role == 'admin') {
-            $role = 1;
-        } else {
-            $role = 0;
+        try {
+            DB::beginTransaction();
+
+            if ($request->role == 'admin') {
+                $role = 1;
+            } else {
+                $role = 0;
+            }
+            $users = User::create([
+                'name' => $request->name,
+                'email_address' => $request->email_address,
+                'password' => Hash::make($request->password),
+                'address' => $request->address,
+                'phone' => $request->phone,
+                'role' => $role,
+            ]);
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
         }
 
-        $users = User::create([
-            'name' => $request->name,
-            'email_address' => $request->email_address,
-            'password' => Hash::make($request->password),
-            'address' => $request->address,
-            'phone' => $request->phone,
-            'role' => $role,
-        ]);
 
         return $users;
     }
 
     public function update(Request $request, $id)
     {
-        if ($request->role == 'admin') {
-            $role = 1;
-        } else {
-            $role = 0;
+        try {
+            DB::beginTransaction();
+
+            if ($request->role == 'admin') {
+                $role = 1;
+            } else {
+                $role = 0;
+            }
+            $users = User::find($id)->update([
+                'name' => $request->name,
+                'address' => $request->address,
+                'phone' => $request->phone,
+                'role' => $role
+            ]);
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
         }
-
-        $users = User::find($id)->update([
-            'name' => $request->name,
-            'address' => $request->address,
-            'phone' => $request->phone,
-            'role' => $role
-        ]);
-
         return $users;
     }
 

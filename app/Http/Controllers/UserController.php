@@ -35,7 +35,6 @@ class UserController extends Controller
                 return back()->with('error', 'Thêm mới người dùng không thành công.');
             }
         } catch (Exception $exception) {
-            dd($exception);
             throw new Exception("Error Processing Request", 1);
         }
     }
@@ -48,22 +47,29 @@ class UserController extends Controller
 
     public function update(UpdateRequest $request, $id)
     {
-        $result = $this->userServices->update($request, $id);
-        if ($result) {
-            return redirect()->route('users')->with('success', 'Sửa thông tin tài khoản người dùng thành công.');
-        } else {
-            return back()->with('error', 'Sửa thông tin tài khoản người dùng không thành công.');
+        try {
+            $result = $this->userServices->update($request, $id);
+            if ($result) {
+                return redirect()->route('users')->with('success', 'Sửa thông tin tài khoản người dùng thành công.');
+            } else {
+                return back()->with('error', 'Sửa thông tin tài khoản người dùng không thành công.');
+            }
+        } catch (Exception $exception) {
+            throw new Exception("Error Processing Request", 1);
         }
     }
 
     public function delete($id)
     {
-        $result = $this->userServices->delete($id);
-
-        if ($result) {
-            return redirect()->route('users')->with('success', 'Xóa tài khoản người dùng thành công.');
-        } else {
-            return redirect()->back()->with('eror', 'Xóa thông tin tài khoản người dùng không thành công.');
+        try {
+            $result = $this->userServices->delete($id);
+            if ($result) {
+                return redirect()->route('users')->with('success', 'Xóa tài khoản người dùng thành công.');
+            } else {
+                return redirect()->back()->with('eror', 'Xóa thông tin tài khoản người dùng không thành công.');
+            }
+        } catch (Exception $exception) {
+            throw new Exception("Error Processing Request", 1);
         }
     }
 }
