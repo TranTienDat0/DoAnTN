@@ -45,7 +45,7 @@
                                     <td>{{ $banner->slug }}</td>
                                     <td>
                                         @if ($banner->image)
-                                            <img src="{{ asset('image/' . $banner->image) }}" class="img-fluid zoom"
+                                            <img src="{{ asset('image/banner/' . $banner->image) }}" class="img-fluid zoom"
                                                 style="max-width:80px" alt="{{ $banner->image }}">
                                         @else
                                             <img src="{{ asset('backend/img/thumbnail-default.jpg') }}"
@@ -69,7 +69,7 @@
                                             @method('delete')
                                             <button class="btn btn-danger btn-sm dltBtn" data-id={{ $banner->id }}
                                                 style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                                data-placement="bottom" title="Delete"><i
+                                                data-placement="bottom" title="Delete"  onclick="return confirm('Bạn chắc chắn muốn xóa không ?')"><i
                                                     class="fas fa-trash-alt"></i></button>
                                         </form>
                                     </td>

@@ -8,6 +8,9 @@ use App\Models\sub_categories;
 use App\Models\products;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class HomeAdminServices
 {
@@ -60,12 +63,32 @@ class HomeAdminServices
 
     public function updateProfile(Request $request, $id)
     {
-        $profile = User::find($id)->update([
-            'name' => $request->name,
-            'address' => $request->address,
-            'phone' => $request->phone
-        ]);
+        $image = $request->image;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
 
+            if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
+                $image = Str::random(5) . "_" . $filename;
+                while (file_exists("image/user/" . $image)) {
+                    $image = Str::random(5) . "_" . $filename;
+                }
+                $file->move('image/user', $filename);
+            }
+        }
+        try {
+            DB::beginTransaction();
+            $profile = User::find($id)->update([
+                'name' => $request->name,
+                'address' => $request->address,
+                'phone' => $request->phone,
+                'image' => $image,
+            ]);
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
+        }
         return $profile;
     }
 }

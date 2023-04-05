@@ -26,7 +26,6 @@ class UserFactory extends Factory
             'email_address' => $this->faker->unique()->safeEmail(),
             'phone' => $this->faker->numerify('0#########'),
             'role' => $this->faker->randomElement(array_keys(User::$roles)),
-            'remember_token' => '',
         ];
     }
 

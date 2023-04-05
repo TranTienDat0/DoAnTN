@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateRequest extends FormRequest
+class UpdateBannerRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,20 +24,18 @@ class CreateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:255|string',
-            'address' => 'required|max:255|string',
-            'phone' => 'required|size:10|',
-            'role' => 'required',
+            'title' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'status' => 'required',
         ];
     }
-
     public function messages()
     {
         return [
-            'name.required' => 'Vui lòng nhập tên của bạn.',
-            'max' => 'Không nhập quá 255 kí tự',
-            'phone.required' => 'Vui lòng nhập số điện thoại.',
-            'role.required' => 'Vui lòng chọn quyền đăng nhập',
+            'title.required' => 'Vui lòng nhập tiêu đề.',
+            'max' => 'Vui lòng không nhập quá 255 kí tự',
+            'description.required' => 'Vui lòng nhập mô tả chi tiết tấm banner.',
+            'status.required' => 'Vui lòng chọn trạng thái cho banner.'
         ];
     }
 }

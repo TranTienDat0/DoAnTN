@@ -22,10 +22,10 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="image">
-                            @if ($profile->photo)
+                            @if ($profile->image != null)
                                 <img class="card-img-top img-fluid roundend-circle mt-4"
                                     style="border-radius:50%;height:80px;width:80px;margin:auto;"
-                                    src="{{ $profile->photo }}" alt="profile picture">
+                                    src="{{ asset('image/user/' . $profile->image) }}" alt="profile picture">
                             @else
                                 <img class="card-img-top img-fluid roundend-circle mt-4"
                                     style="border-radius:50%;height:80px;width:80px;margin:auto;"
@@ -38,17 +38,18 @@
                             <p class="card-text text-left"><small><i class="fas fa-envelope"></i>
                                     {{ $profile->email_address }}</small></p>
                             <p class="card-text text-left"><small class="text-muted"><i class="fas fa-hammer"></i>
-                                    @if($profile->role == 1)
+                                    @if ($profile->role == 1)
                                         Admin
                                     @elseif($profile->role == 2)
                                         Super Admin
-                                    @endif                                 
+                                    @endif
                                 </small></p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-8">
-                    <form class="border px-4 pt-2 pb-3" method="POST" action="{{ route('admin.update.profile', $profile->id) }}">
+                    <form class="border px-4 pt-2 pb-3" method="POST"
+                        action="{{ route('admin.update.profile', $profile->id) }}">
                         @csrf
                         <div class="form-group">
                             <label for="inputTitle" class="col-form-label">Name</label>
@@ -85,20 +86,18 @@
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        {{-- <div class="form-group">
-                      <label for="inputPhoto" class="col-form-label">Photo</label>
-                      <div class="input-group">
-                          <span class="input-group-btn">
-                              <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary">
-                              <i class="fa fa-picture-o"></i> Choose
-                              </a>
-                          </span>
-                          <input id="thumbnail" class="form-control" type="text" name="photo" value="{{$profile->photo}}">
-                      </div>
-                        @error('photo')
-                        <span class="text-danger">{{$message}}</span>
-                        @enderror
-                      </div> --}}
+                        <div class="form-group">
+                            <label for="inputPhoto" class="col-form-label">Image</label>
+                            <div class="input-group">
+                                <span class="input-group-btn">
+                                    <input type="file" name="image" />
+                                </span>
+                            </div>
+                            <img id="holder" style="margin-top:15px;max-height:100px;">
+                            @error('image')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
                         <div class="form-group">
                             <label for="role" class="col-form-label">Role</label>
                             <select disabled name="role" class="form-control">

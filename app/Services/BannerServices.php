@@ -20,57 +20,74 @@ class BannerServices
 
     public function store(Request $request)
     {
+        if ($request->status == 'Active') {
+            $status = 1;
+        } else {
+            $status = 0;
+        }
+        $image = $request->image;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+
+            if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
+                $image = Str::random(5) . "_" . $filename;
+                while (file_exists("image/banner/" . $image)) {
+                    $image = Str::random(5) . "_" . $filename;
+                }
+                $file->move('image/banner', $image);
+            }
+        }
         try {
             DB::beginTransaction();
-            if ($request->status == 'Active') {
-                $status = 1;
-            } else {
-                $status = 0;
-            }
-    
-            $banner = new banners();
-            $banner->title = $request->title;
-            $banner->description = $request->description;
-            $banner->slug = str::slug($request->title);
-            $banner->status = $status;
-    
-            if ($request->hasFile('image')) {
-                $image = $request->file('image');
-                $filename = $image->getClientOriginalName();
-                $image->move('image', $filename);
-                $banner->image = $filename;
-            }
-            $banner->save();
+
+            $banner = banners::create([
+                'title' => $request->title,
+                'slug' => Str::slug($request->title),
+                'description' => $request->description,
+                'status' => $status,
+                'image' => $image,
+            ]);
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
-        } 
+        }
         return $banner;
     }
 
     public function update(Request $request, $id)
     {
+        if ($request->status == 'Active') {
+            $status = 1;
+        } else {
+            $status = 0;
+        }
+        $image = $request->image;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
+
+            if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
+                $image = Str::random(5) . "_" . $filename;
+                while (file_exists("image/banner/" . $image)) {
+                    $image = Str::random(5) . "_" . $filename;
+                }
+                $file->move('image/banner', $image);
+            }
+        }
         try {
             DB::beginTransaction();
 
-            if ($request->status == 'Active') {
-                $status = 1;
-            } else {
-                $status = 0;
-            }
             $banner = banners::find($id);
-            $banner->title = $request->title;
-            $banner->description = $request->description;
-            $banner->slug = str::slug($request->title);
-            $banner->status = $status;
-            if ($request->hasFile('image')) {
-                Storage::delete('public/image/' . $banner->image);
-                $image = $request->file('image');
-                $filename = $image->getClientOriginalName();
-                $image->move('image', $filename);
-                $banner->image = $filename;
-            }
-            $banner->save();
+            $banner->update([
+                'title' => $request->title,
+                'slug' => Str::slug($request->title),
+                'description' => $request->description,
+                'status' => $status,
+                'image' => $image,
+            ]);
 
             DB::commit();
         } catch (Exception $ex) {

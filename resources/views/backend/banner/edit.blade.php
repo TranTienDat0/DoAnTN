@@ -26,11 +26,11 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="inputPhoto" class="col-form-label">image <span class="text-danger">*</span></label>
+                    <label for="inputPhoto" class="col-form-label">Image <span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-btn">
                             <input type="file" name="image">
-                            <img src="{{ asset('image/' . $banner->image) }}" alt="Ảnh sản phẩm">
+                            <img src="{{ asset('image/banner/' . $banner->image) }}" alt="Ảnh sản phẩm">
                         </span>
                     </div>
                     <div id="holder" style="margin-top:15px;max-height:100px;"></div>

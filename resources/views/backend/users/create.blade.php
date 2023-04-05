@@ -45,23 +45,18 @@
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
-
-                {{-- <div class="form-group">
-                    <label for="inputPhoto" class="col-form-label">Photo</label>
+                <div class="form-group">
+                    <label for="inputPhoto" class="col-form-label">Image</label>
                     <div class="input-group">
                         <span class="input-group-btn">
-                            <a id="lfm" data-input="thumbnail" data-preview="holder" class="btn btn-primary">
-                                <i class="fa fa-picture-o"></i> Choose
-                            </a>
+                            <input type="file" name="image" disabled />
                         </span>
-                        <input id="thumbnail" class="form-control" type="text" name="photo"
-                            value="{{ old('photo') }}">
                     </div>
                     <img id="holder" style="margin-top:15px;max-height:100px;">
-                    @error('photo')
+                    @error('image')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
-                </div> --}}
+                </div>
                 <div class="form-group">
                     <label for="role" class="col-form-label">Role</label>
                     <select name="role" class="form-control">

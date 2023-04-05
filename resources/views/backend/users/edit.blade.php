@@ -25,6 +25,19 @@
                     @enderror
                 </div>
                 <div class="form-group">
+                    <label for="inputPhoto" class="col-form-label">Image <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <input type="file" name="image" disabled>
+                            <img src="{{ asset('image/user/' . $user->image) }}" alt="Ảnh sản phẩm" width="100px" height="100px">
+                        </span>
+                    </div>
+                    <div id="holder" style="margin-top:15px;max-height:100px;"></div>
+                    @error('image')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="form-group">
                     <label for="inputPhone" class="col-form-label">Phone</label>
                     <input id="inputPhone" type="text" name="phone" placeholder="Enter phone"
                         value="{{ $user->phone }}" class="form-control">
@@ -40,12 +53,14 @@
                 @endphp
                 <div class="form-group">
                     <label for="role" class="col-form-label">Role</label>
-                    <select name="role" class="form-control">
+                    <select name="role" class="form-control" disabled>
                         <option value="">-----Select Role-----</option>
                         @foreach ($roles as $role)
                             <option value="{{ $role->role }}" {{ $role->role == '1' ? 'selected' : '' }}>Admin
                             </option>
                             <option value="{{ $role->role }}" {{ $role->role == '0' ? 'selected' : '' }}>User
+                            </option>
+                            <option value="{{ $role->role }}" {{ $role->role == '2' ? 'selected' : '' }}>Super Admin
                             </option>
                         @endforeach
                     </select>

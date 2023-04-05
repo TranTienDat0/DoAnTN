@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AdminProfile;
-use App\Http\Requests\AdminProfileRequest;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Services\HomeAdminServices;
 use App\Models\User;
+use Exception;
 
 class HomeAdminController extends Controller
 {
@@ -47,13 +47,17 @@ class HomeAdminController extends Controller
         return view('backend.users.profile', compact('profile'));
     }
 
-    public function updateProfile(AdminProfileRequest $adminProfileRequest, $id)
+    public function updateProfile(UpdateProfileRequest $profileRequest, $id)
     {
-        $result = $this->homeAdminServices->updateProfile($adminProfileRequest, $id);
-        if ($result) {
-            return redirect()->route('home')->with('success', 'Bạn đã cập nhật thông tin tài khoản bạn thành công.');
-        } else {
-            return redirect()->back()->with('error', 'Cập nhật thông tin thất bại.');
-        }
+        try {
+            $result = $this->homeAdminServices->updateProfile($profileRequest, $id);
+            if ($result) {
+                return redirect()->route('home')->with('success', 'Bạn đã cập nhật thông tin tài khoản bạn thành công.');
+            } else {
+                return redirect()->back()->with('error', 'Cập nhật thông tin thất bại.');
+            }
+        } catch (Exception $exception) {
+            throw new Exception("Error Processing Request", 1);
+       }
     }
 }

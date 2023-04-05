@@ -56,8 +56,8 @@
             echo Auth()->user()->name;
           @endphp
           &nbsp;
-          @if(Auth()->user()->photo)
-            <img class="img-profile rounded-circle" src="">
+          @if(Auth()->user()->image != null)
+            <img class="img-profile rounded-circle" src="{{ asset('image/user/' . Auth()->user()->image) }}">
           @else
             <img class="img-profile rounded-circle" src="{{asset('backend/img/avatar.png')}}">
           @endif

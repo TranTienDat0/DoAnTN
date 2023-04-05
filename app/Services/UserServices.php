@@ -40,7 +40,6 @@ class UserServices
             DB::rollBack();
         }
 
-
         return $users;
     }
 
@@ -49,16 +48,10 @@ class UserServices
         try {
             DB::beginTransaction();
 
-            if ($request->role == 'admin') {
-                $role = 1;
-            } else {
-                $role = 0;
-            }
             $users = User::find($id)->update([
                 'name' => $request->name,
                 'address' => $request->address,
                 'phone' => $request->phone,
-                'role' => $role
             ]);
             DB::commit();
         } catch (Exception $ex) {
@@ -78,7 +71,6 @@ class UserServices
         } catch (Exception $ex) {
             DB::rollBack();
         }
-
         return $user;
     }
 }

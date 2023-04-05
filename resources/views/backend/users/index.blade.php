@@ -22,7 +22,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
-                            <th>Photo</th>
+                            <th>Image</th>
                             <th>Join Date</th>
                             <th>Role</th>
                             {{-- <th>Status</th> --}}
@@ -35,7 +35,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
-                            <th>Photo</th>
+                            <th>Image</th>
                             <th>Join Date</th>
                             <th>Role</th>
                             {{-- <th>Status</th> --}}
@@ -50,9 +50,9 @@
                                 <td>{{ $user->email_address }}</td>
                                 <td>{{ $user->phone }}</td>
                                 <td>
-                                    @if ($user->photo)
-                                        <img src="{{ $user->photo }}" class="img-fluid rounded-circle"
-                                            style="max-width:50px" alt="{{ $user->photo }}">
+                                    @if ($user->image != null)
+                                        <img src="{{ asset('image/user/' . $user->image) }}" class="img-fluid rounded-circle"
+                                            style="max-width:50px; width:50px !important; height:50px !important;" alt="{{ $user->image }}">
                                     @else
                                         <img src="{{ asset('backend/img/avatar.png') }}" class="img-fluid rounded-circle"
                                             style="max-width:50px" alt="avatar.png">

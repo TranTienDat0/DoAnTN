@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AdminProfileRequest extends FormRequest
+class UpdateProfileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,6 +27,7 @@ class AdminProfileRequest extends FormRequest
             'name' => 'required|max:255|string',
             'address' => 'required|max:255|string',
             'phone' => 'required|size:10|',
+            //'image' => 'string',
         ];
     }
     public function messages()

@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Services\UserServices;
-use App\Http\Requests\UpdateRequest;
-use App\Http\Requests\createRequest;
+use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\CreateUserRequest;
 use App\Models\User;
 use Exception;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -25,7 +26,7 @@ class UserController extends Controller
     {
         return view('backend.users.create');
     }
-    public function store(createRequest $request)
+    public function store(CreateUserRequest $request)
     {
         try {
             $result = $this->userServices->store($request);
@@ -45,7 +46,7 @@ class UserController extends Controller
         return view('backend.users.edit', compact('user'));
     }
 
-    public function update(UpdateRequest $request, $id)
+    public function update(UpdateUserRequest $request, $id)
     {
         try {
             $result = $this->userServices->update($request, $id);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateBannerRequest;
 use App\Models\banners;
 use App\Services\BannerServices;
 use Illuminate\Http\Request;
@@ -30,15 +31,14 @@ class BannerController extends Controller
     {
         try {
             $result = $this->bannerServices->store($request);
-        if ($result) {
-            return redirect()->route('banner')->with('success', 'Bạn đã thêm mới tấm banner thành công.');
-        } else {
-            return redirect()->back()->with('error', 'Thêm mới đã thất bại.');
-        }
+            if ($result) {
+                return redirect()->route('banner')->with('success', 'Bạn đã thêm mới tấm banner thành công.');
+            } else {
+                return redirect()->back()->with('error', 'Thêm mới đã thất bại.');
+            }
         } catch (Exception $exception) {
             throw new Exception("Error Processing Request", 1);
         }
-        
     }
 
     public function edit($id)
@@ -47,7 +47,7 @@ class BannerController extends Controller
 
         return view('backend.banner.edit', compact('banner'));
     }
-    public function update(Request $request, $id)
+    public function update(UpdateBannerRequest $request, $id)
     {
         try {
             $result = $this->bannerServices->update($request, $id);
