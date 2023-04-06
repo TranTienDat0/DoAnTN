@@ -49,8 +49,9 @@
                 </div>
                 <div class="col-md-8">
                     <form class="border px-4 pt-2 pb-3" method="POST"
-                        action="{{ route('admin.update.profile', $profile->id) }}">
+                        action="{{ route('admin.update.profile', $profile->id) }}" enctype="multipart/form-data">
                         @csrf
+                        @method('PUT')
                         <div class="form-group">
                             <label for="inputTitle" class="col-form-label">Name</label>
                             <input id="inputTitle" type="text" name="name" placeholder="Enter name"
@@ -87,13 +88,13 @@
                             @enderror
                         </div>
                         <div class="form-group">
-                            <label for="inputPhoto" class="col-form-label">Image</label>
+                            <label for="inputImage" class="col-form-label">Image<span class="text-danger"></span></label>
                             <div class="input-group">
                                 <span class="input-group-btn">
                                     <input type="file" name="image" />
                                 </span>
                             </div>
-                            <img id="holder" style="margin-top:15px;max-height:100px;">
+                            <div id="holder" style="margin-top:15px;max-height:100px;"></div>
                             @error('image')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror

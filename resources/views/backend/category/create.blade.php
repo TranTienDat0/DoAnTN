@@ -1,36 +1,25 @@
 @extends('backend.layouts.master')
-@section('title', 'E-SHOP || Banner Edit')
+
 @section('main-content')
-
     <div class="card">
-        <h5 class="card-header">Edit Banner</h5>
+        <h5 class="card-header">Add Category</h5>
         <div class="card-body">
-            <form method="post" action="{{ route('banner.update', $banner->id) }}" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
+            <form method="post" action="{{ route('category.store') }}" enctype="multipart/form-data">
+                {{ csrf_field() }}
                 <div class="form-group">
-                    <label for="inputTitle" class="col-form-label">Title <span class="text-danger">*</span></label>
-                    <input id="inputTitle" type="text" name="title" placeholder="Enter title"
-                        value="{{ $banner->title }}" class="form-control">
-                    @error('title')
+                    <label for="inputname" class="col-form-label">name <span class="text-danger">*</span></label>
+                    <input id="inputname" type="text" name="name" placeholder="Enter name" value="{{ old('name') }}"
+                        class="form-control">
+                    @error('name')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
 
                 <div class="form-group">
-                    <label for="inputDesc" class="col-form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description">{{ $banner->description }}</textarea>
-                    @error('description')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
-                    <label for="inputPhoto" class="col-form-label">Image <span class="text-danger">*</span></label>
+                    <label for="inputImage" class="col-form-label">Image<span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-btn">
-                            <input type="file" name="image">
-                            <img src="{{ asset('image/banner/' . $banner->image) }}" alt="Ảnh sản phẩm" width="100px" height="100px">
+                            <input type="file" name="image" />
                         </span>
                     </div>
                     <div id="holder" style="margin-top:15px;max-height:100px;"></div>
@@ -42,20 +31,20 @@
                 <div class="form-group">
                     <label for="status" class="col-form-label">Status<span class="text-danger">*</span></label>
                     <select name="status" class="form-control">
-                        <option {{ $banner->status == '1' ? 'selected' : '' }}>Active</option>
-                        <option {{ $banner->status == '0' ? 'selected' : '' }}>Inactive</option>
+                        <option>Active</option>
+                        <option>Inactive</option>
                     </select>
                     @error('status')
                         <span class="text-danger">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="form-group mb-3">
-                    <button class="btn btn-success" type="submit">Update</button>
+                    <button type="reset" class="btn btn-warning">Reset</button>
+                    <button class="btn btn-success" type="submit">Create</button>
                 </div>
             </form>
         </div>
     </div>
-
 @endsection
 
 @push('styles')
@@ -68,11 +57,24 @@
         $('#lfm').filemanager('image');
 
         $(document).ready(function() {
-            $('#description').summernote({
+            $('#summary').summernote({
                 placeholder: "Write short description.....",
                 tabsize: 2,
-                height: 150
+                height: 120
             });
         });
+    </script>
+
+    <script>
+        $('#is_parent').change(function() {
+            var is_checked = $('#is_parent').prop('checked');
+            // alert(is_checked);
+            if (is_checked) {
+                $('#parent_cat_div').addClass('d-none');
+                $('#parent_cat_div').val('');
+            } else {
+                $('#parent_cat_div').removeClass('d-none');
+            }
+        })
     </script>
 @endpush

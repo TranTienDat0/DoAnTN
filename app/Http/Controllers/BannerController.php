@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateBannerRequest;
 use App\Http\Requests\UpdateBannerRequest;
 use App\Models\banners;
 use App\Services\BannerServices;
@@ -27,7 +28,7 @@ class BannerController extends Controller
     {
         return view('backend.banner.create');
     }
-    public function store(Request $request)
+    public function store(CreateBannerRequest $request)
     {
         try {
             $result = $this->bannerServices->store($request);

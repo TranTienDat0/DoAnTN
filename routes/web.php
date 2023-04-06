@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\auth;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\HomeAdminController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -44,7 +45,7 @@ Route::prefix('admin')->group(function () {
     route::controller(HomeAdminController::class)->middleware('checkLogin')->group(function (){
         route::get('/home', 'index')->name('home');
         route::get('/admin-profile', 'profile')->name('admin.profile');
-        route::post('/admin-profile/{id}', 'updateProfile')->name('admin.update.profile');
+        route::put('/admin-profile/{id}', 'updateProfile')->name('admin.update.profile');
     });
     route::controller(UserController::class)->middleware('checkLogin')->group(function (){
         Route::get('/user', 'index')->name('users');
@@ -61,5 +62,13 @@ Route::prefix('admin')->group(function () {
         Route::get('/banner-edit/{id}', 'edit')->name('banner.edit');
         route::put('/banner-update/{id}', 'update')->name('banner.update');
         route::delete('/banner-delete/{id}', 'delete')->name('banner.delete');
+    });
+    route::controller(CategoryController::class)->middleware('checkLogin')->group(function (){
+        route::get('/category', 'index')->name('category');
+        Route::get('/category-create', 'create')->name('category.create');
+        route::post('/category-store', 'store')->name('category.store');
+        Route::get('/category-edit/{id}', 'edit')->name('category.edit');
+        route::put('/category-update/{id}', 'update')->name('category.update');
+        route::delete('/category-delete/{id}', 'delete')->name('category.delete');
     });
 });

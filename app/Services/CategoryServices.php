@@ -2,19 +2,19 @@
 
 namespace App\Services;
 
-use App\Models\banners;
+use App\Models\categories;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class BannerServices
+class CategoryServices
 {
-    public function getAllBanners()
+    public function getAllCategory()
     {
 
-        $users = banners::orderBy('id', 'ASC')->paginate(10);
-        return $users;
+        $categories = categories::orderBy('id', 'ASC')->paginate(10);
+        return $categories;
     }
 
     public function store(Request $request)
@@ -32,19 +32,18 @@ class BannerServices
 
             if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
                 $image = Str::random(5) . "_" . $filename;
-                while (file_exists("image/banner/" . $image)) {
+                while (file_exists("image/category/" . $image)) {
                     $image = Str::random(5) . "_" . $filename;
                 }
-                $file->move('image/banner', $image);
+                $file->move('image/category', $image);
             }
         }
         try {
             DB::beginTransaction();
 
-            $banner = banners::create([
-                'title' => $request->title,
-                'slug' => Str::slug($request->title),
-                'description' => $request->description,
+            $category = categories::create([
+                'name' => $request->name,
+                'slug' => Str::slug($request->name),
                 'status' => $status,
                 'image' => $image,
             ]);
@@ -52,7 +51,7 @@ class BannerServices
         } catch (Exception $ex) {
             DB::rollBack();
         }
-        return $banner;
+        return $category;
     }
 
     public function update(Request $request, $id)
@@ -70,20 +69,18 @@ class BannerServices
 
             if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
                 $image = Str::random(5) . "_" . $filename;
-                while (file_exists("image/banner/" . $image)) {
+                while (file_exists("image/category/" . $image)) {
                     $image = Str::random(5) . "_" . $filename;
                 }
-                $file->move('image/banner', $image);
+                $file->move('image/category', $image);
             }
         }
         try {
             DB::beginTransaction();
 
-            $banner = banners::find($id);
-            $banner->update([
-                'title' => $request->title,
-                'slug' => Str::slug($request->title),
-                'description' => $request->description,
+            $category = categories::find($id);
+            $category->update([
+                'name' => $request->name,
                 'status' => $status,
                 'image' => $image,
             ]);
@@ -92,7 +89,7 @@ class BannerServices
         } catch (Exception $ex) {
             DB::rollBack();
         }
-        return $banner;
+        return $category;
     }
 
     public function delete($id)

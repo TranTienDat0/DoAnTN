@@ -71,10 +71,10 @@ class HomeAdminServices
 
             if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
                 $image = Str::random(5) . "_" . $filename;
-                while (file_exists("image/user/" . $image)) {
+                while (file_exists("image/category/" . $image)) {
                     $image = Str::random(5) . "_" . $filename;
                 }
-                $file->move('image/user', $filename);
+                $file->move('image/category', $image);
             }
         }
         try {
