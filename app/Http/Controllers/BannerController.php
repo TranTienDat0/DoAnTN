@@ -66,9 +66,9 @@ class BannerController extends Controller
         try {
             $result = $this->bannerServices->delete($id);
             if ($result) {
-                return redirect()->route('banner')->with('success', 'Xóa banner người dùng thành công.');
+                return redirect()->route('banner')->with('success', 'Xóa banner thành công.');
             } else {
-                return redirect()->back()->with('eror', 'Xóa thông tin banner người dùng không thành công.');
+                return redirect()->back()->with('eror', 'Xóa thông tin banner không thành công.');
             }
         } catch (Exception $exception) {
             throw new Exception("Error Processing Request", 1);

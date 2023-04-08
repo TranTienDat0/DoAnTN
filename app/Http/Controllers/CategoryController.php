@@ -61,4 +61,18 @@ class CategoryController extends Controller
             throw new Exception("Error Processing Request", 1);
         }
     }
+
+    public function delete($id)
+    {
+        try {
+            $result = $this->categoryServices->delete($id);
+            if ($result) {
+                return redirect()->route('category')->with('success', 'Xóa danh mục thành công.');
+            } else {
+                return redirect()->back()->with('eror', 'Xóa thông tin danh mục không thành công.');
+            }
+        } catch (Exception $exception) {
+            throw new Exception("Error Processing Request", 1);
+        }
+    }
 }

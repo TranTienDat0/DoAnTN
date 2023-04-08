@@ -65,6 +65,20 @@
                 </div>
             </div>
         </li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#brandCollapse"
+                aria-expanded="true" aria-controls="brandCollapse">
+                <i class="fas fa-sitemap"></i>
+                <span>Sub Category</span>
+            </a>
+            <div id="brandCollapse" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">Sub Category Options:</h6>
+                    <a class="collapse-item" href="{{ route('subcategory') }}">Sub Category</a>
+                    <a class="collapse-item" href="{{ route('subcategory.create') }}">Sub Add Category</a>
+                </div>
+            </div>
+        </li>
         {{-- Products --}}
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#productCollapse"

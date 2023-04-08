@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\categories;
 use App\Models\products;
 use App\Models\sub_categories;
 use Exception;
@@ -10,13 +9,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-class CategoryServices
+class SubCategoryServices
 {
     public function getAllCategory()
     {
 
-        $categories = categories::orderBy('id', 'ASC')->paginate(10);
-        return $categories;
+        $subcategory = sub_categories::orderBy('id', 'ASC')->paginate(10);
+        return $subcategory;
     }
 
     public function store(Request $request)
@@ -34,26 +33,27 @@ class CategoryServices
 
             if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
                 $image = Str::random(5) . "_" . $filename;
-                while (file_exists("image/category/" . $image)) {
+                while (file_exists("image/subcategory/" . $image)) {
                     $image = Str::random(5) . "_" . $filename;
                 }
-                $file->move('image/category', $image);
+                $file->move('image/subcategory', $image);
             }
         }
         try {
             DB::beginTransaction();
 
-            $category = categories::create([
+            $subcategory = sub_categories::create([
                 'name' => $request->name,
                 'slug' => Str::slug($request->name),
                 'status' => $status,
                 'image' => $image,
+                'categories_id' => $request->parent_category,
             ]);
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
         }
-        return $category;
+        return $subcategory;
     }
 
     public function update(Request $request, $id)
@@ -71,27 +71,28 @@ class CategoryServices
 
             if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
                 $image = Str::random(5) . "_" . $filename;
-                while (file_exists("image/category/" . $image)) {
+                while (file_exists("image/subcategory/" . $image)) {
                     $image = Str::random(5) . "_" . $filename;
                 }
-                $file->move('image/category', $image);
+                $file->move('image/subcategory', $image);
             }
         }
         try {
             DB::beginTransaction();
 
-            $category = categories::find($id);
-            $category->update([
+            $subcategory = sub_categories::find($id);
+            $subcategory->update([
                 'name' => $request->name,
                 'status' => $status,
                 'image' => $image,
+                'parent_category' =>$request->parent_category,
             ]);
 
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
         }
-        return $category;
+        return $subcategory;
     }
 
     public function delete($id)
@@ -99,16 +100,14 @@ class CategoryServices
         try {
             DB::beginTransaction();
 
-            $sub_categories = sub_categories::find($id);
-            products::where('sub_categories_id', $sub_categories->id)->delete();
-            sub_categories::where('categories_id', $id)->delete();
-            $category = categories::find($id)->delete();
-            
+            products::where('sub_categories_id', $id)->delete();
+            $subcategory = sub_categories::find($id)->delete();
+
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();
         }
 
-        return $category;
+        return $subcategory;
     }
 }

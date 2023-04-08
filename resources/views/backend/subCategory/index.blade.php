@@ -9,9 +9,9 @@
             </div>
         </div>
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary float-left">Category Lists</h6>
-            <a href="{{ route('category.create') }}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip"
-                data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add Category</a>
+            <h6 class="m-0 font-weight-bold text-primary float-left">Sub Category Lists</h6>
+            <a href="{{ route('subcategory.create') }}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip"
+                data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add Sub Category</a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -23,6 +23,7 @@
                                 <th>Title</th>
                                 <th>Slug</th>
                                 <th>Image</th>
+                                <th>Parent Category</th>
                                 <th>Status</th>
                                 <th style="width: 100px">Action</th>
                             </tr>
@@ -33,6 +34,7 @@
                                 <th>Title</th>
                                 <th>Slug</th>
                                 <th>Image</th>
+                                <th>Parent Category</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -48,7 +50,7 @@
                                     <td>{{ $category->slug }}</td>
                                     <td>
                                         @if ($category->image)
-                                            <img src="{{ asset('image/category/' . $category->image) }}"
+                                            <img src="{{ asset('image/subcategory/' . $category->image) }}"
                                                 class="img-fluid zoom" style="max-width:80px; width: 100px; height:50px;"
                                                 alt="{{ $category->image }}">
                                         @else
@@ -56,6 +58,7 @@
                                                 class="img-fluid zoom" style="max-width:20%" alt="avatar.png">
                                         @endif
                                     </td>
+                                    <td>{{ $category->categories->name }}</td>
                                     <td>
                                         @if ($category->status == 1)
                                             <span class="badge badge-success">Active</span>
@@ -64,17 +67,17 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('category.edit', $category->id) }}"
+                                        <a href="{{ route('subcategory.edit', $category->id) }}"
                                             class="btn btn-primary btn-sm float-left mr-1"
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                             title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>
-                                        <form method="POST" action="{{ route('category.delete', [$category->id]) }}">
+                                        <form method="POST" action="{{ route('subcategory.delete', [$category->id]) }}">
                                             @csrf
                                             @method('delete')
                                             <button class="btn btn-danger btn-sm dltBtn" data-id={{ $category->id }}
                                                 style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                                 data-placement="bottom" title="Delete"
-                                                onclick="return confirm('Bạn chắc chắn muốn xóa danh mục cha bao gồm cả danh mục con của nó không?')"><i
+                                                onclick="return confirm('Bạn chắc chắn muốn xóa danh mục bao gồm cả sản phẩm của nó không?')"><i
                                                     class="fas fa-trash-alt"></i></button>
                                         </form>
                                     </td>
@@ -82,7 +85,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <span style="float:right">{{ $categories->links('pagination::bootstrap-4') }}</span>
+                    <span style="float:right">{{ $categories->links() }}</span>
                 @else
                     <h6 class="text-center">No Categories found!!! Please create Category</h6>
                 @endif
