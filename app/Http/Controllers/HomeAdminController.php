@@ -22,10 +22,10 @@ class HomeAdminController extends Controller
         $CountProducts = $this->homeAdminServices->countProducts();
         $CountOrder = $this->homeAdminServices->countOrder();
         $CountAccountAdmin = $this->homeAdminServices->countAccountAdmin();
-        $AdminActive = User::where('role', '1')->where('deleted_at', 'null')->count();
+        $AdminActive = User::onlyTrashed()->where('role', '1')->count();
         $AdminInactive = $CountAccountAdmin - $AdminActive;
         $CountAccountCustom = User::count() - $CountAccountAdmin;
-        $CustomActive = User::where('role', '0')->where('deleted_at', 'null')->count();
+        $CustomActive = User::onlyTrashed()->where('role', '0')->count();
         $CustomInactive = $CountAccountCustom - $CustomActive;
         return view('backend.index', compact(
             'CountCategory',

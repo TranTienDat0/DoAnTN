@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class categories extends Model
 {
     use HasFactory, SoftDeletes;
-    
+    protected $table = 'categories';
+    // status
     public const STATUS_NO = 0;
     public const STATUS_YES = 1;
 
@@ -21,12 +22,11 @@ class categories extends Model
         'name',
         'slug',
         'image',
-        'status',
+        'status'
     ];
-
     protected $dates = [
         'created_at',
         'updated_at',
-        'deleted_at_at'
+        'deleted_at',
     ];
 }

@@ -68,7 +68,7 @@
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#brandCollapse"
                 aria-expanded="true" aria-controls="brandCollapse">
-                <i class="fas fa-sitemap"></i>
+                <i class="fas fa-table"></i>
                 <span>Sub Category</span>
             </a>
             <div id="brandCollapse" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
@@ -89,8 +89,8 @@
             <div id="productCollapse" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Product Options:</h6>
-                    <a class="collapse-item" href="">Products</a>
-                    <a class="collapse-item" href="">Add Product</a>
+                    <a class="collapse-item" href="{{ route('products') }}">Products</a>
+                    <a class="collapse-item" href="{{ route('products.create') }}">Add Product</a>
                 </div>
             </div>
         </li>

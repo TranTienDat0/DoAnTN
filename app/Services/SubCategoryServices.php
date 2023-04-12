@@ -83,6 +83,7 @@ class SubCategoryServices
             $subcategory = sub_categories::find($id);
             $subcategory->update([
                 'name' => $request->name,
+                'slug' => Str::slug($request->name),
                 'status' => $status,
                 'image' => $image,
                 'parent_category' =>$request->parent_category,

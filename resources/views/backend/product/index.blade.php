@@ -9,72 +9,80 @@
             </div>
         </div>
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary float-left">Category Lists</h6>
-            <a href="{{ route('category.create') }}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip"
-                data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add Category</a>
+            <h6 class="m-0 font-weight-bold text-primary float-left">Product Lists</h6>
+            <a href="{{ route('products.create') }}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip"
+                data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add Product</a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                @if (count($categories) > 0)
-                    <table class="table table-bordered" id="banner-dataTable" width="100%" cellspacing="0">
+                @if (count($products) > 0)
+                    <table class="table table-bordered" id="product-dataTable" width="100%" cellspacing="0">
                         <thead>
-                            <tr style="text-align: center">
+                            <tr style="text-align: center;">
                                 <th>S.N.</th>
                                 <th>Title</th>
-                                <th>Slug</th>
-                                <th>Image</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th style="width: 200px">Image</th>
+                                <th>Date Of Manufacture</th>
+                                <th>Expiry</th>
+                                <th>Quantity</th>
                                 <th>Status</th>
-                                <th style="width: 100px">Action</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tfoot>
-                            <tr style="text-align: center">
+                            <tr style="text-align: center;">
                                 <th>S.N.</th>
                                 <th>Title</th>
-                                <th>Slug</th>
-                                <th>Image</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th style="width: 200px">Image</th>
+                                <th>Date Of Manufacture</th>
+                                <th>Expiry</th>
+                                <th>Quantity</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
-
-                            @foreach ($categories as $category)
-                                @php
-                                @endphp
-                                <tr style="text-align: center">
-                                    <td>{{ $category->id }}</td>
-                                    <td>{{ $category->name }}</td>
-                                    <td>{{ $category->slug }}</td>
+                            @foreach ($products as $product)
+                                <tr style="text-align: center;">
+                                    <td>{{ $product->id }}</td>
+                                    <td>{{ $product->name }}</td>                                 
+                                    <td>{{ $product->sub_categories->name }}</td>
+                                    <td>{{ $product->price }}</td>
                                     <td>
-                                        @if ($category->image)
-                                            <img src="{{ asset('image/category/' . $category->image) }}"
+                                        @if ($product->image)
+                                            <img src="{{ asset('image/product/' . $product->image) }}"
                                                 class="img-fluid zoom" style="max-width:80px; width: 100px; height:50px;"
-                                                alt="{{ $category->image }}">
+                                                alt="{{ $product->image }}">
                                         @else
                                             <img src="{{ asset('backend/img/thumbnail-default.jpg') }}"
                                                 class="img-fluid zoom" style="max-width:20%" alt="avatar.png">
                                         @endif
                                     </td>
+                                    <td>{{ $product->date_of_manufacture }}</td>
+                                    <td>{{ $product->expiry }}</td>
+                                    <td>{{ $product->quantity }}</td>
                                     <td>
-                                        @if ($category->status == 1)
+                                        @if ($product->status == 1)
                                             <span class="badge badge-success">Active</span>
                                         @else
                                             <span class="badge badge-warning">Inactive</span>
                                         @endif
                                     </td>
                                     <td>
-                                        <a href="{{ route('category.edit', $category->id) }}"
+                                        <a href="{{ route('products.edit', $product->id) }}"
                                             class="btn btn-primary btn-sm float-left mr-1"
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                             title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>
-                                        <form method="POST" action="{{ route('category.delete', [$category->id]) }}">
+                                        <form method="POST" action="{{ route('products.delete', [$product->id]) }}">
                                             @csrf
                                             @method('delete')
-                                            <button class="btn btn-danger btn-sm dltBtn" data-id={{ $category->id }}
+                                            <button class="btn btn-danger btn-sm dltBtn" id="dltBtn" data-id={{ $product->id }}
                                                 style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                                data-placement="bottom" title="Delete"
-                                                onclick="return confirm('Bạn chắc chắn muốn xóa danh mục cha bao gồm cả danh mục con của nó không?')"><i
+                                                data-placement="bottom" title="Delete" onclick="return confirm('Bạn chắc chắn muốn xóa sản phẩm này không?')"><i
                                                     class="fas fa-trash-alt"></i></button>
                                         </form>
                                     </td>
@@ -82,9 +90,9 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <span style="float:right">{{ $categories->links('pagination::bootstrap-4') }}</span>
+                    <span style="float:right">{{ $products->links('pagination::bootstrap-4') }}</span>
                 @else
-                    <h6 class="text-center">No Categories found!!! Please create Category</h6>
+                    <h6 class="text-center">No Products found!!! Please create Product</h6>
                 @endif
             </div>
         </div>
@@ -98,6 +106,7 @@
         div.dataTables_wrapper div.dataTables_paginate {
             display: none;
         }
+
         .zoom {
             transition: transform .2s;
             /* Animation */
@@ -118,10 +127,10 @@
     <!-- Page level custom scripts -->
     <script src="{{ asset('backend/js/demo/datatables-demo.js') }}"></script>
     <script>
-        $('#banner-dataTable').DataTable({
-            "columnDefs": [{
+        $('#product-dataTable').DataTable({
+            "scrollX": false "columnDefs": [{
                 "orderable": false,
-                "targets": [3, 4, 5]
+                "targets": [10, 11, 12]
             }]
         });
 
@@ -138,25 +147,26 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            $('.dltBtn').click(function(e) {
-                var form = $(this).closest('form');
-                var dataID = $(this).data('id');
-                // alert(dataID);
-                e.preventDefault();
-                swal({
-                        title: "Are you sure?",
-                        text: "Once deleted, you will not be able to recover this data!",
-                        icon: "warning",
-                        buttons: true,
-                        dangerMode: true,
-                    })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            form.submit();
-                        } else {
-                            swal("Your data is safe!");
-                        }
-                    });
+            $('#dltBtn').click(function(e) {
+                // var form = $(this).closest('form');
+                // var dataID = $(this).data('id');
+                // // alert(dataID);
+                // e.preventDefault();
+                // swal({
+                //         title: "Are you sure?",
+                //         text: "Once deleted, you will not be able to recover this data!",
+                //         icon: "warning",
+                //         buttons: true,
+                //         dangerMode: true,
+                //     })
+                //     .then((willDelete) => {
+                //         if (willDelete) {
+                //             form.submit();
+                //         } else {
+                //             swal("Your data is safe!");
+                //         }
+                //     });
+                console.log("clickcksdf");
             })
         })
     </script>

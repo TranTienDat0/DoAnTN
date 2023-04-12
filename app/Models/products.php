@@ -10,19 +10,34 @@ class products extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'products';
+    public const STATUS_NO = 0;
+    public const STATUS_YES = 1;
+
+    public static $status = [
+        self::STATUS_NO => 'Inactive',
+        self::STATUS_YES => 'Active',
+    ];
     protected $fillable = [
         'name',
         'image',
         'price',
         'quantity',
-        'categories_id',
+        'status',
+        'description',
+        'sub_categories_id',
+        'date_of_manufacture',
+        'expiry',
     ];
 
     protected $dates = [
-        'date_of_manufacture',
-        'expiry',
         'created_at',
         'updated_at',
         'deleted_at',
     ];
+
+    public function sub_categories()
+    {
+        return $this->belongsTo(sub_categories::class);
+    }
 }

@@ -51,8 +51,10 @@
                                 <td>{{ $user->phone }}</td>
                                 <td>
                                     @if ($user->image != null)
-                                        <img src="{{ asset('image/user/' . $user->image) }}" class="img-fluid rounded-circle"
-                                            style="max-width:50px; width:50px !important; height:50px !important;" alt="{{ $user->image }}">
+                                        <img src="{{ asset('image/user/' . $user->image) }}"
+                                            class="img-fluid rounded-circle"
+                                            style="max-width:50px; width:50px !important; height:50px !important;"
+                                            alt="{{ $user->image }}">
                                     @else
                                         <img src="{{ asset('backend/img/avatar.png') }}" class="img-fluid rounded-circle"
                                             style="max-width:50px" alt="avatar.png">
@@ -110,9 +112,7 @@
                 "targets": [6, 7]
             }]
         });
-
         // Sweet alert
-
         function deleteData(id) {
 
         }

@@ -8,8 +8,8 @@
                 @csrf
                 @method('PUT')
                 <div class="form-group">
-                    <label for="inputTitle" class="col-form-label">Name <span class="text-danger">*</span></label>
-                    <input id="inputTitle" type="text" name="name" placeholder="Enter name"
+                    <label class="col-form-label">Name <span class="text-danger">*</span></label>
+                    <input  type="text" name="name" placeholder="Enter name"
                         value="{{ $category->name }}" class="form-control">
                     @error('name')
                         <span class="text-danger">{{ $message }}</span>
@@ -25,7 +25,6 @@
                                 height="100px">
                         </span>
                     </div>
-
                     <div id="holder" style="margin-top:15px;max-height:100px;"></div>
                     @error('image')
                         <span class="text-danger">{{ $message }}</span>
@@ -33,7 +32,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="status" class="col-form-label">Status <span class="text-danger">*</span></label>
+                    <label for="status" class="col-form-label">Status<span class="text-danger">*</span></label>
                     <select name="status" class="form-control">
                         <option {{ $category->status == '1' ? 'selected' : '' }}>Active</option>
                         <option {{ $category->status == '0' ? 'selected' : '' }}>Inactive</option>

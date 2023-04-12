@@ -26,14 +26,16 @@ class UpdateCategoryRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'status' => 'required',
+            'image' => 'required',
         ];
     }
     public function messages()
     {
         return [
-            'name.required' => 'Vui lòng nhập tên danh mục',
-            'status.required' => 'Vui lòng chọn trang thái',
-            'max' => 'Vui lòng nhập không quá 255 kí tự cho tên danh mục sản phẩm',
+            'name.required' => 'Vui lòng nhập tên danh mục.',
+            'max' => 'Vui lòng nhập không quá 255 kí tự cho tên danh mục sản phẩm.',
+            'status.required' => 'Vui lòng chọn trạng thái cho danh mục.',
+            'image.required' => 'Vui lòng chọn ảnh.',
         ];
     }
 }

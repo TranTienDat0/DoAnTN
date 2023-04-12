@@ -20,12 +20,14 @@ class UpdateSubCategoryRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'image' => 'required',
         ];
     }
     public function messages()
     {
         return [
             'name.required' => 'Vui lòng nhập tên danh mục.',
+            'image.required' => 'Vui lòng chọn ảnh.',
         ];
     }
 }

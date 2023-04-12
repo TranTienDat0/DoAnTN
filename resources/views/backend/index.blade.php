@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                             <div class="col-auto">
-                                <i class="fas fa-sitemap fa-2x text-gray-300"></i>
+                                <i class="fas fa-table fa-2x text-gray-300"></i>
                             </div>
                         </div>
                     </div>

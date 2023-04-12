@@ -3,6 +3,7 @@
 use App\Http\Controllers\auth;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\HomeAdminController;
 use App\Http\Controllers\UserController;
@@ -79,5 +80,13 @@ Route::prefix('admin')->group(function () {
         Route::get('/subcategory-edit/{id}', 'edit')->name('subcategory.edit');
         route::put('/subcategory-update/{id}', 'update')->name('subcategory.update');
         route::delete('/subcategory-delete/{id}', 'delete')->name('subcategory.delete');
+    });
+    route::controller(ProductsController::class)->middleware('checkLogin')->group(function (){
+        route::get('/products', 'index')->name('products');
+        Route::get('/products-create', 'create')->name('products.create');
+        route::post('/products-store', 'store')->name('products.store');
+        Route::get('/products-edit/{id}', 'edit')->name('products.edit');
+        route::put('/products-update/{id}', 'update')->name('products.update');
+        route::delete('/products-delete/{id}', 'delete')->name('products.delete');
     });
 });

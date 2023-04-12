@@ -85,7 +85,7 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <span style="float:right">{{ $categories->links() }}</span>
+                    <span style="float:right">{{ $categories->links('pagination::bootstrap-4') }}</span>
                 @else
                     <h6 class="text-center">No Categories found!!! Please create Category</h6>
                 @endif
@@ -100,6 +100,14 @@
     <style>
         div.dataTables_wrapper div.dataTables_paginate {
             display: none;
+        }
+        .zoom {
+            transition: transform .2s;
+            /* Animation */
+        }
+
+        .zoom:hover {
+            transform: scale(5);
         }
     </style>
 @endpush
