@@ -49,7 +49,20 @@
         <div class="sidebar-heading">
             Shop
         </div>
-
+        <li class="nav-item">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#shippingCollapse"
+                aria-expanded="true" aria-controls="shippingCollapse">
+                <i class="fas fa-fw fa-folder"></i>
+                <span>Blog</span>
+            </a>
+            <div id="shippingCollapse" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <h6 class="collapse-header">blog Options:</h6>
+                    <a class="collapse-item" href="{{ route('blog') }}">Blog</a>
+                    <a class="collapse-item" href="{{ route('blog.create') }}">Add Blog</a>
+                </div>
+            </div>
+        </li>
         <!-- Categories -->
         <li class="nav-item">
             <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#categoryCollapse"

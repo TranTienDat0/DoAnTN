@@ -6,7 +6,6 @@ use App\Http\Requests\CreateBannerRequest;
 use App\Http\Requests\UpdateBannerRequest;
 use App\Models\banners;
 use App\Services\BannerServices;
-use Illuminate\Http\Request;
 use Exception;
 
 class BannerController extends Controller

@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\HomeAdminController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BlogController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -88,5 +89,13 @@ Route::prefix('admin')->group(function () {
         Route::get('/products-edit/{id}', 'edit')->name('products.edit');
         route::put('/products-update/{id}', 'update')->name('products.update');
         route::delete('/products-delete/{id}', 'delete')->name('products.delete');
+    });
+    route::controller(BlogController::class)->middleware('checkLogin')->group(function (){
+        route::get('/blog', 'index')->name('blog');
+        Route::get('/blog-create', 'create')->name('blog.create');
+        route::post('/blog-store', 'store')->name('blog.store');
+        Route::get('/blog-edit/{id}', 'edit')->name('blog.edit');
+        route::put('/blog-update/{id}', 'update')->name('blog.update');
+        route::delete('/blog-delete/{id}', 'delete')->name('blog.delete');
     });
 });

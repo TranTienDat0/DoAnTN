@@ -18,10 +18,5 @@ yarn-error.log
 .vite.config.json
 /resources/sass
 /resources/js
-/public/image
 /resources/lang
-/public/js
-/public/css
-/public/sw.js
-/public/manifest.json
-/public/mix-manifest.json
+/public
