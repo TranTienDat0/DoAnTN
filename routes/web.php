@@ -8,6 +8,8 @@ use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\HomeAdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BlogController;
+use App\Http\Controllers\cartController;
+use App\Http\Controllers\FrontendController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -97,5 +99,28 @@ Route::prefix('admin')->group(function () {
         Route::get('/blog-edit/{id}', 'edit')->name('blog.edit');
         route::put('/blog-update/{id}', 'update')->name('blog.update');
         route::delete('/blog-delete/{id}', 'delete')->name('blog.delete');
+    });
+});
+
+Route::prefix('user')->group(function (){
+    route::controller(FrontendController::class)->group(function (){
+        route::get('view_login', 'viewLogin')->name('user.view-login');
+        route::get('register', 'register')->name('register.form');
+
+        route::get('view_home', 'index')->name('home-user');
+        route::get('/product_list', 'productList')->name('product-lists');
+        route::get('/product_grids', 'productGrid')->name('product-grids');
+        route::get('/product_category/{id}', 'productCate')->name('product-category');
+        route::get('/product_sub_category/{id}', 'productSubCate')->name('product-sub-category');
+        route::get('/product_detail/{id}', 'productDetail')->name('product-detail');
+        Route::match(['get','post'],'/filter','productFilter')->name('shop.filter');
+        Route::post('/product/search','productSearch')->name('product.search');
+        
+    });
+
+    route::controller(cartController::class)->group(function (){
+        route::get('cart', 'index')->name('cart');
+        route::get('/add-to-cart/{id}','addToCart')->name('add-to-cart');
+        Route::post('cart-update','cartUpdate')->name('cart.update');
     });
 });

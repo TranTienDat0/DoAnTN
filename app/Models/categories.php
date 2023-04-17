@@ -29,4 +29,12 @@ class categories extends Model
         'updated_at',
         'deleted_at',
     ];
+    public function subCategories()
+    {
+        return $this->hasMany(sub_categories::class);
+    }
+    public function products()
+    {
+        return $this->hasManyThrough(products::class, sub_categories::class);
+    }
 }
