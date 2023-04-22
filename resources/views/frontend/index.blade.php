@@ -210,7 +210,7 @@
                                         </div>
                                         <div class="col-lg-6 col-md-6 col-12 no-padding">
                                             <div class="content">
-                                                <h4 class="title"><a href="#">{{ $product->name }}</a></h4>
+                                                <h4 class="title"><a href="{{ route('product-detail', $product->id) }}">{{ $product->name }}</a></h4>
                                                 <p class="price with-discount">{{ number_format($product->price, 0) }}đ
                                                 </p>
                                             </div>
@@ -321,7 +321,6 @@
                                     <!-- Product Slider -->
                                     <div class="product-gallery">
                                         <div class="quickview-slider-active">
-                                         
                                                 <div class="single-slider">
                                                     <img src="{{ asset('image/product/'. $product->image) }}" alt="{{ $product->image }}">
                                                 </div>
@@ -333,14 +332,14 @@
                                     <div class="quickview-content">
                                         <h2>{{ $product->name }}</h2>
                                         <div class="quickview-ratting-review">
-                                            {{-- <div class="quickview-ratting-wrap">
+                                            <div class="quickview-ratting-wrap">
                                                 <div class="quickview-ratting">                                     
                                                     @php
                                                         $rate = DB::table('product_reviews')
-                                                            ->where('product_id', $product->id)
+                                                            ->where('products_id', $product->id)
                                                             ->avg('rate');
                                                         $rate_count = DB::table('product_reviews')
-                                                            ->where('product_id', $product->id)
+                                                            ->where('products_id', $product->id)
                                                             ->count();
                                                     @endphp
                                                     @for ($i = 1; $i <= 5; $i++)
@@ -352,18 +351,18 @@
                                                     @endfor
                                                 </div>
                                                 <a href="#"> ({{ $rate_count }} customer review)</a>
-                                            </div> --}}
+                                            </div>
                                             <div class="quickview-stock">
                                                 @if ($product->quantity > 0)
                                                     <span><i class="fa fa-check-circle-o"></i> {{ $product->quantity }} in
                                                         quantity</span>
                                                 @else
                                                     <span><i class="fa fa-times-circle-o text-danger"></i>
-                                                        {{ $product->quantity }} out stock</span>
+                                                        {{ $product->quantity }} out quantity</span>
                                                 @endif
                                             </div>
                                         </div>                       
-                                        <h3><small><span class="text-muted">{{ number_format($product->price, 0) }}đ</span></small></h3>
+                                        <h3><p class="text-muted">{{ number_format($product->price, 0) }}đ</p></h3>
                                         <form action="" method="POST" class="mt-4">
                                             @csrf
                                             <div class="quantity">
@@ -389,7 +388,7 @@
                                             </div>
                                             <div class="add-to-cart">
                                                 <button type="submit" class="btn">Add to cart</button>
-                                                <a href=""
+                                                <a href="{{ route('add-to-cart', $product->id) }}"
                                                     class="btn min"><i class="ti-heart"></i></a>
                                             </div>
                                         </form>

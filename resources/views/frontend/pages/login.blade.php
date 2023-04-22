@@ -10,7 +10,7 @@
                 <div class="col-12">
                     <div class="bread-inner">
                         <ul class="bread-list">
-                            <li><a href="{{ route('home') }}">Home<i class="ti-arrow-right"></i></a></li>
+                            <li><a href="{{ route('home-user') }}">Home<i class="ti-arrow-right"></i></a></li>
                             <li class="active"><a href="javascript:void(0);">Login</a></li>
                         </ul>
                     </div>
@@ -29,7 +29,7 @@
                         <h2>Login</h2>
                         <p>Please register in order to checkout more quickly</p>
                         <!-- Form -->
-                        <form class="form" method="post" action="{{ route('login.submit') }}">
+                        <form class="form" method="post" action="{{ route('user.login') }}">
                             @csrf
                             <div class="row">
                                 <div class="col-12">
@@ -55,7 +55,7 @@
                                 <div class="col-12">
                                     <div class="form-group login-btn">
                                         <button class="btn" type="submit">Login</button>
-                                        <a href="{{ route('register.form') }}" class="btn">Register</a>
+                                        <a href="" class="btn">Register</a>
                                         OR
                                         <a href="" class="btn btn-facebook"><i class="ti-facebook"></i></a>
                                         <a href="" class="btn btn-github"><i class="ti-github"></i></a>
@@ -63,11 +63,11 @@
 
                                     </div>
                                     <div class="checkbox">
-                                        <label class="checkbox-inline" for="2"><input name="news" id="2"
+                                        <label class="checkbox-inline" for="2"><input name="remember" id="2"
                                                 type="checkbox">Remember me</label>
                                     </div>
                                     @if (Route::has('password.request'))
-                                        <a class="lost-pass" href="{{ route('password.reset') }}">
+                                        <a class="lost-pass" href="">
                                             Lost your password?
                                         </a>
                                     @endif

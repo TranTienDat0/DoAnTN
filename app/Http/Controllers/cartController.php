@@ -17,32 +17,24 @@ class cartController extends Controller
 
     public function index()
     {
-        $carts = cart::all();
+        $carts = cart::get();
         $category = categories::where('status', 1)->get();
         return view('frontend.pages.cart', compact('carts', 'category'));
     }
 
     public function addToCart(Request $request)
     {
-        // dd($request->all());
         if (empty($request->id)) {
-            return back()->with('error', 'Invalid Products');
+            return back()->with('error', 'Đã xảy ra lỗi! Sản phẩm không hợp lệ.');
         }
-
         $product = products::where('id', $request->id)->first();
-        // return $product;
         if (empty($product)) {
-            
-            return back()->with('error', 'Invalid Products');
+            return back()->with('error', 'Đã xảy ra lỗi! Sản phẩm không hợp lệ.');
         }
-
         $already_cart = Cart::where('user_id', auth()->user()->id)->where('order_id', null)->where('product_id', $product->id)->first();
-        // return $already_cart;
         if ($already_cart) {
-            // dd($already_cart);
             $already_cart->quantity = $already_cart->quantity + 1;
             $already_cart->amount = $product->price + $already_cart->amount;
-            // return $already_cart->quantity;
             if ($already_cart->product->quantity < $already_cart->quantity || $already_cart->product->quantity <= 0) return back()->with('error', 'Stock not sufficient!.');
             $already_cart->save();
         } else {
@@ -60,37 +52,48 @@ class cartController extends Controller
         return back()->with('success', 'Product successfully added to cart');
     }
 
-    public function cartUpdate(Request $request){
-        if($request->quant){
+    public function cartUpdate(Request $request)
+    {
+        if ($request->quant) {
             $error = array();
             $success = '';
-            // return $request->quant;
-            foreach ($request->quant as $k=>$quant) {
-                // return $k;
+            foreach ($request->quant as $k => $quant) {
                 $id = $request->qty_id[$k];
-                // return $id;
                 $cart = Cart::find($id);
-                // return $cart;
-                if($quant > 0 && $cart) {
-
-                    if($cart->product->quantity < $quant){
-                        return back()->with('error','Out of quantity');
+                if ($quant > 0 && $cart) {
+                    if ($cart->product->quantity < $quant) {
+                        return back()->with('error', 'Đã xảy ra lỗi! Số lượng mua không được vượt quá số lượng bánh của cửa hàng.');
                     }
                     $cart->quantity = ($cart->product->quantity > $quant) ? $quant  : $cart->product->quantity;
-                    // return $cart;
-                    
-                    if ($cart->product->quantity <=0) continue;
-                    $after_price=$cart->product->price;
+                    if ($cart->product->quantity <= 0) continue;
+                    $after_price = $cart->product->price;
                     $cart->amount = $after_price * $quant;
                     $cart->save();
-                    $success = 'Cart successfully updated!';
-                }else{
-                    $error[] = 'Cart Invalid!';
+                    $success = 'Bạn đã cập nhật giỏ hàng thành công!';
+                } else {
+                    $error[] = 'Giỏ hàng không hợp lệ';
                 }
             }
             return back()->with($error)->with('success', $success);
-        }else{
-            return back()->with('Cart Invalid!');
-        }    
+        } else {
+            return back()->with('Giỏ hàng không hợp lệ!');
+        }
+    }
+
+    public function cartDelete(Request $request)
+    {
+        $cart = Cart::find($request->id);
+        if ($cart) {
+            $cart->delete();
+            return back()->with('success', 'Bạn đã xóa sản phẩm ra khỏi giỏ hàng thành công.');
+        }
+        return back()->with('error', 'Đã xảy ra lỗi! Xin vui lòng thử lại.');
+    }
+
+    public function checkout()
+    {
+        $carts = cart::get();
+        $category = categories::where('status', 1)->get();
+        return view('frontend.pages.checkout', compact('carts', 'category'));
     }
 }

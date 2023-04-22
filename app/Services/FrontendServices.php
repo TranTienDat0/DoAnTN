@@ -11,7 +11,7 @@ class FrontendServices
 {
     public function login($email_address, $password, $remember)
     {
-        $credentials = ['email_address' => $email_address, 'password' => $password, 'status' => 1];
+        $credentials = ['email_address' => $email_address, 'password' => $password];
 
         if (Auth::attempt($credentials, $remember)) {
             $user = Auth::user();
@@ -20,5 +20,10 @@ class FrontendServices
         } else {
             return false;
         }
+    }
+
+    public function logout()
+    {
+        Auth::logout();
     }
 }

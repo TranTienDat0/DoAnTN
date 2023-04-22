@@ -9,7 +9,7 @@
                     <div class="bread-inner">
                         <ul class="bread-list">
                             <li><a href="{{ 'home-user' }}">Home<i class="ti-arrow-right"></i></a></li>
-                            <li class="active"><a href="">Cart</a></li>
+                            <li class="active"><a href="">Order</a></li>
                         </ul>
                     </div>
                 </div>
@@ -20,7 +20,7 @@
 
     <!-- Shopping Cart -->
     <div class="shopping-cart section">
-        @if (count($carts))
+        @if (count($orderDetail))
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -33,119 +33,59 @@
                                     <th class="text-center">UNIT PRICE</th>
                                     <th class="text-center">QUANTITY</th>
                                     <th class="text-center">TOTAL</th>
+                                    <th class="text-center">STATUS</th>
                                     <th class="text-center"><i class="ti-trash remove-icon"></i></th>
                                 </tr>
                             </thead>
                             <tbody id="cart_item_list">
-                                <form action="{{ route('cart.update') }}" method="POST">
+                                <form action="" method="POST">
                                     @csrf
-                                    @if ($carts->count() > 0)
-                                        @foreach ($carts as $key => $cart)
+                                    @if ($orderDetail->count() > 0)
+                                        @foreach ($orderDetail as $key => $orderd)
                                             <tr>
                                                 <td class="image" data-title="No"><img
-                                                        src="{{ asset('image/product/' . $cart->product->image) }}"
+                                                        src="{{ asset('image/product/' . $orderd->products->image) }}"
                                                         alt=""></td>
                                                 <td class="product-des" data-title="Description">
                                                     <p class="product-name"><a
-                                                            href="{{ route('product-detail', $cart->product->id) }}"
-                                                            target="_blank">{{ $cart->product->name }}</a></p>
-                                                </td>
-                                                <td class="price" data-title="Price">
-                                                    <span>{{ number_format($cart['price'], 0) }}đ</span>
+                                                            href="{{ route('product-detail', $orderd->products->id) }}"
+                                                            target="_blank">{{ $orderd->products->name }}</a>
+                                                    </p>
                                                 </td>
                                                 <td class="qty" data-title="Qty">
-                                                    <!-- Input Order -->
-                                                    <div class="input-group">
-                                                        <div class="button minus">
-                                                            <button type="button" class="btn btn-primary btn-number"
-                                                                disabled="disabled" data-type="minus"
-                                                                data-field="quant[{{ $key }}]">
-                                                                <i class="ti-minus"></i>
-                                                            </button>
-                                                        </div>
-                                                        <input type="text" name="quant[{{ $key }}]"
-                                                            class="input-number" data-min="1" data-max="100"
-                                                            value="{{ $cart->quantity }}">
-                                                        <input type="hidden" name="qty_id[]" value="{{ $cart->id }}">
-                                                        <div class="button plus">
-                                                            <button type="button" class="btn btn-primary btn-number"
-                                                                data-type="plus" data-field="quant[{{ $key }}]">
-                                                                <i class="ti-plus"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    <!--/ End Input Order -->
+                                                    <p>{{ $orderd->price }}</p>
                                                 </td>
-                                                <td class="total-amount cart_single_price" data-title="Total"><span
-                                                        class="money">{{ number_format($cart['amount'], 0) }}đ</span></td>
-
-                                                <td class="action" data-title="Remove"><a
-                                                        href="{{ route('cart.delete', $cart->id) }}"><i
+                                                <td class="qty" data-title="Qty">
+                                                    <p>{{ $orderd->quantity }}</p>
+                                                </td>
+                                                <td class="price" data-title="Price">
+                                                    <span>{{ number_format($orderd->order->total, 0) }}đ</span>
+                                                </td>
+                                                <td class="qty" data-title="Qty">
+                                                    @if ($orderd->order->status == 'new')
+                                                        <span class="badge badge-primary">{{ $orderd->order->status }}</span>
+                                                    @elseif($orderd->order->status == 'process')
+                                                        <span class="badge badge-warning">{{ $orderd->order->status }}</span>
+                                                    @elseif($orderd->order->status == 'delivered')
+                                                        <span class="badge badge-success">{{ $orderd->order->status }}</span>
+                                                    @else
+                                                        <span class="badge badge-danger">{{ $orderd->order->status }}</span>
+                                                    @endif
+                                                </td>
+                                                <td class="action" data-title="Remove"><a href=""><i
                                                             class="ti-trash remove-icon"></i></a></td>
                                             </tr>
                                         @endforeach
-                                        <track>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td class="float-right">
-                                            <button class="btn float-right" type="submit">Update</button>
-                                        </td>
-                                        </track>
-                                    @else
-                                        <tr>
-                                            <td class="text-center">
-                                                There are no any carts available. <a href="{{ route('product-grids') }}"
-                                                    style="color:blue;">Continue shopping</a>
-                                            </td>
-                                        </tr>
                                     @endif
-
                                 </form>
                             </tbody>
                         </table>
                         <!--/ End Shopping Summery -->
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12">
-                        <!-- Total Amount -->
-                        <div class="total-amount">
-                            <div class="row">
-                                <div class="col-lg-8 col-md-5 col-12">
-                                    <div class="left">
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-7 col-12">
-                                    <div class="right">
-                                        @php
-                                            $sum = 0;
-                                            foreach ($carts as $value) {
-                                                $sum += $value->price * $value->quantity;
-                                            }
-                                        @endphp
-                                        <ul>
-                                            <li class="order_subtotal" data-price="">Cart
-                                                Subtotal<span>{{ number_format($sum, 0) }}đ</span></li>
-                                            <li class="coupon_price" data-price="">You
-                                                Save<span>{{ number_format($sum, 0) }}đ</span></li>
-                                        </ul>
-                                        <div class="button5">
-                                            <a href="{{ route('checkout') }}" class="btn">Checkout</a>
-                                            <a href="{{ route('product-grids') }}" class="btn">Continue shopping</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--/ End Total Amount -->
-                    </div>
-                </div>
             </div>
         @else
-            <span style="margin-left: 280px; font-size: 20px">No products found in cart!!! Please add Product to cart.
+            <span style="margin-left: 280px; font-size: 20px">No products found in order!!! Please add Product to order.
                 <a href="{{ route('product-grids') }}" class="btn">shopping</a>
             </span>
         @endif

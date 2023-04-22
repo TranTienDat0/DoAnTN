@@ -10,8 +10,8 @@ class order_detail extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'order_detail';
     protected $fillable = [
-        //'product_name',
         'price',
         'quantity',
         'products_id',
@@ -23,4 +23,13 @@ class order_detail extends Model
         'updated_at',
         'deleted_at_at'
     ];
+
+    public function products()
+    {
+        return $this->belongsTo(products::class);
+    }
+    public function order()
+    {
+        return $this->belongsTo(order::class);
+    }
 }

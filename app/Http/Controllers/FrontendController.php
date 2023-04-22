@@ -9,6 +9,9 @@ use App\Models\blog;
 use App\Models\categories;
 use App\Models\products;
 use App\Models\sub_categories;
+use App\Models\cart;
+use App\Models\order;
+use App\Models\order_detail;
 use Illuminate\Http\Request;
 
 class FrontendController extends Controller
@@ -22,7 +25,8 @@ class FrontendController extends Controller
 
     public function viewLogin()
     {
-        return view('frontend.login');
+        $category = categories::where('status', 1)->get();
+        return view('frontend.pages.login', compact('category'));
     }
     public function login(LoginRequest $request)
     {
@@ -31,24 +35,31 @@ class FrontendController extends Controller
         $remember = $request->has('remember');
         $user = $this->frontendServices->login($email_address, $password, $remember);
         if ($user) {
-            return redirect()->route('home');
+            if(Auth()->user()->role == 0){
+                return redirect()->route('home-user');
+            }else{
+                return redirect()->back()->with('error', 'Tài khoản không thể truy cập vào trang web này!');
+            }
         } else {
             return redirect()->back()->with([
                 'error' => 'Email hoặc mật khẩu không đúng.'
             ]);
         }
     }
-
+    public function logout(){
+        $this->frontendServices->logout();
+        return redirect()->route('user.view-login');
+    }
     public function index()
     {
 
         $banners = banners::where('status', 1)->limit(3)->get();
-        
         $products = products::where('status', 1)->limit(8)->get();
         $category = categories::where('status', 1)->get();
+        $carts = cart::all();
         $blogs = blog::where('status', 1)->limit(3)->get();
 
-        return view('frontend.index', compact('banners', 'products', 'category', 'blogs'));
+        return view('frontend.index', compact('banners', 'products', 'category', 'blogs', 'carts'));
     }
 
     public function productDetail($id)
@@ -57,9 +68,10 @@ class FrontendController extends Controller
         $category = categories::where('status', 1)->get();
         $subcate = sub_categories::where('status', 1)->where('id', $productDetail->sub_categories_id)->first()->name;
         $relatedProducts = products::where('sub_categories_id', $productDetail->sub_categories_id)
-        ->where('id', '!=', $id)->limit(3)->get();
+            ->where('id', '!=', $id)->limit(3)->get();
+        $carts = cart::all();
 
-        return view('frontend.pages.product_detail', compact('productDetail', 'category', 'subcate', 'relatedProducts'));
+        return view('frontend.pages.product_detail', compact('productDetail', 'category', 'subcate', 'relatedProducts', 'carts'));
     }
 
     public function productList()
@@ -97,7 +109,8 @@ class FrontendController extends Controller
             $products = $products->where('status', '1')->paginate(6);
         }
         $category = categories::where('status', 1)->get();
-        return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category'));
+        $carts = cart::all();
+        return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category', 'carts'));
     }
 
     public function productGrid()
@@ -132,7 +145,8 @@ class FrontendController extends Controller
             $products = $products->where('status', '1')->paginate(9);
         }
         $category = categories::where('status', 1)->get();
-        return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category'));
+        $carts = cart::all();
+        return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts'));
     }
 
     public function productCate($cateId)
@@ -141,10 +155,11 @@ class FrontendController extends Controller
         $recent_products = products::where('status', '1')->orderBy('id', 'DESC')->limit(3)->get();
 
         $category = categories::where('status', 1)->get();
+        $carts = cart::all();
         if (request()->is('e-shop.loc/product-grids')) {
-            return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category'));
+            return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts'));
         } else {
-            return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category'));
+            return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category', 'carts'));
         }
     }
 
@@ -154,10 +169,11 @@ class FrontendController extends Controller
         $recent_products = products::where('status', '1')->orderBy('id', 'DESC')->limit(3)->get();
 
         $category = categories::where('status', 1)->get();
+        $carts = cart::all();
         if (request()->is('e-shop.loc/product-grids')) {
-            return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category'));
+            return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts'));
         } else {
-            return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category'));
+            return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category', 'carts'));
         }
     }
 
@@ -195,6 +211,17 @@ class FrontendController extends Controller
             ->orderBy('id', 'DESC')
             ->paginate('9');
         $category = categories::where('status', 1)->get();
-        return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category'));
+        $carts = cart::all();
+        return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts'));
+    }
+
+    public function orderIndex()
+    {
+
+        $carts = cart::all();
+        $category = categories::where('status', 1)->get();
+        $orders = order::where('user_id', Auth()->user()->id)->first();
+        $orderDetail = order_detail::orderBy('id', 'DESC')->where('order_id', $orders->id)->paginate(10);
+        return view('frontend.pages.order', compact('orderDetail', 'category', 'carts'));
     }
 }

@@ -68,13 +68,13 @@
                                             class="btn btn-primary btn-sm float-left mr-1"
                                             style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                             title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>
-                                        <form method="POST" action="{{ route('category.delete', [$category->id]) }}">
+                                        <form method="POST" action="{{ route('category.delete', $category->id) }}">
                                             @csrf
                                             @method('delete')
                                             <button class="btn btn-danger btn-sm dltBtn" data-id={{ $category->id }}
                                                 style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                                 data-placement="bottom" title="Delete"
-                                                onclick="return confirm('Bạn chắc chắn muốn xóa danh mục cha bao gồm cả danh mục con của nó không?')"><i
+                                                onclick="return confirm('Bạn chắc chắn muốn xóa không?')"><i
                                                     class="fas fa-trash-alt"></i></button>
                                         </form>
                                     </td>

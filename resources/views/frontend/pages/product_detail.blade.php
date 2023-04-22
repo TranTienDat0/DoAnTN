@@ -9,7 +9,7 @@
     <meta name="keywords" content="online shop, purchase, cart, ecommerce site, best online shopping">
     <meta property="og:url" content="{{ route('product-detail', $productDetail->id) }}">
     <meta property="og:type" content="article">
-    <meta property="og:title" content="{{ $productDetail->bame }}">
+    <meta property="og:title" content="{{ $productDetail->name }}">
     <meta property="og:image" content="{{ $productDetail->image }}">
     <meta property="og:description" content="{{ $productDetail->description }}">
 @endsection
@@ -60,11 +60,20 @@
                                     <h4>{{ $productDetail->name }}</h4>
                                     <div class="rating-main">
                                         <ul class="rating">
-
+                                            @php
+                                                $rate = ceil($productDetail->productReviews->avg('rate'));
+                                            @endphp
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                @if ($rate >= $i)
+                                                    <li><i class="fa fa-star"></i></li>
+                                                @else
+                                                    <li><i class="fa fa-star-o"></i></li>
+                                                @endif
+                                            @endfor
                                         </ul>
-                                        <a href="#" class="total-review"> Review</a>
+                                        <a href="#" class="total-review">({{$productDetail->productReviews->count()}}) Review</a>
                                     </div>
-                                    <p class="price"><span>${{ number_format($productDetail->price, 2) }}</span>
+                                    <p class="price"><span>{{ number_format($productDetail->price, 0) }}đ</span>
                                     </p>
                                 </div>
                                 <!-- Product Buy -->
@@ -81,7 +90,7 @@
                                                         <i class="ti-minus"></i>
                                                     </button>
                                                 </div>
-                                                <input type="hidden" name="name" value="{{ $productDetail->name }}">
+                                                <input type="hidden" name="id" value="{{ $productDetail->id }}">
                                                 <input type="text" name="quant[1]" class="input-number" data-min="1"
                                                     data-max="1000" value="1" id="quantity">
                                                 <div class="button plus">
@@ -94,7 +103,11 @@
                                             <!--/ End Input Order -->
                                         </div>
                                         <div class="add-to-cart mt-4">
-                                            <button type="submit" class="btn">Add to cart</button>
+                                            @if ($productDetail->quantity > 0)
+                                                <a title="Add to cart" class="btn" href="{{ route('add-to-cart', $productDetail->id) }}">Add to cart</a>
+                                            @else
+                                            <a style="pointer-events: none;" title="Add to cart" class="btn" href="{{ route('add-to-cart', $productDetail->id) }}">Add to cart</a>
+                                            @endif
                                             <a href="" class="btn min"><i class="ti-heart"></i></a>
                                         </div>
                                     </form>
@@ -154,7 +167,8 @@
                                                         <div class="review-inner">
                                                             <!-- Form -->
                                                             @auth
-                                                                <form class="form" method="post"action="">
+                                                                <form class="form"
+                                                                    method="post"action="{{ route('review.store', $productDetail->id) }}">
                                                                     @csrf
                                                                     <div class="row">
                                                                         <div class="col-lg-12 col-12">
@@ -222,9 +236,7 @@
                                                                 <p class="text-center p-5">
                                                                     You need to <a href=""
                                                                         style="color:rgb(54, 54, 204)">Login</a> OR <a
-                                                                        style="color:blue"
-                                                                        href="">Register</a>
-
+                                                                        style="color:blue" href="">Register</a>
                                                                 </p>
                                                                 <!--/ End Form -->
                                                             @endauth
@@ -237,20 +249,20 @@
                                                             <span>Based on
                                                                 Comments</span>
                                                         </div>
-                                                        {{-- @foreach ($productDetail['getReview'] as $data)
+                                                        @foreach ($productDetail->productReviews as $data)
                                                             <!-- Single Rating -->
                                                             <div class="single-rating">
                                                                 <div class="rating-author">
-                                                                    @if ($data->user_info['photo'])
-                                                                        <img src="{{ $data->user_info['photo'] }}"
-                                                                            alt="{{ $data->user_info['photo'] }}">
+                                                                    @if ($data->user->image)
+                                                                        <img src="{{ asset('image/user/' . $data->image) }}"
+                                                                            alt="{{ $data->image }}">
                                                                     @else
                                                                         <img src="{{ asset('backend/img/avatar.png') }}"
                                                                             alt="Profile.jpg">
                                                                     @endif
                                                                 </div>
                                                                 <div class="rating-des">
-                                                                    <h6>{{ $data->user_info['name'] }}</h6>
+                                                                    <h6>{{ $data->user->name }}</h6>
                                                                     <div class="ratings">
 
                                                                         <ul class="rating">
@@ -270,22 +282,22 @@
                                                             </div>
                                                             <!--/ End Single Rating -->
                                                         @endforeach
-                                                    </div> --}}
-
-                                                        <!--/ End Review -->
-
                                                     </div>
+
+                                                    <!--/ End Review -->
+
                                                 </div>
                                             </div>
                                         </div>
-                                        <!--/ End Reviews Tab -->
                                     </div>
+                                    <!--/ End Reviews Tab -->
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
     </section>
     <!--/ End Shop Single -->
 
@@ -308,7 +320,8 @@
                             <div class="single-product">
                                 <div class="product-img">
                                     <a href="{{ route('product-detail', $data->id) }}">
-                                        <img src="{{ asset('image/product/' . $data->image) }}" alt="{{ $data->image }}">
+                                        <img src="{{ asset('image/product/' . $data->image) }}"
+                                            alt="{{ $data->image }}">
                                     </a>
                                     <div class="button-head">
                                         <div class="product-action">
@@ -316,11 +329,11 @@
                                                 href="#"><i class=" ti-eye"></i><span>Quick Shop</span></a>
                                             <a title="Wishlist" href="#"><i class=" ti-heart "></i><span>Add to
                                                     Wishlist</span></a>
-                                            <a title="Compare" href="#"><i
-                                                    class="ti-bar-chart-alt"></i><span>Add to Compare</span></a>
+                                            <a title="Compare" href="#"><i class="ti-bar-chart-alt"></i><span>Add
+                                                    to Compare</span></a>
                                         </div>
                                         <div class="product-action-2">
-                                            <a title="Add to cart" href="#">Add to cart</a>
+                                            <a title="Add to cart" href="{{ route('add-to-cart', $data->id) }}">Add to cart</a>
                                         </div>
                                     </div>
                                 </div>
@@ -334,133 +347,13 @@
                                 </div>
                             </div>
                             <!-- End Single Product -->
-                    @endforeach
+                        @endforeach
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- End Most Popular Area -->
-
-
-    <!-- Modal -->
-    <div class="modal fade" id="modelExample" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            class="ti-close" aria-hidden="true"></span></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row no-gutters">
-                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                            <!-- Product Slider -->
-                            <div class="product-gallery">
-                                <div class="quickview-slider-active">
-                                    <div class="single-slider">
-                                        <img src="images/modal1.png" alt="#">
-                                    </div>
-                                    <div class="single-slider">
-                                        <img src="images/modal2.png" alt="#">
-                                    </div>
-                                    <div class="single-slider">
-                                        <img src="images/modal3.png" alt="#">
-                                    </div>
-                                    <div class="single-slider">
-                                        <img src="images/modal4.png" alt="#">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Product slider -->
-                        </div>
-                        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
-                            <div class="quickview-content">
-                                <h2>Flared Shift Dress</h2>
-                                <div class="quickview-ratting-review">
-                                    <div class="quickview-ratting-wrap">
-                                        <div class="quickview-ratting">
-                                            <i class="yellow fa fa-star"></i>
-                                            <i class="yellow fa fa-star"></i>
-                                            <i class="yellow fa fa-star"></i>
-                                            <i class="yellow fa fa-star"></i>
-                                            <i class="fa fa-star"></i>
-                                        </div>
-                                        <a href="#"> (1 customer review)</a>
-                                    </div>
-                                    <div class="quickview-stock">
-                                        <span><i class="fa fa-check-circle-o"></i> in stock</span>
-                                    </div>
-                                </div>
-                                <h3>$29.00</h3>
-                                <div class="quickview-peragraph">
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Mollitia iste laborum ad
-                                        impedit pariatur esse optio tempora sint ullam autem deleniti nam in quos qui nemo
-                                        ipsum numquam.</p>
-                                </div>
-                                <div class="size">
-                                    <div class="row">
-                                        <div class="col-lg-6 col-12">
-                                            <h5 class="title">Size</h5>
-                                            <select>
-                                                <option selected="selected">s</option>
-                                                <option>m</option>
-                                                <option>l</option>
-                                                <option>xl</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-lg-6 col-12">
-                                            <h5 class="title">Color</h5>
-                                            <select>
-                                                <option selected="selected">orange</option>
-                                                <option>purple</option>
-                                                <option>black</option>
-                                                <option>pink</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="quantity">
-                                    <!-- Input Order -->
-                                    <div class="input-group">
-                                        <div class="button minus">
-                                            <button type="button" class="btn btn-primary btn-number" disabled="disabled"
-                                                data-type="minus" data-field="quant[1]">
-                                                <i class="ti-minus"></i>
-                                            </button>
-                                        </div>
-                                        <input type="text" name="qty" class="input-number" data-min="1"
-                                            data-max="1000" value="1">
-                                        <div class="button plus">
-                                            <button type="button" class="btn btn-primary btn-number" data-type="plus"
-                                                data-field="quant[1]">
-                                                <i class="ti-plus"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <!--/ End Input Order -->
-                                </div>
-                                <div class="add-to-cart">
-                                    <a href="#" class="btn">Add to cart</a>
-                                    <a href="#" class="btn min"><i class="ti-heart"></i></a>
-                                    <a href="#" class="btn min"><i class="fa fa-compress"></i></a>
-                                </div>
-                                <div class="default-social">
-                                    <h4 class="share-now">Share:</h4>
-                                    <ul>
-                                        <li><a class="facebook" href="#"><i class="fa fa-facebook"></i></a></li>
-                                        <li><a class="twitter" href="#"><i class="fa fa-twitter"></i></a></li>
-                                        <li><a class="youtube" href="#"><i class="fa fa-pinterest-p"></i></a></li>
-                                        <li><a class="dribbble" href="#"><i class="fa fa-google-plus"></i></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal end -->
 
 @endsection
 @push('styles')
@@ -513,37 +406,4 @@
 @endpush
 @push('scripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
-
-    {{-- <script>
-        $('.cart').click(function(){
-            var quantity=$('#quantity').val();
-            var pro_id=$(this).data('id');
-            // alert(quantity);
-            $.ajax({
-                url:"{{route('add-to-cart')}}",
-                type:"POST",
-                data:{
-                    _token:"{{csrf_token()}}",
-                    quantity:quantity,
-                    pro_id:pro_id
-                },
-                success:function(response){
-                    console.log(response);
-					if(typeof(response)!='object'){
-						response=$.parseJSON(response);
-					}
-					if(response.status){
-						swal('success',response.msg,'success').then(function(){
-							document.location.href=document.location.href;
-						});
-					}
-					else{
-                        swal('error',response.msg,'error').then(function(){
-							document.location.href=document.location.href;
-						});
-                    }
-                }
-            })
-        });
-    </script> --}}
 @endpush

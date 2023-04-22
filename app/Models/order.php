@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class order extends Model
@@ -11,23 +12,16 @@ class order extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = 'order';
-     // status
-     public const STATUS_WAIT = 0;
-     public const STATUS_DO = 1;
-     public const STATUS_DONE = 2;
- 
-     public static $status = [
-         self::STATUS_WAIT => 'Đang chờ xử lý',
-         self::STATUS_DO => 'Đang giao hàng',
-         self::STATUS_DONE => 'Giao hàng thành công',
-     ];
 
     protected $fillable = [
         'status',
         'total',
-        'shipping_id',
         'payment_id',
         'user_id',
+        'fullname',
+        'address',
+        'phone',
+        'email'
     ];
 
     protected $dates = [
@@ -36,5 +30,17 @@ class order extends Model
         'updated_at',
         'deleted_at',
     ];
-}
 
+    public function payment()
+    {
+        return $this->belongsTo(payment::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function order_detail()
+    {
+        return $this->hasMany(order_detail::class);
+    }
+}

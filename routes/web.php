@@ -10,6 +10,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\cartController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductReviewController;
+use App\Models\ProductReview;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -100,11 +103,17 @@ Route::prefix('admin')->group(function () {
         route::put('/blog-update/{id}', 'update')->name('blog.update');
         route::delete('/blog-delete/{id}', 'delete')->name('blog.delete');
     });
+    route::controller(OrderController::class)->middleware('checkLogin')->group(function (){
+        route::get('/order-show/{id}', 'show')->name('order.show');
+        route::get('order/pdf/{id}','pdf')->name('order.pdf');
+    });
 });
 
 Route::prefix('user')->group(function (){
     route::controller(FrontendController::class)->group(function (){
-        route::get('view_login', 'viewLogin')->name('user.view-login');
+        route::get('user-view_login', 'viewLogin')->name('user.view-login');
+        route::post('user-login', 'login')->name('user.login');
+        route::get('user-logout', 'logout')->name('user.logout');
         route::get('register', 'register')->name('register.form');
 
         route::get('view_home', 'index')->name('home-user');
@@ -115,6 +124,7 @@ Route::prefix('user')->group(function (){
         route::get('/product_detail/{id}', 'productDetail')->name('product-detail');
         Route::match(['get','post'],'/filter','productFilter')->name('shop.filter');
         Route::post('/product/search','productSearch')->name('product.search');
+        route::get('/user-order', 'orderIndex')->name('user.order');
         
     });
 
@@ -122,5 +132,17 @@ Route::prefix('user')->group(function (){
         route::get('cart', 'index')->name('cart');
         route::get('/add-to-cart/{id}','addToCart')->name('add-to-cart');
         Route::post('cart-update','cartUpdate')->name('cart.update');
+        Route::get('/cart-delete/{id}','cartdelete')->name('cart.delete');
+        route::get('checkout', 'checkout')->name('checkout');
+    });
+
+    route::controller(OrderController::class)->group(function (){
+        route::get('order', 'index')->name('order.index');
+        Route::post('cart/order','store')->name('cart.order');
+        route::put('/order-update/{id}', 'update')->name('order.edit');
+    });
+
+    route::controller(ProductReviewController::class)->group(function (){
+        Route::post('product/{id}/review','store')->name('review.store');
     });
 });

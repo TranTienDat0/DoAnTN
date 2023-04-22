@@ -40,4 +40,8 @@ class products extends Model
     {
         return $this->belongsTo(sub_categories::class);
     }
+    public function productReviews()
+    {
+        return $this->hasMany(ProductReview::class);
+    }
 }
