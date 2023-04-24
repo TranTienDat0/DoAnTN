@@ -36,6 +36,7 @@ class FrontendController extends Controller
         $user = $this->frontendServices->login($email_address, $password, $remember);
         if ($user) {
             if(Auth()->user()->role == 0){
+                
                 return redirect()->route('home-user');
             }else{
                 return redirect()->back()->with('error', 'Tài khoản không thể truy cập vào trang web này!');
@@ -221,7 +222,11 @@ class FrontendController extends Controller
         $carts = cart::all();
         $category = categories::where('status', 1)->get();
         $orders = order::where('user_id', Auth()->user()->id)->first();
-        $orderDetail = order_detail::orderBy('id', 'DESC')->where('order_id', $orders->id)->paginate(10);
+        if($orders){
+            $orderDetail = order_detail::orderBy('id', 'DESC')->where('order_id', $orders->id)->paginate(10);
         return view('frontend.pages.order', compact('orderDetail', 'category', 'carts'));
+        }else{
+            return redirect()->back()->with('error', 'Hiện tại bạn chưa có đơn hàng nào.');
+        }
     }
 }

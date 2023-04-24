@@ -2,9 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\banners;
-use App\Models\categories;
-use App\Models\products;
 use Illuminate\Support\Facades\Auth;
 
 class FrontendServices
@@ -24,6 +21,8 @@ class FrontendServices
 
     public function logout()
     {
-        Auth::logout();
+        if(Auth()->user()->role == 0){
+            Auth::logout();
+        }
     }
 }

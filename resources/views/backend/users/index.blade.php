@@ -9,79 +9,111 @@
             </div>
         </div>
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary float-left">Users List</h6>
+            <h6 class="m-0 font-weight-bold text-primary float-left"><a href="{{ route('users') }}">Users List</a></h6>
+            <br>
             <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip"
                 data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add User</a>
+            <a href="{{ route('users.listDelete') }}" class="btn btn-primary btn-sm float-left" data-toggle="tooltip"
+                data-placement="bottom" title="Add User"> Danh sách tài khoản bị xóa</a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table class="table table-bordered" id="user-dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        <tr>
-                            <th>S.N.</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Image</th>
-                            <th>Join Date</th>
-                            <th>Role</th>
-                            {{-- <th>Status</th> --}}
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th>S.N.</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Image</th>
-                            <th>Join Date</th>
-                            <th>Role</th>
-                            {{-- <th>Status</th> --}}
-                            <th>Action</th>
-                        </tr>
-                    </tfoot>
-                    <tbody>
-                        @foreach ($users as $user)
-                            <tr>
-                                <td>{{ $user->id }}</td>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email_address }}</td>
-                                <td>{{ $user->phone }}</td>
-                                <td>
-                                    @if ($user->image != null)
-                                        <img src="{{ asset('image/user/' . $user->image) }}"
-                                            class="img-fluid rounded-circle"
-                                            style="max-width:50px; width:50px !important; height:50px !important;"
-                                            alt="{{ $user->image }}">
-                                    @else
-                                        <img src="{{ asset('backend/img/avatar.png') }}" class="img-fluid rounded-circle"
-                                            style="max-width:50px" alt="avatar.png">
-                                    @endif
-                                </td>
-                                <td>{{ $user->created_at ? $user->created_at->diffForHumans() : '' }}</td>
-                                <td>{{ $user->role }}</td>
-                                <td>
-                                    <a href="{{ route('users.edit', $user->id) }}"
-                                        class="btn btn-primary btn-sm float-left mr-1"
-                                        style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                        title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>
-                                    <form method="POST" action="{{ route('users.delete', $user->id) }}">
-                                        @csrf
-                                        @method('delete')
-                                        <button class="btn btn-danger btn-sm dltBtn"
-                                            style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                            data-placement="bottom" title="Delete"
-                                            onclick="return confirm('Bạn chắc chắn muốn xóa không ?')"><i
-                                                class="fas fa-trash-alt"></i></button>
-                                    </form>
-                                </td>
+                @if (count($users))
+                    <table class="table table-bordered" id="user-dataTable" width="100%" cellspacing="0">
+                        <thead>
+                            <tr style="text-align: center">
+                                <th>S.N.</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Image</th>
+                                <th>Join Date</th>
+                                <th>Role</th>
+                                {{-- <th>Status</th> --}}
+                                <th>Action</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                <span style="float:right">{{ $users->links('pagination::bootstrap-4') }}</span>
+                        </thead>
+                        <tfoot>
+                            <tr style="text-align: center">
+                                <th>S.N.</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Image</th>
+                                <th>Join Date</th>
+                                <th>Role</th>
+                                {{-- <th>Status</th> --}}
+                                <th style="width: 100px">Action</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach ($users as $user)
+                                <tr style="text-align: center">
+                                    <td>{{ $user->id }}</td>
+                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->email_address }}</td>
+                                    <td>{{ $user->phone }}</td>
+                                    <td>
+                                        @if ($user->image != null)
+                                            <img src="{{ asset('image/user/' . $user->image) }}"
+                                                class="img-fluid rounded-circle"
+                                                style="max-width:50px; width:50px !important; height:50px !important;"
+                                                alt="{{ $user->image }}">
+                                        @else
+                                            <img src="{{ asset('backend/img/avatar.png') }}"
+                                                class="img-fluid rounded-circle" style="max-width:50px" alt="avatar.png">
+                                        @endif
+                                    </td>
+                                    <td>{{ $user->created_at ? $user->created_at->diffForHumans() : '' }}</td>
+                                    <td>
+                                        @if ($user->role == 1)
+                                            employee
+                                        @else
+                                            customer
+                                        @endif
+                                    </td>
+                                    @if ($user->deleted_at == null)
+                                        <td>
+                                            <a href="{{ route('users.edit', $user->id) }}"
+                                                class="btn btn-primary btn-sm float-left mr-1"
+                                                style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                                title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>
+                                            <form method="POST" action="{{ route('users.delete', $user->id) }}">
+                                                @csrf
+                                                @method('delete')
+                                                <button class="btn btn-danger btn-sm dltBtn"
+                                                    style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                                    data-placement="bottom" title="Delete"
+                                                    onclick="return confirm('Bạn chắc chắn muốn xóa không ?')"><i
+                                                        class="fas fa-trash-alt"></i></button>
+                                            </form>
+                                        </td>
+                                    @else
+                                        <td>
+                                            <form method="POST" action="{{ route('users.forcedelete', $user->id) }}">
+                                                @csrf
+                                                @method('delete')
+                                                <button class="btn btn-danger btn-sm dltBtn"
+                                                    style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
+                                                    data-placement="bottom" title="Delete"
+                                                    onclick="return confirm('Bạn chắc chắn muốn xóa không ?')"><i
+                                                        class="fas fa-trash-alt"></i></button>
+                                            </form>
+                                            <form action="{{ route('users.restore', $user->id) }}" method="POST">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button onclick="return confirm('Bạn chắc chắn muốn khôi phục không ?')" type="submit"><i class="fa-solid fa-trash-undo"></i></i></button>
+                                            </form>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <span style="float:right">{{ $users->links('pagination::bootstrap-4') }}</span>
+                @else
+                    <h6 class="text-center">No Users found!!! Please create User</h6>
+                @endif
             </div>
         </div>
     </div>

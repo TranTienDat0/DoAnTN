@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\cart;
 use App\Models\products;
 use Exception;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class ProductServices
     public function getAllProducts()
     {
 
-        $products = products::orderBy('id', 'ASC')->paginate(20);
+        $products = products::orderBy('id', 'DESC')->paginate(20);
         return $products;
     }
 
@@ -106,8 +107,13 @@ class ProductServices
         try {
             DB::beginTransaction();
 
-            //products::where('sub_categories_id', $id)->delete();
-            $product = products::find($id)->delete();
+            $product = products::find($id);
+
+            if ($product->cart()->exists()) {
+                return false;
+            } else {
+                $product->delete();
+            }
 
             DB::commit();
         } catch (Exception $ex) {
@@ -115,5 +121,37 @@ class ProductServices
         }
 
         return $product;
+    }
+    public function deleteSelected(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $selectedProducts = $request->input('selected', []);
+            $product = products::whereIn('id', $selectedProducts);
+            if ($product->cart()->exists()) {
+                return false;
+            } else {
+                $product->delete();
+            }
+
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
+        }
+
+        return $product;
+    }
+    public function getProductsexpired()
+    {
+        $now = now();
+        $products = products::orderBy('id', 'DESC')->where('expiry', '<', $now)->paginate(20);
+        return $products;
+    }
+
+    public function getProductOutOfStock()
+    {
+        $products = products::orderBy('id', 'DESC')->where('quantity', '0')->paginate(20);
+        return $products;
     }
 }

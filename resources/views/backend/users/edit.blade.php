@@ -56,9 +56,9 @@
                     <select name="role" class="form-control" disabled>
                         <option value="">-----Select Role-----</option>
                         @foreach ($roles as $role)
-                            <option value="{{ $role->role }}" {{ $role->role == '1' ? 'selected' : '' }}>Admin
+                            <option value="{{ $role->role }}" {{ $role->role == '1' ? 'selected' : '' }}>employee
                             </option>
-                            <option value="{{ $role->role }}" {{ $role->role == '0' ? 'selected' : '' }}>User
+                            <option value="{{ $role->role }}" {{ $role->role == '0' ? 'selected' : '' }}>customer
                             </option>
                             <option value="{{ $role->role }}" {{ $role->role == '2' ? 'selected' : '' }}>Super Admin
                             </option>

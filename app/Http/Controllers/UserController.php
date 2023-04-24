@@ -19,7 +19,6 @@ class UserController extends Controller
     public function index()
     {
         $users = $this->userServices->getAllUsers();
-
         return view('backend.users.index', compact('users'));
     }
     public function create()
@@ -67,10 +66,40 @@ class UserController extends Controller
             if ($result) {
                 return redirect()->route('users')->with('success', 'Xóa tài khoản người dùng thành công.');
             } else {
-                return redirect()->back()->with('eror', 'Xóa thông tin tài khoản người dùng không thành công.');
+                return redirect()->back()->with('error', 'Xóa thông tin tài khoản người dùng không thành công.');
             }
         } catch (Exception $exception) {
             throw new Exception("Error Processing Request", 1);
+        }
+    }
+
+    public function forceDelete($id)
+    {
+        try {
+            $result = $this->userServices->delete($id);
+            if ($result) {
+                return redirect()->route('users')->with('success', 'Xóa tài khoản người dùng thành công.');
+            } else {
+                return redirect()->back()->with('error', 'Xóa thông tin tài khoản người dùng không thành công.');
+            }
+        } catch (Exception $exception) {
+            throw new Exception("Error Processing Request", 1);
+        }
+    }
+
+    public function getAllUserDelete()
+    {
+        $users = $this->userServices->getAllUserDelete();
+        return view('backend.users.index', compact('users'));
+    }
+    public function restore($id)
+    {
+        $result = $this->userServices->restoreUser($id);
+
+        if($result){
+            return redirect()->route('users')->with('success', 'Khôi phục tài khoản người dùng thành công.');
+        } else {
+            return redirect()->back()->with('error', 'Khôi phục thông tin tài khoản người dùng không thành công.');
         }
     }
 }

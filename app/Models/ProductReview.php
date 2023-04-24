@@ -27,7 +27,7 @@ class ProductReview extends Model
     }
 
     public function products(){
-        return $this->hasOne(products::class);
+        return $this->belongsTo(products::class);
     }
 
     public function getAllReview(){

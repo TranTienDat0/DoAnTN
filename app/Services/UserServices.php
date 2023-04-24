@@ -13,16 +13,20 @@ class UserServices
     public function getAllUsers()
     {
 
-        $users = User::orderBy('id', 'ASC')->paginate(25);
+        $users = User::orderBy('id', 'ASC')->where('role', '!=', 2)->paginate(25);
         return $users;
     }
-
+    public function getAllUserDelete()
+    {
+        $users = User::orderBy('id', 'ASC')->onlyTrashed()->paginate(25);
+        return $users;
+    }
     public function store(Request $request)
     {
         try {
             DB::beginTransaction();
 
-            if ($request->role == 'admin') {
+            if ($request->role == 'employee') {
                 $role = 1;
             } else {
                 $role = 0;
@@ -71,6 +75,30 @@ class UserServices
         } catch (Exception $ex) {
             DB::rollBack();
         }
+        return $user;
+    }
+
+    public function forceDelete($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $user = User::find($id)->forceDelete();
+
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
+        }
+        return $user;
+    }
+
+    public function restoreUser($id)
+    {
+        $user = User::withTrashed()->find($id);
+        if (!$user) {
+            throw new Exception("User not found");
+        }
+        $user->restore();
         return $user;
     }
 }

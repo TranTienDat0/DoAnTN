@@ -71,10 +71,36 @@ class ProductsController extends Controller
             if ($result) {
                 return redirect()->route('products')->with('success', 'Xóa sản phẩm thành công.');
             } else {
-                return redirect()->back()->with('eror', 'Xóa thông tin sản phẩm không thành công.');
+                return redirect()->back()->with('error', 'Xóa thông tin sản phẩm không thành công.');
             }
         } catch (Exception $exception) {
             throw new Exception("Error Processing Request", 1);
         }
+    }
+
+    public function deleteSelected(array $id)
+    {
+        try {
+            $result = $this->productServices->deleteSelected($id);
+            if ($result) {
+                return redirect()->route('products')->with('success', 'Xóa sản phẩm thành công.');
+            } else {
+                return redirect()->back()->with('error', 'Xóa thông tin sản phẩm không thành công.');
+            }
+        } catch (Exception $exception) {
+            throw new Exception("Error Processing Request", 1);
+        }
+    }
+
+    public function getProductsexpired()
+    {
+        $products = $this->productServices->getProductsexpired();
+        return view('backend.product.index', compact('products'));
+    }
+    
+    public function getProductOutOfStock()
+    {
+        $products = $this->productServices->getProductOutOfStock();
+        return view('backend.product.index', compact('products'));
     }
 }

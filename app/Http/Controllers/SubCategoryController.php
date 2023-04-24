@@ -73,7 +73,7 @@ class SubCategoryController extends Controller
             if ($result) {
                 return redirect()->route('subcategory')->with('success', 'Xóa danh mục thành công.');
             } else {
-                return redirect()->back()->with('eror', 'Xóa thông tin danh mục không thành công.');
+                return redirect()->back()->with('error', 'Không được phép xóa danh mục này.');
             }
         } catch (Exception $exception) {
             throw new Exception("Error Processing Request", 1);

@@ -39,7 +39,7 @@
                                     {{ $profile->email_address }}</small></p>
                             <p class="card-text text-left"><small class="text-muted"><i class="fas fa-hammer"></i>
                                     @if ($profile->role == 1)
-                                        Admin
+                                        Employee
                                     @elseif($profile->role == 2)
                                         Super Admin
                                     @endif

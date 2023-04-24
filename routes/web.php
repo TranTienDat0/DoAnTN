@@ -12,7 +12,6 @@ use App\Http\Controllers\cartController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductReviewController;
-use App\Models\ProductReview;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,6 +61,10 @@ Route::prefix('admin')->group(function () {
         Route::get('/user-edit/{id}', 'edit')->name('users.edit');
         route::put('/user-update/{id}', 'update')->name('users.update');
         route::delete('/user-delete/{id}', 'delete')->name('users.delete');
+        route::get('/list-user-delete', 'getAllUserDelete')->name('users.listDelete');
+        route::delete('/user-forcedelete/{id}', 'forceDelete')->name('users.forcedelete');
+        Route::patch('users/{id}/restore','restore')->name('users.restore');
+
     });
     route::controller(BannerController::class)->middleware('checkLogin')->group(function (){
         route::get('/banner', 'index')->name('banner');
@@ -94,6 +97,8 @@ Route::prefix('admin')->group(function () {
         Route::get('/products-edit/{id}', 'edit')->name('products.edit');
         route::put('/products-update/{id}', 'update')->name('products.update');
         route::delete('/products-delete/{id}', 'delete')->name('products.delete');
+        route::get('/product-expired', 'getProductsexpired')->name('products.expired');
+        route::get('/product-out-of-stock', 'getProductOutOfStock')->name('products.outofstock');
     });
     route::controller(BlogController::class)->middleware('checkLogin')->group(function (){
         route::get('/blog', 'index')->name('blog');
@@ -104,8 +109,19 @@ Route::prefix('admin')->group(function () {
         route::delete('/blog-delete/{id}', 'delete')->name('blog.delete');
     });
     route::controller(OrderController::class)->middleware('checkLogin')->group(function (){
+        route::get('order', 'index')->name('order.index');
         route::get('/order-show/{id}', 'show')->name('order.show');
         route::get('order/pdf/{id}','pdf')->name('order.pdf');
+        route::get('/order-edit/{id}', 'edit')->name('order.edit');
+        route::put('/order-update/{id}', 'update')->name('order.update');
+        route::delete('/order/{id}', 'delete')->name('order.delete');
+    });
+
+    route::controller(ProductReviewController::class)->middleware('checkLogin')->group(function (){
+        route::get('/reviews', 'index')->name('products.review');
+        route::get('/review-edit/{id}', 'edit')->name('review.edit');
+        route::put('/review-update/{id}', 'update')->name('review.update');
+        route::delete('/review-delete{id}', 'delete')->name('review.delete');
     });
 });
 
@@ -137,9 +153,7 @@ Route::prefix('user')->group(function (){
     });
 
     route::controller(OrderController::class)->group(function (){
-        route::get('order', 'index')->name('order.index');
         Route::post('cart/order','store')->name('cart.order');
-        route::put('/order-update/{id}', 'update')->name('order.edit');
     });
 
     route::controller(ProductReviewController::class)->group(function (){

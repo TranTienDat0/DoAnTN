@@ -10,7 +10,6 @@ use App\Models\payment;
 use App\Models\products;
 use App\Models\User;
 use PDF;
-use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -59,16 +58,13 @@ class OrderController extends Controller
             ]);
         }
         //send mail
-        $now = Carbon::now('TienDatBakery')->format('d-m-y H:i:s');
-        $title = "Đơn hàng xác nhận vào". $now();
-        // delete cart
         cart::where('user_id', Auth()->user()->id)->delete();
         return redirect()->route('home-user')->with('success', 'Your product successfully placed in order');
     }
 
     public function index()
     {
-        $orders = Order::orderBy('id', 'DESC')->where('user_id', auth()->user()->id)->paginate(10);
+        $orders = Order::orderBy('id', 'DESC')->paginate(10);
         return view('backend.order.index')->with('orders', $orders);
     }
     public function show($id)
@@ -86,7 +82,11 @@ class OrderController extends Controller
         $pdf = PDF::loadview('backend.order.pdf', ['order' => $order, 'orderDetails' => $orderDetails]);
         return $pdf->download($file_name);
     }
-
+    public function edit($id)
+    {
+        $order = order::find($id);
+        return view('backend.order.edit', compact('order'));
+    }
     public function update(Request $request, $id)
     {
         $order = Order::find($id);
@@ -107,6 +107,16 @@ class OrderController extends Controller
             return redirect()->route('order.index')->with('success', 'Successfully updated order');
         } else {
             return redirect()->back()->with('error', 'Error while updating order');
+        }
+    }
+
+    public function delete($id){
+        $order = order::find($id);
+        if($order){
+            $order->delete();
+            return redirect()->back()->with('success', 'Bạn đã xóa đơn hàng thành công.');
+        }else{
+            return redirect()->back()->with('error', 'Đã có lỗi xảy ra.');
         }
     }
 }

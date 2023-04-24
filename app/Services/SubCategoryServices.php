@@ -86,7 +86,7 @@ class SubCategoryServices
                 'slug' => Str::slug($request->name),
                 'status' => $status,
                 'image' => $image,
-                'parent_category' =>$request->parent_category,
+                'parent_category' => $request->parent_category,
             ]);
 
             DB::commit();
@@ -101,9 +101,12 @@ class SubCategoryServices
         try {
             DB::beginTransaction();
 
-            products::where('sub_categories_id', $id)->delete();
-            $subcategory = sub_categories::find($id)->delete();
-
+            $subcategory = sub_categories::find($id);
+            if ($subcategory->products()->exists()) {
+                return false;
+            }else{
+                $subcategory->delete();
+            }
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();

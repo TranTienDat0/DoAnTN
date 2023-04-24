@@ -24,21 +24,27 @@ class LoginController extends Controller
         $password = $request->password;
         $remember = $request->has('remember');
         $user = $this->authServices->login($email_address, $password, $remember);
-        if ($user) {
-            if ($this->authServices->isAdmin($user)) {
+        // if ($user->deleted_at != NULL) {
+            if ($user) {
+                if ($this->authServices->isAdmin($user)) {
 
-                return redirect()->route('home');
+                    return redirect()->route('home');
+                } else {
+
+                    return redirect()->back()->with([
+                        'Forbidden' => 'Bạn không có quyền truy cập trang này.'
+                    ]);
+                }
             } else {
-
                 return redirect()->back()->with([
-                    'Forbidden' => 'Bạn không có quyền truy cập trang này.'
+                    'Unauthorized' => 'Email hoặc mật khẩu không đúng.'
                 ]);
             }
-        } else {
-            return redirect()->back()->with([
-                'Unauthorized' => 'Email hoặc mật khẩu không đúng.'
-            ]);
-        }
+        // }else{
+        //     return redirect()->back()->with([
+        //         'error' => 'Tài khoản của bạn đã bị vô hiệu hóa! Vui lòng liên hệ đến SĐT: 0978084301.'
+        //     ]);
+        // }
     }
 
     public function logout()

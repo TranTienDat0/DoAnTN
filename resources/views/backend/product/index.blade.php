@@ -9,9 +9,17 @@
             </div>
         </div>
         <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary float-left">Product Lists</h6>
+            <h6 class="m-0 font-weight-bold text-primary float-left"><a href="{{ route('products') }}">Product Lists</a></h6>
+            <br>
             <a href="{{ route('products.create') }}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip"
                 data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add Product</a>
+            <a style="margin-right: 10px" href=""
+                class="btn btn-primary btn-sm float-right" data-toggle="tooltip" data-placement="bottom"
+                title="Add User"><i class="fas fa-trash-alt"></i> Xóa sản phẩm</a>
+            <a href="{{ route('products.expired') }}" class="btn btn-primary btn-sm float-left" data-toggle="tooltip"
+                data-placement="bottom" title="Add User"></i> Danh sách sản phẩm hết hạn</a>
+            <a style="margin-left: 10px" href="{{ route('products.outofstock') }}" class="btn btn-primary btn-sm float-left"
+                data-toggle="tooltip" data-placement="bottom" title="Add User"></i> Danh sách sản phẩm hết hàng</a>
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -19,6 +27,7 @@
                     <table class="table table-bordered" id="product-dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr style="text-align: center;">
+                                <th></th>
                                 <th>S.N.</th>
                                 <th>Title</th>
                                 <th>Category</th>
@@ -33,6 +42,7 @@
                         </thead>
                         <tfoot>
                             <tr style="text-align: center;">
+                                <th></th>
                                 <th>S.N.</th>
                                 <th>Title</th>
                                 <th>Category</th>
@@ -48,8 +58,9 @@
                         <tbody>
                             @foreach ($products as $product)
                                 <tr style="text-align: center;">
+                                    <td><input type="checkbox" name="selected[]" value="{{ $product->id }}"></td>
                                     <td>{{ $product->id }}</td>
-                                    <td>{{ $product->name }}</td>                                 
+                                    <td>{{ $product->name }}</td>
                                     <td>{{ $product->sub_categories->name }}</td>
                                     <td>{{ $product->price }}</td>
                                     <td>
@@ -80,9 +91,11 @@
                                         <form method="POST" action="{{ route('products.delete', [$product->id]) }}">
                                             @csrf
                                             @method('delete')
-                                            <button class="btn btn-danger btn-sm dltBtn" id="dltBtn" data-id={{ $product->id }}
+                                            <button class="btn btn-danger btn-sm dltBtn" id="dltBtn"
+                                                data-id={{ $product->id }}
                                                 style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
-                                                data-placement="bottom" title="Delete" onclick="return confirm('Bạn chắc chắn muốn xóa sản phẩm này không?')"><i
+                                                data-placement="bottom" title="Delete"
+                                                onclick="return confirm('Bạn chắc chắn muốn xóa sản phẩm này không?')"><i
                                                     class="fas fa-trash-alt"></i></button>
                                         </form>
                                     </td>
@@ -148,24 +161,24 @@
                 }
             });
             $('#dltBtn').click(function(e) {
-                // var form = $(this).closest('form');
-                // var dataID = $(this).data('id');
-                // // alert(dataID);
-                // e.preventDefault();
-                // swal({
-                //         title: "Are you sure?",
-                //         text: "Once deleted, you will not be able to recover this data!",
-                //         icon: "warning",
-                //         buttons: true,
-                //         dangerMode: true,
-                //     })
-                //     .then((willDelete) => {
-                //         if (willDelete) {
-                //             form.submit();
-                //         } else {
-                //             swal("Your data is safe!");
-                //         }
-                //     });
+                var form = $(this).closest('form');
+                var dataID = $(this).data('id');
+                // alert(dataID);
+                e.preventDefault();
+                swal({
+                        title: "Are you sure?",
+                        text: "Once deleted, you will not be able to recover this data!",
+                        icon: "warning",
+                        buttons: true,
+                        dangerMode: true,
+                    })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            form.submit();
+                        } else {
+                            swal("Your data is safe!");
+                        }
+                    });
                 console.log("clickcksdf");
             })
         })

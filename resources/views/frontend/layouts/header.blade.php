@@ -16,22 +16,19 @@
                     <!-- Top Right -->
                     <div class="right-content">
                         <ul class="list-main">
-                           
+
                             {{-- <li><i class="ti-alarm-clock"></i> <a href="#">Daily deal</a></li> --}}
-                            @auth
-                                @if (Auth::user()->role == '1')
-                                    <li><i class="ti-user"></i> <a href="{{ route('home') }}" target="_blank">Dashboard</a>
-                                    </li>
-                                @else
-                                    <li><i class="ti-location-pin"></i> <a href="{{ route('user.order') }}">Order</a></li>
-                                    <li><i class="ti-user"></i> <a href="{{ route('home-user') }}"
-                                            target="_blank">Dashboard</a></li>
-                                @endif
+
+                            @if (Auth::user()->role == '0')
+                                <li><i class="ti-location-pin"></i> <a href="{{ route('user.order') }}">Order</a></li>
+                                <li><i class="ti-user"></i> <a href="{{ route('home-user') }}"
+                                        target="_blank">Dashboard</a></li>
                                 <li><i class="ti-power-off"></i> <a href="{{ route('user.logout') }}">Logout</a></li>
                             @else
-                                <li><i class="ti-power-off"></i><a href="">Login /</a> <a href="">Register</a>
+                                <li><i class="ti-power-off"></i><a href="{{ route('user.view-login') }}">Login /</a> <a
+                                        href="">Register</a>
                                 </li>
-                            @endauth
+                            @endif
                         </ul>
                     </div>
                     <!-- End Top Right -->
@@ -81,34 +78,34 @@
                         </div>
                     </div>
                 </div>
-                @if (Auth()->user())
-                <div class="col-lg-2 col-md-3 col-12">
-                    <div class="right-bar">
-                        <!-- Search Form -->
-                        <div class="sinlge-bar shopping">
-                            @php
-                                $total_prod = 0;
-                                $total_amount = 0;
-                            @endphp
-                            @if (session('wishlist'))
-                                @foreach (session('wishlist') as $wishlist_items)
-                                    @php
-                                        $total_prod += $wishlist_items['quantity'];
-                                        $total_amount += $wishlist_items['amount'];
-                                    @endphp
-                                @endforeach
-                            @endif
-                            <a href="" class="single-icon"><i class="fa fa-heart-o"></i> <span
-                                    class="total-count"></span></a>
-                            <!-- Shopping Item -->
-                            @auth
-                                <div class="shopping-item">
-                                    <div class="dropdown-cart-header">
-                                        <span> Items</span>
-                                        <a href="">View Wishlist</a>
-                                    </div>
-                                    <ul class="shopping-list">
-                                        {{-- @foreach (Helper::getAllProductFromWishlist() as $data)
+                @if (Auth()->user()->role == 0)
+                    <div class="col-lg-2 col-md-3 col-12">
+                        <div class="right-bar">
+                            <!-- Search Form -->
+                            <div class="sinlge-bar shopping">
+                                @php
+                                    $total_prod = 0;
+                                    $total_amount = 0;
+                                @endphp
+                                @if (session('wishlist'))
+                                    @foreach (session('wishlist') as $wishlist_items)
+                                        @php
+                                            $total_prod += $wishlist_items['quantity'];
+                                            $total_amount += $wishlist_items['amount'];
+                                        @endphp
+                                    @endforeach
+                                @endif
+                                <a href="" class="single-icon"><i class="fa fa-heart-o"></i> <span
+                                        class="total-count"></span></a>
+                                <!-- Shopping Item -->
+                                @auth
+                                    <div class="shopping-item">
+                                        <div class="dropdown-cart-header">
+                                            <span> Items</span>
+                                            <a href="">View Wishlist</a>
+                                        </div>
+                                        <ul class="shopping-list">
+                                            {{-- @foreach (Helper::getAllProductFromWishlist() as $data)
                                                     @php
                                                         $photo=explode(',',$data->product['photo']);
                                                     @endphp
@@ -119,72 +116,74 @@
                                                         <p class="quantity">{{$data->quantity}} x - <span class="amount">${{number_format($data->price,2)}}</span></p>
                                                     </li>
                                             @endforeach --}}
-                                    </ul>
-                                    <div class="bottom">
-                                        <div class="total">
-                                            <span>Total</span>
-                                            <span class="total-amount">đ</span>
+                                        </ul>
+                                        <div class="bottom">
+                                            <div class="total">
+                                                <span>Total</span>
+                                                <span class="total-amount">đ</span>
+                                            </div>
+                                            <a href="" class="btn animate">Cart</a>
                                         </div>
-                                        <a href="" class="btn animate">Cart</a>
                                     </div>
-                                </div>
-                            @endauth
-                            <!--/ End Shopping Item -->
-                        </div>
-    
-                        <div class="sinlge-bar shopping">
-                            <a href="{{ route('cart') }}" class="single-icon"><i class="ti-bag"></i><span
-                                    class="total-count">@if ($carts)
-                                        {{ count($carts) }}
-                                    @else
-                                        0
-                                    @endif</span></a>
-                            <!-- Shopping Item -->
-                            @auth
-                                <div class="shopping-item">
-                                    <div class="dropdown-cart-header">
-                                        @if ($carts)
-                                            <span>{{ count($carts) }} Items</span>
+                                @endauth
+                                <!--/ End Shopping Item -->
+                            </div>
+
+                            <div class="sinlge-bar shopping">
+                                <a href="{{ route('cart') }}" class="single-icon"><i class="ti-bag"></i><span
+                                        class="total-count">
+                                        @if (count($carts) > 0)
+                                            {{ count($carts) }}
                                         @else
-                                            <span>0 Items</span>
+                                            0
                                         @endif
-                                        <a href="{{ route('cart') }}">View Cart</a>
-                                    </div>
-                                    <ul class="shopping-list">
-                                        @foreach ($carts as $data)
-                                            <li>
-                                                <a href="{{ route('cart.delete', $data->id) }}" class="remove"
-                                                    title="Remove this item"><i class="fa fa-remove"></i></a>
-                                                <a class="cart-img" href="#"><img
-                                                        src="{{ asset('image/product/' . $data->product->image) }}"></a>
-                                                <h4><a href="{{ route('product-detail', $data->product->id) }}"
-                                                        target="_blank">{{ $data->product['name'] }}</a></h4>
-                                                <p class="quantity">{{ $data->quantity }} x - <span
-                                                        class="amount">{{ number_format($data->product->price, 0) }}đ</span>
-                                                </p>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                    <div class="bottom">
-                                        <div class="total">
-                                            @php
-                                                $sum = 0;
-                                                foreach ($carts as $value) {
-                                                    $sum += $value->price * $value->quantity;
-                                                }
-                                            @endphp
-                                            <span>Total</span>
-                                            <span class="total-amount">{{ number_format($sum, 0) }}đ</span>
+                                    </span></a>
+                                <!-- Shopping Item -->
+                                @auth
+                                    <div class="shopping-item">
+                                        <div class="dropdown-cart-header">
+                                            @if ($carts)
+                                                <span>{{ count($carts) }} Items</span>
+                                            @else
+                                                <span>0 Items</span>
+                                            @endif
+                                            <a href="{{ route('cart') }}">View Cart</a>
                                         </div>
-                                        <a href="{{ route('checkout') }}" class="btn animate">Checkout</a>
+                                        <ul class="shopping-list">
+                                            @foreach ($carts as $data)
+                                                <li>
+                                                    <a href="{{ route('cart.delete', $data->id) }}" class="remove"
+                                                        title="Remove this item"><i class="fa fa-remove"></i></a>
+                                                    <a class="cart-img" href="#"><img
+                                                            src="{{ asset('image/product/' . $data->product->image) }}"></a>
+                                                    <h4><a href="{{ route('product-detail', $data->product->id) }}"
+                                                            target="_blank">{{ $data->product['name'] }}</a></h4>
+                                                    <p class="quantity">{{ $data->quantity }} x - <span
+                                                            class="amount">{{ number_format($data->product->price, 0) }}đ</span>
+                                                    </p>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                        <div class="bottom">
+                                            <div class="total">
+                                                @php
+                                                    $sum = 0;
+                                                    foreach ($carts as $value) {
+                                                        $sum += $value->price * $value->quantity;
+                                                    }
+                                                @endphp
+                                                <span>Total</span>
+                                                <span class="total-amount">{{ number_format($sum, 0) }}đ</span>
+                                            </div>
+                                            <a href="{{ route('checkout') }}" class="btn animate">Checkout</a>
+                                        </div>
                                     </div>
-                                </div>
-                               
-                            @endauth
-                            <!--/ End Shopping Item -->
+
+                                @endauth
+                                <!--/ End Shopping Item -->
+                            </div>
                         </div>
                     </div>
-                </div>
                 @endif
             </div>
         </div>

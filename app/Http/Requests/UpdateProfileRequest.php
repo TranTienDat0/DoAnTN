@@ -26,7 +26,7 @@ class UpdateProfileRequest extends FormRequest
         return [
             'name' => 'required|max:255|string',
             'address' => 'required|max:255|string',
-            'phone' => 'required|size:10|',
+            'phone' => 'required|size:10|unique:products,phone',
             //'image' => 'string',
         ];
     }
@@ -36,7 +36,8 @@ class UpdateProfileRequest extends FormRequest
             'name.required' => 'Vui lòng nhập tên của bạn.',
             'max' => 'Tên không nhập quá 255 kí tự',
             'phone.required' => 'Vui lòng nhập số điện thoại.',
-            'address.required' => 'Vui lòng nhập địa chỉ.'
+            'address.required' => 'Vui lòng nhập địa chỉ.',
+            'unique' => 'Số điện thoại đã tồn tại. Vui lòng nhập SĐT khác.'
         ];
     }
 }

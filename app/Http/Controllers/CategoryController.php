@@ -69,7 +69,7 @@ class CategoryController extends Controller
             if ($result) {
                 return redirect()->route('category')->with('success', 'Xóa danh mục thành công.');
             } else {
-                return redirect()->back()->with('eror', 'Xóa thông tin danh mục không thành công.');
+                return redirect()->back()->with('error', 'Xóa thông tin danh mục không thành công.');
             }
         } catch (Exception $exception) {
             throw new Exception("Error Processing Request", 1);

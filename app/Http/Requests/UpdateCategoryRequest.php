@@ -24,18 +24,19 @@ class UpdateCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'status' => 'required',
+            'name' => 'required|string|max:255|unique:categories,name',
             'image' => 'required',
+            'status' => 'required',
         ];
     }
     public function messages()
     {
         return [
             'name.required' => 'Vui lòng nhập tên danh mục.',
-            'max' => 'Vui lòng nhập không quá 255 kí tự cho tên danh mục sản phẩm.',
-            'status.required' => 'Vui lòng chọn trạng thái cho danh mục.',
+            'max' => 'Vui lòng không nhập quá 255 kí tự',
+            'status.required' => 'Vui lòng chọn trạng thái cho banner.',
             'image.required' => 'Vui lòng chọn ảnh.',
+            'unique' => 'Tên danh mục đã tồn tại. Vui lòng nhập tên danh mục khác.'
         ];
     }
 }

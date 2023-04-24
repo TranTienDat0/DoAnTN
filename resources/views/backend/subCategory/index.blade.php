@@ -77,7 +77,7 @@
                                             <button class="btn btn-danger btn-sm dltBtn" data-id={{ $category->id }}
                                                 style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                                 data-placement="bottom" title="Delete"
-                                                onclick="return confirm('Bạn chắc chắn muốn xóa danh mục bao gồm cả sản phẩm của nó không?')"><i
+                                                onclick="return confirm('Bạn chắc chắn muốn xóa không?')"><i
                                                     class="fas fa-trash-alt"></i></button>
                                         </form>
                                     </td>

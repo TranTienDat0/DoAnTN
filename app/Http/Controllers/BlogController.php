@@ -68,7 +68,7 @@ class BlogController extends Controller
             if ($result) {
                 return redirect()->route('blog')->with('success', 'Xóa banner thành công.');
             } else {
-                return redirect()->back()->with('eror', 'Xóa thông tin banner không thành công.');
+                return redirect()->back()->with('error', 'Xóa thông tin banner không thành công.');
             }
         } catch (Exception $exception) {
             throw new Exception("Error Processing Request", 1);

@@ -92,7 +92,7 @@ class CategoryServices
         } catch (Exception $ex) {
             DB::rollBack();
         }
-       // dd($category);
+        // dd($category);
         return $category;
     }
 
@@ -100,12 +100,12 @@ class CategoryServices
     {
         try {
             DB::beginTransaction();
-
-            // $sub_categories = sub_categories::find($id);
-            // products::where('sub_categories_id', $sub_categories->id)->delete();
-            // sub_categories::where('categories_id', $id)->delete();
-            $category = categories::find($id)->delete();
-            
+            $category = categories::find($id);
+            if ($category->subCategories()->exists()) {
+                return false;
+            } else {
+                $category->delete();
+            }
             DB::commit();
         } catch (Exception $ex) {
             DB::rollBack();

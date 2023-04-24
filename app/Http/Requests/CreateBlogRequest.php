@@ -24,7 +24,7 @@ class CreateBlogRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:blog,name',
             'image' => 'required',
             'content' => 'required|string',
             'status' => 'required',
@@ -36,6 +36,7 @@ class CreateBlogRequest extends FormRequest
             'name.required' => 'Vui lòng nhập tên bài viết.',
             'image.required' => 'Vui lòng chọn ảnh.',
             'content.required' => 'Vui lòng nhập nội dung cho bài viết.',
+            'unique' => 'Tên bài viết này đã tồn tại. Vui lòng nhập lại tên bài viết.'
         ];
     }
 }

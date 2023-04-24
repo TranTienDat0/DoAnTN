@@ -24,7 +24,7 @@ class CreateBannerRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:255',
+            'title' => 'required|string|max:255|unique:banners,title',
             'description' => 'required|string|max:255',
             'status' => 'required',
             'image' => 'required'
@@ -37,7 +37,8 @@ class CreateBannerRequest extends FormRequest
             'max' => 'Vui lòng không nhập quá 255 kí tự',
             'description.required' => 'Vui lòng nhập mô tả chi tiết tấm banner.',
             'status.required' => 'Vui lòng chọn trạng thái cho banner.',
-            'image.required' => 'Vui lòng chọn ảnh.'
+            'image.required' => 'Vui lòng chọn ảnh.',
+            'unique' => 'Tên banner đã tồn tại. Vui lòng nhập tên banner khác.'
         ];
     }
 }

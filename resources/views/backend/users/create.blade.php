@@ -61,8 +61,8 @@
                     <label for="role" class="col-form-label">Role</label>
                     <select name="role" class="form-control">
                         <option value="">-----Select Role-----</option>
-                        <option>Admin</option>
-                        <option>User</option>
+                        <option>employee</option>
+                        <option>customer</option>
                     </select>
                     @error('role')
                         <span class="text-danger">{{ $message }}</span>
