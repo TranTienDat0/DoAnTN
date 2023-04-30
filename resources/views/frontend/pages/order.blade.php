@@ -41,7 +41,7 @@
                                 <form action="" method="POST">
                                     @csrf
                                     @if ($orderDetail->count() > 0)
-                                        @foreach ($orderDetail => $orderd)
+                                        @foreach ($orderDetail as $orderd)
                                             <tr>
                                                 <td class="image" data-title="No"><img
                                                         src="{{ asset('image/product/' . $orderd->products->image) }}"

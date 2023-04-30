@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\FrontendServices;
 use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Models\banners;
 use App\Models\blog;
 use App\Models\categories;
@@ -12,6 +13,7 @@ use App\Models\sub_categories;
 use App\Models\cart;
 use App\Models\order;
 use App\Models\order_detail;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 
 class FrontendController extends Controller
@@ -35,10 +37,10 @@ class FrontendController extends Controller
         $remember = $request->has('remember');
         $user = $this->frontendServices->login($email_address, $password, $remember);
         if ($user) {
-            if(Auth()->user()->role == 0){
-                
+            if (Auth()->user()->role == 0) {
+
                 return redirect()->route('home-user');
-            }else{
+            } else {
                 return redirect()->back()->with('error', 'Tài khoản không thể truy cập vào trang web này!');
             }
         } else {
@@ -47,20 +49,38 @@ class FrontendController extends Controller
             ]);
         }
     }
-    public function logout(){
+    public function logout()
+    {
         $this->frontendServices->logout();
         return redirect()->route('user.view-login');
+    }
+    public function viewRegister()
+    {
+        $category = categories::where('status', 1)->get();
+        return view('frontend.pages.register', compact('category'));
+    }
+    public function register(RegisterRequest $registerRequest)
+    {
+        $user = $this->frontendServices->register($registerRequest);
+        if ($user) {
+            return redirect()->route('user.view-login')->with('success', 'Bạn đã đăng ký tài khoản thành công.');
+        } else {
+            return redirect()->back()->with('error', 'Có lỗi xảy ra vui lòng thử lại!');
+        }
     }
     public function index()
     {
 
-        $banners = banners::where('status', 1)->limit(3)->get();
-        $products = products::where('status', 1)->limit(8)->get();
-        $category = categories::where('status', 1)->get();
-        $carts = cart::all();
-        $blogs = blog::where('status', 1)->limit(3)->get();
-
-        return view('frontend.index', compact('banners', 'products', 'category', 'blogs', 'carts'));
+        $banners = banners::where('status', 1)->whereNull('deleted_at')->limit(3)->get();
+        $products = products::where('status', 1)->whereNull('deleted_at')->limit(8)->get();
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
+        $blogs = blog::where('status', 1)->whereNull('deleted_at')->limit(3)->get();
+        if (Auth()->user()) {
+            $carts = cart::where('user_id', Auth()->user()->id)->get();
+            $wishlists = Wishlist::where('user_id', Auth()->user()->id)->get();
+            return view('frontend.index', compact('banners', 'products', 'category', 'blogs', 'carts', 'wishlists'));
+        }
+        return view('frontend.index', compact('banners', 'products', 'category', 'blogs'));
     }
 
     public function productDetail($id)
@@ -71,8 +91,8 @@ class FrontendController extends Controller
         $relatedProducts = products::where('sub_categories_id', $productDetail->sub_categories_id)
             ->where('id', '!=', $id)->limit(3)->get();
         $carts = cart::all();
-
-        return view('frontend.pages.product_detail', compact('productDetail', 'category', 'subcate', 'relatedProducts', 'carts'));
+        $wishlists = Wishlist::all();
+        return view('frontend.pages.product_detail', compact('productDetail', 'category', 'subcate', 'relatedProducts', 'carts', 'wishlists'));
     }
 
     public function productList()
@@ -102,16 +122,17 @@ class FrontendController extends Controller
             $products->whereBetween('price', $price);
         }
 
-        $recent_products = products::where('status', '1')->orderBy('id', 'DESC')->limit(3)->get();
+        $recent_products = products::where('status', '1')->whereNull('deleted_at')->orderBy('id', 'DESC')->limit(3)->get();
         // Sort by number
         if (!empty($_GET['show'])) {
-            $products = $products->where('status', '1')->paginate($_GET['show']);
+            $products = $products->where('status', '1')->whereNull('deleted_at')->paginate($_GET['show']);
         } else {
-            $products = $products->where('status', '1')->paginate(6);
+            $products = $products->where('status', '1')->whereNull('deleted_at')->paginate(6);
         }
-        $category = categories::where('status', 1)->get();
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
         $carts = cart::all();
-        return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category', 'carts'));
+        $wishlists = Wishlist::all();
+        return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category', 'carts', 'wishlists'));
     }
 
     public function productGrid()
@@ -120,16 +141,16 @@ class FrontendController extends Controller
 
         if (!empty($_GET['category'])) {
 
-            $cat_ids = sub_categories::select('id')->pluck('id')->toArray();
+            $cat_ids = sub_categories::select('id')->whereNull('deleted_at')->pluck('id')->toArray();
 
             $products->whereIn('cat_id', $cat_ids);
         }
         if (!empty($_GET['sortBy'])) {
             if ($_GET['sortBy'] == 'title') {
-                $products = $products->where('status', '1')->orderBy('title', 'ASC');
+                $products = $products->where('status', '1')->whereNull('deleted_at')->orderBy('title', 'ASC');
             }
             if ($_GET['sortBy'] == 'price') {
-                $products = $products->orderBy('price', 'ASC');
+                $products = $products->whereNull('deleted_at')->orderBy('price', 'ASC');
             }
         }
 
@@ -141,40 +162,43 @@ class FrontendController extends Controller
         $recent_products = products::where('status', '1')->orderBy('id', 'DESC')->limit(3)->get();
         // Sort by number
         if (!empty($_GET['show'])) {
-            $products = $products->where('status', '1')->paginate($_GET['show']);
+            $products = $products->where('status', '1')->whereNull('deleted_at')->paginate($_GET['show']);
         } else {
-            $products = $products->where('status', '1')->paginate(9);
+            $products = $products->where('status', '1')->whereNull('deleted_at')->paginate(9);
         }
-        $category = categories::where('status', 1)->get();
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
         $carts = cart::all();
-        return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts'));
+        $wishlists = Wishlist::all();
+        return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts', 'wishlists'));
     }
 
     public function productCate($cateId)
     {
         $products = categories::find($cateId)->products;
-        $recent_products = products::where('status', '1')->orderBy('id', 'DESC')->limit(3)->get();
+        $recent_products = products::where('status', '1')->whereNull('deleted_at')->orderBy('id', 'DESC')->limit(3)->get();
 
-        $category = categories::where('status', 1)->get();
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
         $carts = cart::all();
+        $wishlists = Wishlist::all();
         if (request()->is('e-shop.loc/product-grids')) {
-            return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts'));
+            return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts' , 'wishlists'));
         } else {
-            return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category', 'carts'));
+            return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category', 'carts' , 'wishlists'));
         }
     }
 
     public function productSubCate($subCateId)
     {
         $products = sub_categories::find($subCateId)->products;
-        $recent_products = products::where('status', '1')->orderBy('id', 'DESC')->limit(3)->get();
+        $recent_products = products::where('status', '1')->whereNull('deleted_at')->orderBy('id', 'DESC')->limit(3)->get();
 
-        $category = categories::where('status', 1)->get();
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
         $carts = cart::all();
+        $wishlists = Wishlist::all();
         if (request()->is('e-shop.loc/product-grids')) {
-            return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts'));
+            return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts', 'wishlists'));
         } else {
-            return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category', 'carts'));
+            return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category', 'carts', 'wishlists'));
         }
     }
 
@@ -205,28 +229,65 @@ class FrontendController extends Controller
 
     public function productSearch(Request $request)
     {
-        $recent_products = products::where('status', '1')->orderBy('id', 'DESC')->limit(3)->get();
-        $products = products::orwhere('name', 'like', '%' . $request->search . '%')
+        $recent_products = products::where('status', '1')->orderBy('id', 'DESC')->whereNull('deleted_at')->limit(3)->get();
+        $products = products::whereNull('deleted_at')->orwhere('name', 'like', '%' . $request->search . '%')
             ->orwhere('description', 'like', '%' . $request->search . '%')
             ->orwhere('price', 'like', '%' . $request->search . '%')
             ->orderBy('id', 'DESC')
             ->paginate('9');
-        $category = categories::where('status', 1)->get();
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
         $carts = cart::all();
-        return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts'));
+        $wishlists = Wishlist::all();
+        return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts', 'wishlists'));
     }
 
     public function orderIndex()
     {
 
         $carts = cart::all();
-        $category = categories::where('status', 1)->get();
-        $orders = order::where('user_id', Auth()->user()->id)->first();
-        if($orders){
-            $orderDetail = order_detail::orderBy('id', 'DESC')->where('order_id', $orders->id)->paginate(10);
-        return view('frontend.pages.order', compact('orderDetail', 'category', 'carts'));
-        }else{
+        $wishlists = Wishlist::all();
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
+        $orders = order::where('user_id', Auth()->user()->id)->whereNull('deleted_at')->first();
+        if ($orders) {
+            $orderDetail = order_detail::orderBy('id', 'DESC')->where('order_id', $orders->id)->whereNull('deleted_at')->paginate(10);
+            return view('frontend.pages.order', compact('orderDetail', 'category', 'carts', 'wishlists'));
+        } else {
             return redirect()->back()->with('error', 'Hiện tại bạn chưa có đơn hàng nào.');
         }
+    }
+
+    public function blog()
+    {
+        $blogs = blog::where('status', 1)->whereNull('deleted_at')->paginate(10);
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
+        $carts = cart::all();
+        $wishlists = Wishlist::all();
+        $recent_blogs = blog::orderBy('id', 'DESC')->where('status', 1)->whereNull('deleted_at')->limit(3)->get();
+        return view('frontend.pages.blog', compact('blogs', 'category', 'recent_blogs', 'carts', 'wishlists'));
+    }
+
+    public function blogDetail($id)
+    {
+        $blog = blog::find($id);
+        $carts = cart::all();
+        $wishlists = Wishlist::all();
+        $recent_blogs = blog::orderBy('id', 'DESC')->where('status', 1)->whereNull('deleted_at')->limit(3)->get();
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
+        return view('frontend.pages.blog-detail', compact('blog', 'category', 'recent_blogs', 'carts', 'wishlists'));
+    }
+
+    public function contact()
+    {
+        $carts = cart::all();
+        $wishlists = Wishlist::all();
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
+        return view('frontend.pages.contact', compact('category', 'carts', 'wishlists'));
+    }
+    public function aboutUs()
+    {
+        $carts = cart::all();
+        $wishlists = Wishlist::all();
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
+        return view('frontend.pages.about-us', compact('category', 'carts', 'wishlists'));
     }
 }

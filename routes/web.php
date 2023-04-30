@@ -10,8 +10,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\cartController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\messageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductReviewController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -97,8 +99,10 @@ Route::prefix('admin')->group(function () {
         Route::get('/products-edit/{id}', 'edit')->name('products.edit');
         route::put('/products-update/{id}', 'update')->name('products.update');
         route::delete('/products-delete/{id}', 'delete')->name('products.delete');
+        route::delete('/products-multiple', 'deleteSelected')->name('products.deleteMultiple');
         route::get('/product-expired', 'getProductsexpired')->name('products.expired');
         route::get('/product-out-of-stock', 'getProductOutOfStock')->name('products.outofstock');
+        Route::post('/product/search','searchProduct')->name('products.search');
     });
     route::controller(BlogController::class)->middleware('checkLogin')->group(function (){
         route::get('/blog', 'index')->name('blog');
@@ -123,6 +127,12 @@ Route::prefix('admin')->group(function () {
         route::put('/review-update/{id}', 'update')->name('review.update');
         route::delete('/review-delete{id}', 'delete')->name('review.delete');
     });
+
+    route::controller(messageController::class)->middleware('checkLogin')->group(function (){
+        route::get('/message', 'index')->name('message.index');
+        route::get('/message/{id}', 'show')->name('message.show');
+        route::delete('/message-delete/{id}', 'delete')->name('message.delete');
+    });
 });
 
 Route::prefix('user')->group(function (){
@@ -130,21 +140,34 @@ Route::prefix('user')->group(function (){
         route::get('user-view_login', 'viewLogin')->name('user.view-login');
         route::post('user-login', 'login')->name('user.login');
         route::get('user-logout', 'logout')->name('user.logout');
-        route::get('register', 'register')->name('register.form');
+        route::get('user-view_register', 'viewRegister')->name('user.view-register');
+        route::post('user-register', 'register')->name('user.register');
 
         route::get('view_home', 'index')->name('home-user');
+
         route::get('/product_list', 'productList')->name('product-lists');
         route::get('/product_grids', 'productGrid')->name('product-grids');
+
         route::get('/product_category/{id}', 'productCate')->name('product-category');
         route::get('/product_sub_category/{id}', 'productSubCate')->name('product-sub-category');
+
         route::get('/product_detail/{id}', 'productDetail')->name('product-detail');
+
         Route::match(['get','post'],'/filter','productFilter')->name('shop.filter');
+
         Route::post('/product/search','productSearch')->name('product.search');
+
         route::get('/user-order', 'orderIndex')->name('user.order');
         
+        route::get('/blog-list', 'blog')->name('blog.list');
+        route::get('/blog-detail/{id}', 'blogDetail')->name('blog.detail');
+
+        route::get('contact', 'contact')->name('contact');
+
+        route::get('about-us', 'aboutUs')->name('aboutUs');
     });
 
-    route::controller(cartController::class)->group(function (){
+    route::controller(cartController::class)->middleware('user')->group(function (){
         route::get('cart', 'index')->name('cart');
         route::get('/add-to-cart/{id}','addToCart')->name('add-to-cart');
         Route::post('cart-update','cartUpdate')->name('cart.update');
@@ -152,11 +175,21 @@ Route::prefix('user')->group(function (){
         route::get('checkout', 'checkout')->name('checkout');
     });
 
-    route::controller(OrderController::class)->group(function (){
+    route::controller(OrderController::class)->middleware('user')->group(function (){
         Route::post('cart/order','store')->name('cart.order');
     });
 
-    route::controller(ProductReviewController::class)->group(function (){
+    route::controller(ProductReviewController::class)->middleware('user')->group(function (){
         Route::post('product/{id}/review','store')->name('review.store');
+    });
+
+    route::controller(WishlistController::class)->middleware('user')->group(function (){
+        route::get('/wishlist', 'index')->name('wishlist');
+        route::get('/wishlist/{id}', 'addWishlist')->name('add-to-wishlist');
+        route::get('/wishlist-delete/{id}', 'wishlistDelete')->name('wishlist.delete');
+    });
+
+    route::controller(messageController::class)->middleware('user')->group(function (){
+        route::post('/message', 'store')->name('message');
     });
 });

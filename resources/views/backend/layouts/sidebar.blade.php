@@ -108,6 +108,13 @@
             </div>
         </li>
 
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('message.index') }}">
+                <i class="fas fa-comments"></i>
+                <span>Message</span>
+            </a>
+        </li>
+
         <!--Orders -->
         <li class="nav-item">
             <a class="nav-link" href="{{ route('order.index') }}">

@@ -10,7 +10,7 @@
                 <div class="col-12">
                     <div class="bread-inner">
                         <ul class="bread-list">
-                            <li><a href="{{route('home')}}">Home<i class="ti-arrow-right"></i></a></li>
+                            <li><a href="{{route('home-user')}}">Home<i class="ti-arrow-right"></i></a></li>
                             <li class="active"><a href="javascript:void(0);">Register</a></li>
                         </ul>
                     </div>
@@ -29,13 +29,13 @@
                         <h2>Register</h2>
                         <p>Please register in order to checkout more quickly</p>
                         <!-- Form -->
-                        <form class="form" method="post" action="{{route('register.submit')}}">
+                        <form class="form" method="post" action="{{route('user.register')}}">
                             @csrf
                             <div class="row">
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Your Name<span>*</span></label>
-                                        <input type="text" name="name" placeholder="" required="required" value="{{old('name')}}">
+                                        <input type="text" name="name" placeholder="Enter your name" value="{{old('name')}}">
                                         @error('name')
                                             <span class="text-danger">{{$message}}</span>
                                         @enderror
@@ -43,9 +43,27 @@
                                 </div>
                                 <div class="col-12">
                                     <div class="form-group">
+                                        <label>Your Address<span>*</span></label>
+                                        <input type="text" name="address" placeholder="Enter your email" value="{{old('address')}}">
+                                        @error('address')
+                                            <span class="text-danger">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
+                                        <label>Your Phone<span>*</span></label>
+                                        <input type="text" name="phone" placeholder="Enter your email" value="{{old('phone')}}">
+                                        @error('phone')
+                                            <span class="text-danger">{{$message}}</span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="form-group">
                                         <label>Your Email<span>*</span></label>
-                                        <input type="text" name="email" placeholder="" required="required" value="{{old('email')}}">
-                                        @error('email')
+                                        <input type="text" name="email_address" placeholder="Enter your email" value="{{old('email_address')}}">
+                                        @error('email_address')
                                             <span class="text-danger">{{$message}}</span>
                                         @enderror
                                     </div>
@@ -53,7 +71,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Your Password<span>*</span></label>
-                                        <input type="password" name="password" placeholder="" required="required" value="{{old('password')}}">
+                                        <input type="password" name="password" placeholder="Enter your password"  value="{{old('password')}}">
                                         @error('password')
                                             <span class="text-danger">{{$message}}</span>
                                         @enderror
@@ -62,7 +80,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Confirm Password<span>*</span></label>
-                                        <input type="password" name="password_confirmation" placeholder="" required="required" value="{{old('password_confirmation')}}">
+                                        <input type="password" name="password_confirmation" placeholder="Enter your password confirmation" value="{{old('password_confirmation')}}">
                                         @error('password_confirmation')
                                             <span class="text-danger">{{$message}}</span>
                                         @enderror
@@ -71,11 +89,11 @@
                                 <div class="col-12">
                                     <div class="form-group login-btn">
                                         <button class="btn" type="submit">Register</button>
-                                        <a href="{{route('login.form')}}" class="btn">Login</a>
+                                        <a href="{{route('user.view-login')}}" class="btn">Login</a>
                                         OR
-                                        <a href="{{route('login.redirect','facebook')}}" class="btn btn-facebook"><i class="ti-facebook"></i></a>
-                                        <a href="{{route('login.redirect','github')}}" class="btn btn-github"><i class="ti-github"></i></a>
-                                        <a href="{{route('login.redirect','google')}}" class="btn btn-google"><i class="ti-google"></i></a>
+                                        <a href="" class="btn btn-facebook"><i class="ti-facebook"></i></a>
+                                        <a href="" class="btn btn-github"><i class="ti-github"></i></a>
+                                        <a href="" class="btn btn-google"><i class="ti-google"></i></a>
                                     </div>
                                 </div>
                             </div>

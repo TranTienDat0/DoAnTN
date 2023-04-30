@@ -64,6 +64,11 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="hot" class="col-form-label">Hot </label>
+                    <input style="height: 20px; width: 20px; margin-left: 10px" type="checkbox" name="hot">
+                </div>
+
+                <div class="form-group">
                     <label for="stock">Quantity <span class="text-danger">*</span></label>
                     <input id="quantity" type="number" name="quantity" min="0" placeholder="Enter quantity"
                         value="{{ old('quantity') }}" class="form-control">

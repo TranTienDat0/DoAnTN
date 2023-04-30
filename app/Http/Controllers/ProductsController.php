@@ -8,6 +8,7 @@ use App\Models\products;
 use App\Models\sub_categories;
 use App\Services\ProductServices;
 use Exception;
+use Illuminate\Http\Request;
 
 class ProductsController extends Controller
 {
@@ -78,10 +79,10 @@ class ProductsController extends Controller
         }
     }
 
-    public function deleteSelected(array $id)
+    public function deleteSelected(Request $request)
     {
         try {
-            $result = $this->productServices->deleteSelected($id);
+            $result = $this->productServices->deleteSelected($request->all());
             if ($result) {
                 return redirect()->route('products')->with('success', 'Xóa sản phẩm thành công.');
             } else {
@@ -97,10 +98,20 @@ class ProductsController extends Controller
         $products = $this->productServices->getProductsexpired();
         return view('backend.product.index', compact('products'));
     }
-    
+
     public function getProductOutOfStock()
     {
         $products = $this->productServices->getProductOutOfStock();
+        return view('backend.product.index', compact('products'));
+    }
+
+    public function searchProduct(Request $request)
+    {
+        $products = products::orwhere('name', 'like', '%' . $request->search . '%')
+            ->orwhere('description', 'like', '%' . $request->search . '%')
+            ->orwhere('price', 'like', '%' . $request->search . '%')
+            ->orderBy('id', 'DESC')
+            ->paginate('9');
         return view('backend.product.index', compact('products'));
     }
 }

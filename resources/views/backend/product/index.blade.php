@@ -13,15 +13,19 @@
             <br>
             <a href="{{ route('products.create') }}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip"
                 data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add Product</a>
-            <a style="margin-right: 10px" href=""
-                class="btn btn-primary btn-sm float-right" data-toggle="tooltip" data-placement="bottom"
-                title="Add User"><i class="fas fa-trash-alt"></i> Xóa sản phẩm</a>
             <a href="{{ route('products.expired') }}" class="btn btn-primary btn-sm float-left" data-toggle="tooltip"
                 data-placement="bottom" title="Add User"></i> Danh sách sản phẩm hết hạn</a>
             <a style="margin-left: 10px" href="{{ route('products.outofstock') }}" class="btn btn-primary btn-sm float-left"
                 data-toggle="tooltip" data-placement="bottom" title="Add User"></i> Danh sách sản phẩm hết hàng</a>
         </div>
         <div class="card-body">
+            <div class="float-right" style="margin-bottom: 15px">
+                <form action="{{ route('products.search') }}" method="POST">
+                    @csrf
+                    <input type="search" name="search">
+                    <button>Tìm kiếm</button>
+                </form>
+            </div>
             <div class="table-responsive">
                 @if (count($products) > 0)
                     <table class="table table-bordered" id="product-dataTable" width="100%" cellspacing="0">

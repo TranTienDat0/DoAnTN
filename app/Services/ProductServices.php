@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\cart;
+use App\Models\ProductReview;
 use App\Models\products;
 use Exception;
 use Illuminate\Http\Request;
@@ -20,6 +21,11 @@ class ProductServices
 
     public function store(Request $request)
     {
+        if ($request->hot != null) {
+            $hot = 1;
+        } else {
+            $hot = 0;
+        }
         if ($request->status === 'Active') {
             $status = 1;
         } else {
@@ -48,6 +54,7 @@ class ProductServices
                 'expiry' => $request->expiry,
                 'quantity' => $request->quantity,
                 'description' => $request->description,
+                'hot' => $hot,
                 'status' => $status,
                 'image' => $image,
                 'sub_categories_id' => $request->sub_categories_id,
@@ -61,6 +68,11 @@ class ProductServices
 
     public function update(Request $request, $id)
     {
+        if ($request->hot != null) {
+            $hot = 1;
+        } else {
+            $hot = 0;
+        }
         if ($request->status == 'Active') {
             $status = 1;
         } else {
@@ -91,6 +103,7 @@ class ProductServices
                 'expiry' => $request->expiry,
                 'quantity' => $request->quantity,
                 'description' => $request->description,
+                'hot' => $hot,
                 'status' => $status,
                 'image' => $image,
                 'sub_categories_id' => $request->sub_categories_id,
@@ -113,6 +126,7 @@ class ProductServices
                 return false;
             } else {
                 $product->delete();
+                ProductReview::where('products_id', $id)->delete();
             }
 
             DB::commit();
@@ -122,17 +136,20 @@ class ProductServices
 
         return $product;
     }
-    public function deleteSelected(Request $request)
+    public function deleteSelected(array  $ids)
     {
         try {
             DB::beginTransaction();
 
-            $selectedProducts = $request->input('selected', []);
-            $product = products::whereIn('id', $selectedProducts);
-            if ($product->cart()->exists()) {
-                return false;
-            } else {
-                $product->delete();
+            $deletedIds = [];
+            foreach ($ids as $id) {
+                $product = products::find($id);
+                if ($product->cart()->exists()) {
+                    return false;
+                } else {
+                    $product->delete();
+                    $deletedIds[] = $id;
+                }
             }
 
             DB::commit();
@@ -140,7 +157,7 @@ class ProductServices
             DB::rollBack();
         }
 
-        return $product;
+        return $deletedIds;
     }
     public function getProductsexpired()
     {

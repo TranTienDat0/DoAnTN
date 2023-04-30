@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\products;
 use App\Models\cart;
 use App\Models\categories;
+use App\Models\Wishlist;
 use Illuminate\Http\Request;
 
 class cartController extends Controller
@@ -17,9 +18,10 @@ class cartController extends Controller
 
     public function index()
     {
-        $carts = cart::get();
+        $carts = cart::orderBy('id', 'DESC')->paginate(10);
         $category = categories::where('status', 1)->get();
-        return view('frontend.pages.cart', compact('carts', 'category'));
+        $wishlists = Wishlist::all();
+        return view('frontend.pages.cart', compact('carts', 'category', 'wishlists'));
     }
 
     public function addToCart(Request $request)

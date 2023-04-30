@@ -130,7 +130,7 @@
                                                         <a data-toggle="modal" data-target="#{{ $product->id }}"
                                                             title="Quick View" href="#"><i
                                                                 class=" ti-eye"></i><span>Quick Shop</span></a>
-                                                        <a title="Wishlist" href=""><i
+                                                        <a title="Wishlist" href="{{ route('add-to-wishlist', $product->id) }}"><i
                                                                 class=" ti-heart "></i><span>Add to Wishlist</span></a>
                                                     </div>
                                                     <div class="product-action-2">
@@ -171,7 +171,40 @@
                 </div>
             </div>
             <div class="row">
-
+                <div class="col-12">
+                    <div class="owl-carousel popular-slider">
+                        @foreach($products as $product)
+                            @if($product->hot==1)
+                                <!-- Start Single Product -->
+                            <div class="single-product">
+                                <div class="product-img">
+                                    <a href="{{route('product-detail',$product->id)}}">
+                                        <img class="default-img" src="{{ asset('image/product/'. $product->image) }}" alt="">
+                                        <img class="hover-img" src="{{ asset('image/product/'. $product->image) }}" alt="">
+                                        {{-- <span class="out-of-stock">Hot</span> --}}
+                                    </a>
+                                    <div class="button-head">
+                                        <div class="product-action">
+                                            <a data-toggle="modal" data-target="#{{$product->id}}" title="Quick View" href="#"><i class=" ti-eye"></i><span>Quick Shop</span></a>
+                                            <a title="Wishlist" href="{{route('add-to-wishlist',$product->id)}}" ><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
+                                        </div>
+                                        <div class="product-action-2">
+                                            <a href="{{route('add-to-cart',$product->id)}}">Add to cart</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="product-content">
+                                    <h3><a href="{{route('product-detail',$product->id)}}">{{$product->name}}</a></h3>
+                                    <div class="product-price">                         
+                                        <span>${{number_format($product->price,0)}}đ</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Single Product -->
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -193,6 +226,7 @@
                         @php
                             $product_lists = DB::table('products')
                                 ->where('status', '1')
+                                ->whereNull('deleted_at')
                                 ->orderBy('id', 'DESC')
                                 ->limit(6)
                                 ->get();
@@ -246,8 +280,8 @@
                                 <img src="{{ asset('image/blog/' . $blog->image) }}" alt="{{ $blog->image }}">
                                 <div class="content">
                                     <p class="date">{{ $blog->created_at->format('d M , Y. D') }}</p>
-                                    <a href="" class="title">{{ $blog->name }}</a>
-                                    <a href="" class="more-btn">Continue Reading</a>
+                                    <a href="{{ route('blog.detail', $blog->id) }}" class="title">{{ $blog->name }}</a>
+                                    <a href="{{ route('blog.detail', $blog->id) }}" class="more-btn">Continue Reading</a>
                                 </div>
                             </div>
                             <!-- End Single Blog  -->

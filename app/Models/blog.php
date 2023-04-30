@@ -22,4 +22,9 @@ class blog extends Model
         'updated_at',
         'deleted_at',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -26,22 +26,21 @@
             <div class="row">
                 <div class="col-lg-8 col-12">
                     <div class="row">
-                        @foreach($posts as $post)
+                        @foreach($blogs as $blog)
                         {{-- {{$post}} --}}
                             <div class="col-lg-6 col-md-6 col-12">
                                 <!-- Start Single Blog  -->
                                 <div class="shop-single-blog">
-                                <img src="{{$post->photo}}" alt="{{$post->photo}}">
+                                <img src="{{ asset('image/blog/'. $blog->image) }}" alt="{{ $blog->image }}">
                                     <div class="content">
-                                        <p class="date"><i class="fa fa-calendar" aria-hidden="true"></i> {{$post->created_at->format('d M, Y. D')}}
+                                        <p class="date"><i class="fa fa-calendar" aria-hidden="true"></i> {{$blog->created_at->format('d M, Y. D')}}
                                             <span class="float-right">
                                                 <i class="fa fa-user" aria-hidden="true"></i>
-                                                 {{$post->author_info->name ?? 'Anonymous'}}
+                                                 {{$blog->user->email ?? 'Anonymous'}}
                                             </span>
                                         </p>
-                                        <a href="{{route('blog.detail',$post->slug)}}" class="title">{{$post->title}}</a>
-                                        <p>{!! html_entity_decode($post->summary) !!}</p>
-                                        <a href="{{route('blog.detail',$post->slug)}}" class="more-btn">Continue Reading</a>
+                                        <a href="{{route('blog.detail',$blog->id)}}" class="title">{{$blog->name}}</a>
+                                        <a href="{{route('blog.detail',$blog->id)}}" class="more-btn">Continue Reading</a>
                                     </div>
                                 </div>
                                 <!-- End Single Blog  -->
@@ -58,49 +57,28 @@
                     <div class="main-sidebar">
                         <!-- Single Widget -->
                         <div class="single-widget search">
-                            <form class="form" method="GET" action="{{route('blog.search')}}">
+                            <form class="form" method="GET" action="">
                                 <input type="text" placeholder="Search Here..." name="search">
                                 <button class="button" type="sumbit"><i class="fa fa-search"></i></button>
                             </form>
                         </div>
                         <!--/ End Single Widget -->
-                        <!-- Single Widget -->
-                        <div class="single-widget category">
-                            <h3 class="title">Blog Categories</h3>
-                            <ul class="categor-list">
-                                @if(!empty($_GET['category']))
-                                    @php
-                                        $filter_cats=explode(',',$_GET['category']);
-                                    @endphp
-                                @endif
-                            <form action="{{route('blog.filter')}}" method="POST">
-                                    @csrf
-                                    {{-- {{count(Helper::postCategoryList())}} --}}
-                                    @foreach(Helper::postCategoryList('posts') as $cat)
-                                    <li>
-                                        <a href="{{route('blog.category',$cat->slug)}}">{{$cat->title}} </a>
-                                    </li>
-                                    @endforeach
-                                </form>
-
-                            </ul>
-                        </div>
-                        <!--/ End Single Widget -->
+                     
                         <!-- Single Widget -->
                         <div class="single-widget recent-post">
                             <h3 class="title">Recent post</h3>
-                            @foreach($recent_posts as $post)
+                            @foreach($recent_blogs as $blog)
                                 <!-- Single Post -->
                                 <div class="single-post">
                                     <div class="image">
-                                        <img src="{{$post->photo}}" alt="{{$post->photo}}">
+                                        <img src="" alt="">
                                     </div>
                                     <div class="content">
-                                        <h5><a href="#">{{$post->title}}</a></h5>
+                                        <h5><a href="#">{{$blog->name}}</a></h5>
                                         <ul class="comment">
-                                            <li><i class="fa fa-calendar" aria-hidden="true"></i>{{$post->created_at->format('d M, y')}}</li>
+                                            <li><i class="fa fa-calendar" aria-hidden="true"></i>{{$blog->created_at->format('d M, y')}}</li>
                                             <li><i class="fa fa-user" aria-hidden="true"></i>
-                                                {{$post->author_info->name ?? 'Anonymous'}}
+                                                {{$blog->user->name ?? 'Anonymous'}}
                                             </li>
                                         </ul>
                                     </div>
@@ -108,44 +86,6 @@
                                 <!-- End Single Post -->
                             @endforeach
                         </div>
-                        <!--/ End Single Widget -->
-                        <!-- Single Widget -->
-                        <!--/ End Single Widget -->
-                        <!-- Single Widget -->
-                        <div class="single-widget side-tags">
-                            <h3 class="title">Tags</h3>
-                            <ul class="tag">
-                                @if(!empty($_GET['tag']))
-                                    @php
-                                        $filter_tags=explode(',',$_GET['tag']);
-                                    @endphp
-                                @endif
-                                <form action="{{route('blog.filter')}}" method="POST">
-                                    @csrf
-                                    @foreach(Helper::postTagList('posts') as $tag)
-                                        <li>
-                                            <li>
-                                                <a href="{{route('blog.tag',$tag->title)}}">{{$tag->title}} </a>
-                                            </li>
-                                        </li>
-                                    @endforeach
-                                </form>
-                            </ul>
-                        </div>
-                        <!--/ End Single Widget -->
-                        <!-- Single Widget -->
-                        <div class="single-widget newsletter">
-                            <h3 class="title">Newslatter</h3>
-                            <div class="letter-inner">
-                                <h4>Subscribe & get news <br> latest updates.</h4>
-                                <form method="POST" action="{{route('subscribe')}}" class="form-inner">
-                                    @csrf
-                                    <input type="email" name="email" placeholder="Enter your email">
-                                    <button type="submit" class="btn " style="width: 100%">Submit</button>
-                                </form>
-                            </div>
-                        </div>
-                        <!--/ End Single Widget -->
                     </div>
                 </div>
             </div>

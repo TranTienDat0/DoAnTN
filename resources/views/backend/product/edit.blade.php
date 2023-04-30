@@ -40,6 +40,11 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="hot" class="col-form-label">Hot </label>
+                    <input style="height: 20px; width: 20px; margin-left: 10px" type="checkbox" name="hot">
+                </div>
+
+                <div class="form-group">
                     <label for="price" class="col-form-label">Price(NRS) <span class="text-danger">*</span></label>
                     <input id="price" type="number" name="price" placeholder="Enter price"
                         value="{{ $product->price }}" class="form-control">

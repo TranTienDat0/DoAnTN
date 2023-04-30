@@ -35,7 +35,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Your Email<span>*</span></label>
-                                        <input type="email" name="email_address" placeholder="" required="required"
+                                        <input type="email" name="email_address" placeholder=""
                                             value="{{ old('email_address') }}">
                                         @error('email_address')
                                             <span class="text-danger">{{ $message }}</span>
@@ -45,7 +45,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label>Your Password<span>*</span></label>
-                                        <input type="password" name="password" placeholder="" required="required"
+                                        <input type="password" name="password" placeholder=""
                                             value="{{ old('password') }}">
                                         @error('password')
                                             <span class="text-danger">{{ $message }}</span>
@@ -55,7 +55,7 @@
                                 <div class="col-12">
                                     <div class="form-group login-btn">
                                         <button class="btn" type="submit">Login</button>
-                                        <a href="" class="btn">Register</a>
+                                        <a href="{{ route('user.view-register') }}" class="btn">Register</a>
                                         OR
                                         <a href="" class="btn btn-facebook"><i class="ti-facebook"></i></a>
                                         <a href="" class="btn btn-github"><i class="ti-github"></i></a>

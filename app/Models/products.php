@@ -28,6 +28,7 @@ class products extends Model
         'sub_categories_id',
         'date_of_manufacture',
         'expiry',
+        'hot',
     ];
 
     protected $dates = [
