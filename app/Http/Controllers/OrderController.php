@@ -59,7 +59,7 @@ class OrderController extends Controller
         }
         //send mail
         cart::where('user_id', Auth()->user()->id)->delete();
-        return redirect()->route('home-user')->with('success', 'Your product successfully placed in order');
+        return redirect()->route('home-user')->with('success', 'Bạn đã đặt hành thành công.');
     }
 
     public function index()

@@ -95,7 +95,8 @@ class cartController extends Controller
     public function checkout()
     {
         $carts = cart::get();
+        $wishlists = Wishlist::get();
         $category = categories::where('status', 1)->get();
-        return view('frontend.pages.checkout', compact('carts', 'category'));
+        return view('frontend.pages.checkout', compact('carts', 'category', 'wishlists'));
     }
 }

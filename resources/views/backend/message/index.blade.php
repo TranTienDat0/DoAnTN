@@ -61,7 +61,6 @@
         div.dataTables_wrapper div.dataTables_paginate {
             display: none;
         }
-
         .zoom {
             transition: transform .2s;
             /* Animation */

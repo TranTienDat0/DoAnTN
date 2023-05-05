@@ -43,7 +43,6 @@ class HomeAdminController extends Controller
     public function profile()
     {
         $profile = Auth()->user();
-
         return view('backend.users.profile', compact('profile'));
     }
 

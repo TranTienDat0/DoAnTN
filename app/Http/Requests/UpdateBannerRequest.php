@@ -24,7 +24,7 @@ class UpdateBannerRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string|max:255|unique:banners,title',
+            'title' => 'required|string|max:255',
             'description' => 'required|string|max:255',
             'status' => 'required',
             'image' => 'required'
@@ -38,7 +38,7 @@ class UpdateBannerRequest extends FormRequest
             'description.required' => 'Vui lòng nhập mô tả chi tiết tấm banner.',
             'status.required' => 'Vui lòng chọn trạng thái cho banner.',
             'image.required' => 'Vui lòng chọn ảnh.',
-            'unique' => 'Tên banner đã tồn tại. Vui lòng nhập tên banner khác.'
+            // 'unique' => 'Tên banner đã tồn tại. Vui lòng nhập tên banner khác.'
         ];
     }
 }

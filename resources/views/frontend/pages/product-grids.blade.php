@@ -164,7 +164,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 justify-content-center d-flex">
-                                {{$products->appends($_GET)->links()}}
+                                {{$products->links('pagination::bootstrap-4')}}
                             </div>
                           </div>
 

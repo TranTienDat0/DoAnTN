@@ -14,9 +14,9 @@
             <a href="{{ route('products.create') }}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip"
                 data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add Product</a>
             <a href="{{ route('products.expired') }}" class="btn btn-primary btn-sm float-left" data-toggle="tooltip"
-                data-placement="bottom" title="Add User"></i> Danh sách sản phẩm hết hạn</a>
+                data-placement="bottom" title="Add User"></i> Expired product list</a>
             <a style="margin-left: 10px" href="{{ route('products.outofstock') }}" class="btn btn-primary btn-sm float-left"
-                data-toggle="tooltip" data-placement="bottom" title="Add User"></i> Danh sách sản phẩm hết hàng</a>
+                data-toggle="tooltip" data-placement="bottom" title="Add User"></i> List of products out of stock</a>
         </div>
         <div class="card-body">
             <div class="float-right" style="margin-bottom: 15px">
@@ -31,7 +31,7 @@
                     <table class="table table-bordered" id="product-dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr style="text-align: center;">
-                                <th></th>
+                                {{-- <th></th> --}}
                                 <th>S.N.</th>
                                 <th>Title</th>
                                 <th>Category</th>
@@ -46,23 +46,23 @@
                         </thead>
                         <tfoot>
                             <tr style="text-align: center;">
-                                <th></th>
+                                {{-- <th></th> --}}
                                 <th>S.N.</th>
                                 <th>Title</th>
                                 <th>Category</th>
                                 <th>Price</th>
-                                <th style="width: 200px">Image</th>
+                                <th style="width: 150px">Image</th>
                                 <th>Date Of Manufacture</th>
                                 <th>Expiry</th>
                                 <th>Quantity</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th style="width: 100px">Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @foreach ($products as $product)
                                 <tr style="text-align: center;">
-                                    <td><input type="checkbox" name="selected[]" value="{{ $product->id }}"></td>
+                                    {{-- <td><input type="checkbox" name="selected[]" value="{{ $product->id }}"></td> --}}
                                     <td>{{ $product->id }}</td>
                                     <td>{{ $product->name }}</td>
                                     <td>{{ $product->sub_categories->name }}</td>

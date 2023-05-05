@@ -91,7 +91,7 @@
                             <ul class="nav nav-tabs filter-tope-group" id="myTab" role="tablist">
                                 @php
                                     $subcategories = DB::table('sub_categories')
-                                        ->where('status', '1')
+                                        ->where('status', '1')->limit(3)
                                         ->get();
                                 @endphp
                                 @if ($subcategories)

@@ -27,8 +27,10 @@ class FrontendController extends Controller
 
     public function viewLogin()
     {
+        $carts = cart::get();
+        $wishlists = Wishlist::get();
         $category = categories::where('status', 1)->get();
-        return view('frontend.pages.login', compact('category'));
+        return view('frontend.pages.login', compact('category','carts', 'wishlists'));
     }
     public function login(LoginRequest $request)
     {
@@ -56,8 +58,10 @@ class FrontendController extends Controller
     }
     public function viewRegister()
     {
+        $carts = cart::get();
+        $wishlists = Wishlist::get();
         $category = categories::where('status', 1)->get();
-        return view('frontend.pages.register', compact('category'));
+        return view('frontend.pages.register', compact('category', 'carts', 'wishlists'));
     }
     public function register(RegisterRequest $registerRequest)
     {
