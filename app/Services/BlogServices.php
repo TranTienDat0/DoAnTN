@@ -41,7 +41,7 @@ class BlogServices
         try {
             DB::beginTransaction();
 
-            $blog= blog::create([
+            $blog = blog::create([
                 'name' => $request->name,
                 'content' => $request->content,
                 'status' => $status,
@@ -62,19 +62,24 @@ class BlogServices
         } else {
             $status = 0;
         }
-        $image = $request->image;
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = $file->getClientOriginalName();
-            $extension = $file->getClientOriginalExtension();
+        if ($request->image != null) {
+            $image = $request->image;
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $filename = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
 
-            if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
-                $image = Str::random(5) . "_" . $filename;
-                while (file_exists("image/blog/" . $image)) {
+                if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
                     $image = Str::random(5) . "_" . $filename;
+                    while (file_exists("image/blog/" . $image)) {
+                        $image = Str::random(5) . "_" . $filename;
+                    }
+                    $file->move('image/blog', $image);
                 }
-                $file->move('image/blog', $image);
             }
+        } else {
+            $blog = blog::find($id);
+            $image = $blog->image;
         }
         try {
             DB::beginTransaction();

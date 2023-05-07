@@ -6,6 +6,9 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class FrontendServices
 {
@@ -24,9 +27,7 @@ class FrontendServices
 
     public function logout()
     {
-        if (Auth()->user()->role == 0) {
-            Auth::logout();
-        }
+        Auth::logout();
     }
 
     public function register(Request $request)
@@ -41,5 +42,54 @@ class FrontendServices
         ]);
 
         return $user;
+    }
+    public function updateProfile(Request $request, $id)
+    {
+        if ($request->image != null) {
+            $image = $request->image;
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $filename = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+
+                if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
+                    $image = Str::random(5) . "_" . $filename;
+                    while (file_exists("image/user/" . $image)) {
+                        $image = Str::random(5) . "_" . $filename;
+                    }
+                    $file->move('image/user', $image);
+                }
+            }
+        }else{
+            $profile = User::find($id);
+            $image = $profile->image;
+        }
+        try {
+            DB::beginTransaction();
+            $profile = User::find($id)->update([
+                'name' => $request->name,
+                'address' => $request->address,
+                'phone' => $request->phone,
+                'image' => $image,
+            ]);
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
+        }
+        return $profile;
+    }
+    public function changePassword($currentPassword, $newPassword)
+    {
+        $user = Auth::user();
+        $currentPasswordHash = $user->password;
+        if (!Hash::check($currentPassword, $currentPasswordHash)) {
+
+            return false;
+        }
+
+        $user->password = Hash::make($newPassword);
+        $user->save();
+
+        return true;
     }
 }

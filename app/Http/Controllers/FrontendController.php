@@ -11,10 +11,14 @@ use App\Models\categories;
 use App\Models\products;
 use App\Models\sub_categories;
 use App\Models\cart;
+use App\Models\comments;
 use App\Models\order;
 use App\Models\order_detail;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
+use Exception;
+use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\ChangePasswordRequest;
 
 class FrontendController extends Controller
 {
@@ -30,7 +34,7 @@ class FrontendController extends Controller
         $carts = cart::get();
         $wishlists = Wishlist::get();
         $category = categories::where('status', 1)->get();
-        return view('frontend.pages.login', compact('category','carts', 'wishlists'));
+        return view('frontend.pages.login', compact('category', 'carts', 'wishlists'));
     }
     public function login(LoginRequest $request)
     {
@@ -77,14 +81,15 @@ class FrontendController extends Controller
 
         $banners = banners::where('status', 1)->whereNull('deleted_at')->limit(3)->get();
         $products = products::where('status', 1)->whereNull('deleted_at')->limit(8)->get();
+        $hotProducts = products::inRandomOrder()->where('status', 1)->whereNull('deleted_at')->limit(8)->get();
         $category = categories::where('status', 1)->whereNull('deleted_at')->get();
         $blogs = blog::where('status', 1)->whereNull('deleted_at')->limit(3)->get();
         if (Auth()->user()) {
             $carts = cart::where('user_id', Auth()->user()->id)->get();
             $wishlists = Wishlist::where('user_id', Auth()->user()->id)->get();
-            return view('frontend.index', compact('banners', 'products', 'category', 'blogs', 'carts', 'wishlists'));
+            return view('frontend.index', compact('banners', 'products', 'hotProducts', 'category', 'blogs', 'carts', 'wishlists'));
         }
-        return view('frontend.index', compact('banners', 'products', 'category', 'blogs'));
+        return view('frontend.index', compact('banners', 'products', 'hotProducts', 'category', 'blogs'));
     }
 
     public function productDetail($id)
@@ -105,11 +110,8 @@ class FrontendController extends Controller
 
         if (!empty($_GET['category'])) {
             $slug = explode(',', $_GET['category']);
-            // dd($slug);
             $cat_ids = sub_categories::select('id')->pluck('id')->toArray();
-            // dd($cat_ids);
             $products->whereIn('sub_categories_id', $cat_ids)->paginate;
-            // return $products;
         }
         if (!empty($_GET['sortBy'])) {
             if ($_GET['sortBy'] == 'name') {
@@ -185,9 +187,9 @@ class FrontendController extends Controller
         $carts = cart::all();
         $wishlists = Wishlist::all();
         if (request()->is('e-shop.loc/product-grids')) {
-            return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts' , 'wishlists'));
+            return view('frontend.pages.product-grids', compact('products', 'recent_products', 'category', 'carts', 'wishlists'));
         } else {
-            return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category', 'carts' , 'wishlists'));
+            return view('frontend.pages.product-lists', compact('products', 'recent_products', 'category', 'carts', 'wishlists'));
         }
     }
 
@@ -273,11 +275,12 @@ class FrontendController extends Controller
     public function blogDetail($id)
     {
         $blog = blog::find($id);
+        $comments = comments::where('blog_id', $blog->id)->paginate(10);
         $carts = cart::all();
         $wishlists = Wishlist::all();
         $recent_blogs = blog::orderBy('id', 'DESC')->where('status', 1)->whereNull('deleted_at')->limit(3)->get();
         $category = categories::where('status', 1)->whereNull('deleted_at')->get();
-        return view('frontend.pages.blog-detail', compact('blog', 'category', 'recent_blogs', 'carts', 'wishlists'));
+        return view('frontend.pages.blog-detail', compact('blog', 'category', 'comments', 'recent_blogs', 'carts', 'wishlists'));
     }
 
     public function contact()
@@ -293,5 +296,62 @@ class FrontendController extends Controller
         $wishlists = Wishlist::all();
         $category = categories::where('status', 1)->whereNull('deleted_at')->get();
         return view('frontend.pages.about-us', compact('category', 'carts', 'wishlists'));
+    }
+
+    public function cancleOrder($id)
+    {
+        $order = order::find($id);
+        if ($order->status == 'new') {
+            $order->update([
+                'status' => 'cancel',
+            ]);
+            return back()->with('success', 'Bạn đã hủy thành công đơn hàng này.');
+        } else {
+            return back()->with('error', 'Bạn không thể hủy đơn hàng này.');
+        }
+    }
+
+    public function profile()
+    {
+        $profile = Auth()->user();
+        $carts = cart::all();
+        $wishlists = Wishlist::all();
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
+        return view('frontend.pages.profiles', compact('profile', 'category', 'carts', 'wishlists'));
+    }
+    public function updateProfile(UpdateProfileRequest $profileRequest, $id)
+    {
+        try {
+            $result = $this->frontendServices->updateProfile($profileRequest, $id);
+            if ($result) {
+                return redirect()->route('home-user')->with('success', 'Bạn đã cập nhật thông tin tài khoản bạn thành công.');
+            } else {
+                return redirect()->back()->with('error', 'Cập nhật thông tin thất bại.');
+            }
+        } catch (Exception $exception) {
+            throw new Exception("Error Processing Request", 1);
+       }
+    }
+
+    public function userChangePassword()
+    {
+        $carts = cart::all();
+        $wishlists = Wishlist::all();
+        $category = categories::where('status', 1)->whereNull('deleted_at')->get();
+        return view('frontend.pages.changepassword', compact('category', 'carts', 'wishlists'));
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        $currentPassword = $request->input('current_password');
+        $newPassword = $request->input('new_password');
+
+        $result = $this->frontendServices->changePassword($currentPassword, $newPassword);
+
+        if ($result) {
+            return redirect()->route('home-user')->with('success', 'Thay đổi mật khẩu thành công.');
+        } else {
+            return redirect()->back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
+        }
     }
 }

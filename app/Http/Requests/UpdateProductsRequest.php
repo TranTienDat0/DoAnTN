@@ -32,7 +32,7 @@ class UpdateProductsRequest extends FormRequest
             'expiry' => 'required|date|after:date_of_manufacture',
             'status' => 'required',
             'sub_categories_id' => 'required',
-            'image' => 'required',
+            // 'image' => 'required',
         ];
     }
     public function messages()
@@ -51,7 +51,7 @@ class UpdateProductsRequest extends FormRequest
             'expiry.date' => 'Ngày hết hạn không hợp lệ.',
             'after' => 'Ngày hết hạn phải sau ngày sản xuất.',
             'before' => 'Ngày sản xuất phải trước ngày hết hạn.',
-            'image.required' => 'Vui lòng chọn ảnh.'
+            // 'image.required' => 'Vui lòng chọn ảnh.'
         ];
     }
 }

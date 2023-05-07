@@ -101,7 +101,7 @@
                                 <i class="fa fa-envelope-open"></i>
                                 <h4 class="title">Email:</h4>
                                 <ul>
-                                    <li><a href="mailto:info@yourwebsite.com">tiendat09022k1@gmail.com</a></li>
+                                    <li><a href="mailto:info@yourwebsite.com">tiendat09022kk1@gmail.com</a></li>
                                 </ul>
                             </div>
                             <div class="single-info">

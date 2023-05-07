@@ -62,19 +62,24 @@ class BannerServices
         } else {
             $status = 0;
         }
-        $image = $request->image;
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = $file->getClientOriginalName();
-            $extension = $file->getClientOriginalExtension();
+        if ($request->image != null) {
+            $image = $request->image;
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $filename = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
 
-            if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
-                $image = Str::random(5) . "_" . $filename;
-                while (file_exists("image/banner/" . $image)) {
+                if (strcasecmp($extension, 'jpg') || strcasecmp($extension, 'png') || strcasecmp($extension, 'jepg')) {
                     $image = Str::random(5) . "_" . $filename;
+                    while (file_exists("image/banner/" . $image)) {
+                        $image = Str::random(5) . "_" . $filename;
+                    }
+                    $file->move('image/banner', $image);
                 }
-                $file->move('image/banner', $image);
             }
+        } else {
+            $banner = banners::find($id);
+            $image = $banner->image;
         }
         try {
             DB::beginTransaction();

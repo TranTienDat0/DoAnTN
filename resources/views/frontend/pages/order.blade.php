@@ -53,7 +53,7 @@
                                                     </p>
                                                 </td>
                                                 <td class="qty" data-title="Qty">
-                                                    <p>{{ $orderd->price }}</p>
+                                                    <p>{{ number_format($orderd->price, 0) }}đ</p>
                                                 </td>
                                                 <td class="qty" data-title="Qty">
                                                     <p>{{ $orderd->quantity }}</p>
@@ -63,17 +63,29 @@
                                                 </td>
                                                 <td class="qty" data-title="Qty">
                                                     @if ($orderd->order->status == 'new')
-                                                        <span class="badge badge-primary">{{ $orderd->order->status }}</span>
+                                                        <span
+                                                            class="badge badge-primary">{{ $orderd->order->status }}</span>
                                                     @elseif($orderd->order->status == 'process')
-                                                        <span class="badge badge-warning">{{ $orderd->order->status }}</span>
+                                                        <span
+                                                            class="badge badge-warning">{{ $orderd->order->status }}</span>
                                                     @elseif($orderd->order->status == 'delivered')
-                                                        <span class="badge badge-success">{{ $orderd->order->status }}</span>
+                                                        <span
+                                                            class="badge badge-success">{{ $orderd->order->status }}</span>
                                                     @else
-                                                        <span class="badge badge-danger">{{ $orderd->order->status }}</span>
+                                                        <span
+                                                            class="badge badge-danger">{{ $orderd->order->status }}</span>
                                                     @endif
                                                 </td>
-                                                <td class="action" data-title="Remove"><a href=""><i
-                                                            class="ti-trash remove-icon"></i></a></td>
+                                                @if ($orderd->order->status == 'new')
+                                                    <td class="action" data-title="Remove"><a
+                                                            href="{{ route('order.cancle', $orderd->order->id) }}"
+                                                            onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')">Cancle</a>
+                                                    </td>
+                                                @else
+                                                    <td class="action" data-title="Remove"><a
+                                                        style="pointer-events: none;" href="#">Cancle</a>
+                                                    </td>
+                                                @endif
                                             </tr>
                                         @endforeach
                                     @endif

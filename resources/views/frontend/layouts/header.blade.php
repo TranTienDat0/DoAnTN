@@ -23,7 +23,38 @@
                                 <li><i class="ti-location-pin"></i> <a href="{{ route('user.order') }}">Order</a></li>
                                 <li><i class="ti-user"></i> <a href="{{ route('home-user') }}"
                                         target="_blank">Dashboard</a></li>
-                                <li><i class="ti-power-off"></i> <a href="{{ route('user.logout') }}">Logout</a></li>
+                                {{-- <li><i class="ti-power-off"></i> <a href="{{ route('user.logout') }}">Logout</a></li> --}}
+                                <!-- Nav Item - User Information -->
+                                <li>
+                                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="mr-2 d-none d-lg-inline text-gray-600 small"></span>
+                                        @php
+                                            echo Auth()->user()->name;
+                                        @endphp
+                                        &nbsp;
+                                        @if (Auth()->user()->image != null)
+                                            <img class="img-profile rounded-circle"
+                                                src="{{ asset('image/user/' . Auth()->user()->image) }}" style="width: 20px;">
+                                        @else
+                                            <img class="img-profile rounded-circle"
+                                                src="{{ asset('backend/img/avatar.png') }}" style="width: 20px;">
+                                        @endif
+                                    </a>
+                                    <!-- Dropdown - User Information -->
+                                    <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                        aria-labelledby="userDropdown">
+                                        <a class="dropdown-item" href="{{ route('user.profile') }}">
+                                            <i class="ti-user"></i>
+                                            Profile
+                                        </a>
+                                        <a class="dropdown-item" href="{{ route('user-form-change-password') }}">
+                                            <i class="fa-light fa-key"></i>
+                                            Change Password
+                                        </a>
+                                        <span class="dropdown-item"><i class="ti-power-off"></i> <a href="{{ route('user.logout') }}">Logout</a></span>
+                                    </div>
+                                </li>
                             @else
                                 <li><i class="ti-power-off"></i><a href="{{ route('user.view-login') }}">Login /</a> <a
                                         href="">Register</a>
@@ -113,7 +144,8 @@
                                                     <h4><a href="{{ route('product-detail', $data->product->id) }}"
                                                             target="_blank">{{ $data->product->name }}</a></h4>
                                                     <p class="quantity">{{ $data->quantity }} x - <span
-                                                            class="amount">{{ number_format($data->price, 0) }}đ</span></p>
+                                                            class="amount">{{ number_format($data->price, 0) }}đ</span>
+                                                    </p>
                                                 </li>
                                             @endforeach
                                         </ul>

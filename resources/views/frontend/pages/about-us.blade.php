@@ -30,7 +30,7 @@
 
                         <h3>Welcome To <span>TienDatBakery</span></h3>
                         <p>
-                            Xin chào quý khách, chúng tôi là một cửa hàng TienDatBakery chuyên cung cấp các loại bánh, bánh mì,
+                            Xin chào quý khách, chúng tôi là một cửa hàng Tiến Đạt Bakery chuyên cung cấp các loại bánh, bánh mì,
                             bánh ngọt và các sản phẩm liên quan đến ẩm thực. Với hơn 10 năm kinh nghiệm trong lĩnh vực sản
                             xuất bánh, chúng tôi cam kết mang đến cho khách hàng những sản phẩm chất lượng, đảm bảo vệ sinh
                             an toàn thực phẩm và đặc biệt là vị ngon đậm đà, tươi mới mỗi ngày. Chúng tôi luôn đề cao tinh
@@ -46,7 +46,7 @@
                 </div>
                 <div class="col-lg-6 col-12">
                     <div class="about-img overlay">
-                        <img src="">
+                        <img src="{{ asset('image/image.PNG') }}">
                     </div>
                 </div>
             </div>

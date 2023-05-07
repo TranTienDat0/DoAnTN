@@ -54,7 +54,7 @@
                         <div class="col-lg-4 col-md-6 col-12">
                             <div class="single-banner">
                                 @if ($cat->image)
-                                    <img src="{{ asset('image/category/' . $cat->image) }}" alt="{{ $cat->image }}">
+                                    <img src="{{ asset('image/category/' . $cat->image) }}" alt="{{ $cat->image }}" style="width: 500px; height: 300px">
                                 @else
                                     <img src="https://via.placeholder.com/600x370" alt="#">
                                 @endif
@@ -120,7 +120,7 @@
                                                     value="{{ $product->id }}" />
                                                 <img class="default-img"
                                                     src="{{ asset('image/product/' . $product->image) }}"
-                                                    alt="{{ $product->image }}">
+                                                    alt="{{ $product->image }}" style="width: 255px; height: 200px">
                                                 @if ($product->quantity <= 0)
                                                     <span class="out-of-stock">Sale out</span>
                                                 @endif
@@ -173,13 +173,13 @@
             <div class="row">
                 <div class="col-12">
                     <div class="owl-carousel popular-slider">
-                        @foreach($products as $product)
+                        @foreach($hotProducts as $product)
                             @if($product->hot==1)
                                 <!-- Start Single Product -->
                             <div class="single-product">
                                 <div class="product-img">
                                     <a href="{{route('product-detail',$product->id)}}">
-                                        <img class="default-img" src="{{ asset('image/product/'. $product->image) }}" alt="">
+                                        <img class="default-img" src="{{ asset('image/product/'. $product->image) }}" alt="" style="width: 255px; height: 200px">
                                         <img class="hover-img" src="{{ asset('image/product/'. $product->image) }}" alt="">
                                         {{-- <span class="out-of-stock">Hot</span> --}}
                                     </a>
@@ -225,6 +225,7 @@
                     <div class="row">
                         @php
                             $product_lists = DB::table('products')
+                                ->inRandomOrder()
                                 ->where('status', '1')
                                 ->whereNull('deleted_at')
                                 ->orderBy('id', 'DESC')

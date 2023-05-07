@@ -34,7 +34,8 @@
                                 <div class="blog-detail">
                                     <h2 class="blog-title">{{ $blog->name }}</h2>
                                     <div class="blog-meta">
-                                        <span class="author"><a href="javascript:void(0);"><i class="fa fa-user"></i>By {{ $blog->user->name }}
+                                        <span class="author"><a href="javascript:void(0);"><i class="fa fa-user"></i>By
+                                                {{ $blog->user->name }}
                                             </a><a href="javascript:void(0);"><i
                                                     class="fa fa-calendar"></i>{{ $blog->created_at->format('M d, Y') }}</a><a
                                                 href="javascript:void(0);"></span>
@@ -45,6 +46,58 @@
                                     </div>
                                 </div>
                             </div>
+                            @auth
+                            <div class="col-12 mt-4" style="width: 800px">
+                                <div class="reply">
+                                    <div class="reply-head comment-form" id="commentFormContainer">
+                                        <h2 class="reply-title">Leave a Comment</h2>
+                                        <!-- Comment Form -->
+                                        <form class="form comment_form" id="commentForm"
+                                            action="{{ route('comment', $blog->id) }}" method="POST">
+                                            @csrf
+                                            <div class="row">                                              
+                                                <div class="col-12">
+                                                    <div class="form-group  comment_form_body">
+                                                        <label>Your Message<span>*</span></label>
+                                                        <textarea name="comment" id="comment" rows="10" placeholder=""></textarea>
+                                                        <input type="hidden" name="blog_id" value="{{ $blog->id }}" />
+                                                        <input type="hidden" name="parent_id" id="parent_id" value="" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group button">
+                                                        <button type="submit" class="btn"><span
+                                                                class="comment_btn comment">Post Comment</span><span
+                                                                class="comment_btn reply" style="display: none;">Reply
+                                                                Comment</span></button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                        <!-- End Comment Form -->
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <p class="text-center p-5">
+                                You need to <a href="" style="color:rgb(54, 54, 204)">Login</a> OR <a
+                                    style="color:blue" href="">Register</a> for comment.
+                            </p>
+
+                            <!--/ End Form -->
+                        @endauth
+                        <div class="col-12">
+                            <div class="comments">
+                                <h3 class="comment-title">Comments ({{$blog->allComments->count()}})</h3>
+                                <!-- Single Comment -->
+                                @include('frontend.pages.comment', [
+                                    'comments' => $comments,
+                                    'blog_id' => $blog->id,
+                                    'depth' => 3,
+                                ])
+                                <!-- End Single Comment -->
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -66,10 +119,10 @@
                                 <!-- Single Post -->
                                 <div class="single-post">
                                     <div class="image">
-                                        <img src="{{ asset('image/blog/') . $blog->image }}" alt="{{ $blog->image }}">
+                                        <img src="{{ asset('image/blog/'.$blog->image) }}" alt="{{ $blog->image }}">
                                     </div>
                                     <div class="content">
-                                        <h5><a href="#">{{ $blog->name }}</a></h5>
+                                        <h5><a href="{{ route('blog.detail', $blog->id) }}">{{ $blog->name }}</a></h5>
                                         <ul class="comment">
                                             <li><i class="fa fa-calendar"
                                                     aria-hidden="true"></i>{{ $blog->created_at->format('d M, y') }}</li>
@@ -85,10 +138,11 @@
                         <!--/ End Single Widget -->
 
                         <!-- Single Widget -->
-                        <!--/ End Single Widget -->
+
                     </div>
                 </div>
             </div>
+            <!--/ End Single Widget -->
         </div>
     </section>
     <!--/ End Blog Single -->

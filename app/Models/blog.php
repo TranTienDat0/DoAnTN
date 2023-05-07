@@ -27,4 +27,10 @@ class blog extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function comments(){
+        return $this->hasMany(comments::class)->whereNull('parent_id')->where('status','active')->with('user')->orderBy('id','DESC');
+    }
+    public function allComments(){
+        return $this->hasMany(comments::class)->where('status','active');
+    }
 }

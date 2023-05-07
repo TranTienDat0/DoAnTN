@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderConfirmation;
 use Illuminate\Http\Request;
 use App\Models\cart;
 use App\Models\order;
@@ -9,15 +10,12 @@ use App\Models\order_detail;
 use App\Models\payment;
 use App\Models\products;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use PDF;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
-    protected $user;
-    public function __construct(User $user)
-    {
-        $this->user = $user;
-    }
     public function store(Request $request)
     {
 
@@ -58,10 +56,23 @@ class OrderController extends Controller
             ]);
         }
         //send mail
+        $user = $order->user;
+        $orderDetails = order_detail::where('order_id', $order->id)->get();
+        // if(request('payment_method')=='paypal'){
+        //     return redirect()->route('payment', compact('id', $order->id));
+        // }
+        // else{
+        //     session()->forget('cart');
+        //     session()->forget('coupon');
+        // }
+        Mail::send('frontend.mail.order-confirmation', compact('user', 'order', 'orderDetails'), function ($message) use($user){
+            $message->to($user->email_address, $user->name);
+            $message->subject('Order Confirmation');
+        });
+
         cart::where('user_id', Auth()->user()->id)->delete();
         return redirect()->route('home-user')->with('success', 'Bạn đã đặt hành thành công.');
     }
-
     public function index()
     {
         $orders = Order::orderBy('id', 'DESC')->paginate(10);
@@ -110,12 +121,13 @@ class OrderController extends Controller
         }
     }
 
-    public function delete($id){
+    public function delete($id)
+    {
         $order = order::find($id);
-        if($order){
+        if ($order) {
             $order->delete();
             return redirect()->back()->with('success', 'Bạn đã xóa đơn hàng thành công.');
-        }else{
+        } else {
             return redirect()->back()->with('error', 'Đã có lỗi xảy ra.');
         }
     }

@@ -9,6 +9,7 @@ use App\Http\Controllers\HomeAdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\cartController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\messageController;
 use App\Http\Controllers\OrderController;
@@ -26,7 +27,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::prefix('auth')->group(function () {
     Route::controller(auth\LoginController::class)->group(function () {
         //login
@@ -133,6 +133,13 @@ Route::prefix('admin')->group(function () {
         route::get('/message/{id}', 'show')->name('message.show');
         route::delete('/message-delete/{id}', 'delete')->name('message.delete');
     });
+
+    route::controller(CommentController::class)->middleware('checkLogin')->group(function (){
+        route::get('comment', 'index')->name('comment.index');
+        route::get('/comment/{id}', 'edit')->name('comment.edit');
+        route::put('/comment-update/{id}', 'update')->name('comment.update');
+        route::delete('/comment-delete{id}', 'delete')->name('comment.delete');
+    });
 });
 
 Route::prefix('user')->group(function (){
@@ -165,6 +172,13 @@ Route::prefix('user')->group(function (){
         route::get('contact', 'contact')->name('contact');
 
         route::get('about-us', 'aboutUs')->name('aboutUs');
+
+        route::get('/order-update/{id}', 'cancleOrder')->name('order.cancle');
+
+        route::get('/user-profile', 'profile')->name('user.profile');
+        route::put('/user-profile/{id}', 'updateProfile')->name('user.update.profile');
+        Route::get('/user_form_change_password', 'userChangePassword')->name('user-form-change-password');
+        Route::post('/user_change_password', 'changePassword')->name('user-change-password');
     });
 
     route::controller(cartController::class)->middleware('user')->group(function (){
@@ -191,5 +205,9 @@ Route::prefix('user')->group(function (){
 
     route::controller(messageController::class)->middleware('user')->group(function (){
         route::post('/message', 'store')->name('message');
+    });
+
+    route::controller(CommentController::class)->middleware('user')->group(function (){
+        route::post('/comment/{id}', 'store')->name('comment');
     });
 });

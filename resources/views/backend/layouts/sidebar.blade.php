@@ -140,7 +140,7 @@
     </div>
     <!-- Comments -->
     <li class="nav-item">
-        <a class="nav-link" href="">
+        <a class="nav-link" href="{{ route('comment.index') }}">
             <i class="fas fa-comments fa-chart-area"></i>
             <span>Comments</span>
         </a>
