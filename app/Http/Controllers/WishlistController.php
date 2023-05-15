@@ -25,6 +25,7 @@ class WishlistController extends Controller
     }
     public function addWishlist(Request $request)
     {
+        // dd($request->id);
         if (empty($request->id)) {
             return back()->with('error', 'Có lỗi xảy ra. Vui lòng thử lại!');
         }
@@ -32,7 +33,7 @@ class WishlistController extends Controller
         if (empty($product)) {
             return back()->with('error', 'Có lỗi xảy ra. Vui lòng thử lại!');
         }
-
+        // dd($product);
         $already_wishlist = Wishlist::where('user_id', auth()->user()->id)->where('cart_id', null)->where('product_id', $product->id)->first();
         // return $already_wishlist;
         if ($already_wishlist) {

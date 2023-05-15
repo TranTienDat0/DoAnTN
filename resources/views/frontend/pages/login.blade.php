@@ -67,7 +67,7 @@
                                                 type="checkbox">Remember me</label>
                                     </div>
                                     @if (Route::has('password.request'))
-                                        <a class="lost-pass" href="">
+                                        <a class="lost-pass" href="{{ route('password.request') }}">
                                             Lost your password?
                                         </a>
                                     @endif

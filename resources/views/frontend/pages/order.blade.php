@@ -34,7 +34,7 @@
                                     <th class="text-center">QUANTITY</th>
                                     <th class="text-center">TOTAL</th>
                                     <th class="text-center">STATUS</th>
-                                    <th class="text-center"><i class="ti-trash remove-icon"></i></th>
+                                    {{-- <th class="text-center"><i class="ti-trash remove-icon"></i></th> --}}
                                 </tr>
                             </thead>
                             <tbody id="cart_item_list">
@@ -76,18 +76,18 @@
                                                             class="badge badge-danger">{{ $orderd->order->status }}</span>
                                                     @endif
                                                 </td>
-                                                @if ($orderd->order->status == 'new')
-                                                    <td class="action" data-title="Remove"><a
-                                                            href="{{ route('order.cancle', $orderd->order->id) }}"
-                                                            onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')">Cancle</a>
-                                                    </td>
-                                                @else
-                                                    <td class="action" data-title="Remove"><a
-                                                        style="pointer-events: none;" href="#">Cancle</a>
-                                                    </td>
-                                                @endif
                                             </tr>
                                         @endforeach
+                                        @if ($orderd->order->status == 'new')
+                                            <td colspan="2" class="action" data-title="Remove"><a
+                                                    href="{{ route('order.cancle', $orderd->order->id) }}"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')">Cancle</a>
+                                            </td>
+                                        @else
+                                            <td colspan="2" class="action" data-title="Remove"><a
+                                                    style="pointer-events: none;" href="#">Cancle</a>
+                                            </td>
+                                        @endif
                                     @endif
                                 </form>
                             </tbody>

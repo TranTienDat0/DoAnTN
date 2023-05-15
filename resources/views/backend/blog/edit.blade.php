@@ -25,15 +25,6 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="inputTitle" class="col-form-label">Content <span class="text-danger">*</span></label>
-                    <input id="inputTitle" type="text" name="name" placeholder="Enter name"
-                        value="{{ $blog->name }}" class="form-control">
-                    @error('name')
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                </div>
-
-                <div class="form-group">
                     <label for="inputImage" class="col-form-label">Image<span class="text-danger">*</span></label>
                     <div class="input-group">
                         <span class="input-group-btn">
@@ -77,7 +68,7 @@
         $('#lfm').filemanager('image');
 
         $(document).ready(function() {
-            $('#summary').summernote({
+            $('#content').summernote({
                 placeholder: "Write short description.....",
                 tabsize: 2,
                 height: 150

@@ -15,18 +15,18 @@
                 @if (count($comments) > 0)
                     <table class="table table-bordered" id="order-dataTable" width="100%" cellspacing="0">
                         <thead>
-                            <tr>
+                            <tr style="text-align: center">
                                 <th>S.N.</th>
                                 <th>Author</th>
-                                <th>Post Title</th>
+                                <th>Blog Name</th>
                                 <th>Message</th>
                                 <th>Date</th>
                                 <th>Status</th>
-                                <th>Action</th>
+                                <th style="width: 100px">Action</th>
                             </tr>
                         </thead>
                         <tfoot>
-                            <tr>
+                            <tr style="text-align: center">
                                 <th>S.N.</th>
                                 <th>Author</th>
                                 <th>Blog Name</th>
@@ -38,7 +38,7 @@
                         </tfoot>
                         <tbody>
                             @foreach ($comments as $comment)
-                                <tr>
+                                <tr  style="text-align: center">
                                     <td>{{ $comment->id }}</td>
                                     <td>{{ $comment->user->email_address }}</td>
                                     <td>{{ $comment->blog->name }}</td>

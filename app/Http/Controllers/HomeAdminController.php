@@ -3,9 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateProfileRequest;
+use App\Models\blog;
+use App\Models\comments;
+use App\Models\order;
+use App\Models\ProductReview;
+use App\Models\products;
 use App\Services\HomeAdminServices;
 use App\Models\User;
 use Exception;
+// use Charts;
+use Illuminate\Support\Facades\DB;
 
 class HomeAdminController extends Controller
 {
@@ -27,7 +34,37 @@ class HomeAdminController extends Controller
         $CountAccountCustom = User::count() - $CountAccountAdmin;
         $CustomActive = User::onlyTrashed()->where('role', '0')->count();
         $CustomInactive = $CountAccountCustom - $CustomActive;
-        return view('backend.index', compact(
+        $order = order::all();
+        $total = 0;
+        foreach ($order as $item) {
+            $total += $item->total;
+        }
+        //list review
+        $reviews = ProductReview::orderBy('id', 'DESC')->paginate(20);
+        $reviewCounts = ProductReview::selectRaw('products_id, count(*) as count')
+            ->groupBy('products_id')
+            ->pluck('count', 'products_id');
+        //possts
+        $commentCounts = comments::selectRaw('blog_id, count(*) as count')
+            ->groupBy('blog_id')
+            ->pluck('count', 'blog_id');
+        $blogs = blog::all(); // lấy danh sách các blog
+        //bieu do
+        $revenues = DB::table('order')
+            ->select(DB::raw('MONTH(created_at) as month'), DB::raw('SUM(total) as revenue'))
+            ->groupBy(DB::raw('MONTH(created_at)'))
+            ->get();
+
+        $chartData = [['Month', 'Revenue']];
+        foreach ($revenues as $revenue) {
+            $chartData[] = [date('F', mktime(0, 0, 0, $revenue->month, 1)), $revenue->revenue];
+        }
+        return view('backend.index', ['chartData' => json_encode($chartData)], compact(
+            'blogs',
+            'commentCounts',
+            'reviewCounts',
+            'reviews',
+            'total',
             'CountCategory',
             'CountSubCategory',
             'CountProducts',
@@ -37,7 +74,7 @@ class HomeAdminController extends Controller
             'AdminInactive',
             'CountAccountCustom',
             'CustomActive',
-            'CustomInactive'
+            'CustomInactive',
         ));
     }
     public function profile()
@@ -57,6 +94,6 @@ class HomeAdminController extends Controller
             }
         } catch (Exception $exception) {
             throw new Exception("Error Processing Request", 1);
-       }
+        }
     }
 }

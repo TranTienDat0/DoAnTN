@@ -20,3 +20,4 @@ yarn-error.log
 /resources/js
 /resources/lang
 /public
+/config

@@ -24,13 +24,13 @@ class LoginController extends Controller
         $password = $request->password;
         $remember = $request->has('remember');
         $user = $this->authServices->login($email_address, $password, $remember);
+        // $isAdmin = $this->authServices->isAdmin(Auth::user());
+        // dd($user);
         // if ($user->deleted_at != NULL) {
             if ($user) {
                 if ($this->authServices->isAdmin($user)) {
-
                     return redirect()->route('home');
                 } else {
-
                     return redirect()->back()->with([
                         'Forbidden' => 'Bạn không có quyền truy cập trang này.'
                     ]);

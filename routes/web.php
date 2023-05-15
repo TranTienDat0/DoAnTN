@@ -15,7 +15,10 @@ use App\Http\Controllers\messageController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\WishlistController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
+// use Illuminate\Support\Facades\Auth; 
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +30,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
 Route::prefix('auth')->group(function () {
     Route::controller(auth\LoginController::class)->group(function () {
         //login
@@ -45,18 +49,18 @@ Route::prefix('auth')->group(function () {
         Route::post('/forgot-password', 'sendResetLinkEmail')->name('password.email');
     });
     route::controller(auth\ResetPasswordController::class)->group(function () {
-        Route::get('/reset-password/{token}', 'ViewResetPasswordForm')->name('password.reset');
+        Route::get('/reset-password/{token}', 'showResetForm')->name('password.reset');
         Route::post('/reset-password', 'reset')->name('password.update');
     });
 });
 
 Route::prefix('admin')->group(function () {
-    route::controller(HomeAdminController::class)->middleware('checkLogin')->group(function (){
+    route::controller(HomeAdminController::class)->middleware('checkLogin')->group(function () {
         route::get('/home', 'index')->name('home');
         route::get('/admin-profile', 'profile')->name('admin.profile');
         route::put('/admin-profile/{id}', 'updateProfile')->name('admin.update.profile');
     });
-    route::controller(UserController::class)->middleware('checkLogin')->group(function (){
+    route::controller(UserController::class)->middleware('checkLogin')->group(function () {
         Route::get('/user', 'index')->name('users');
         Route::get('/user-create', 'create')->name('users.create');
         route::post('/user-store', 'store')->name('users.store');
@@ -65,10 +69,9 @@ Route::prefix('admin')->group(function () {
         route::delete('/user-delete/{id}', 'delete')->name('users.delete');
         route::get('/list-user-delete', 'getAllUserDelete')->name('users.listDelete');
         route::delete('/user-forcedelete/{id}', 'forceDelete')->name('users.forcedelete');
-        Route::patch('users/{id}/restore','restore')->name('users.restore');
-
+        Route::patch('users/{id}/restore', 'restore')->name('users.restore');
     });
-    route::controller(BannerController::class)->middleware('checkLogin')->group(function (){
+    route::controller(BannerController::class)->middleware('checkLogin')->group(function () {
         route::get('/banner', 'index')->name('banner');
         Route::get('/banner-create', 'create')->name('banner.create');
         route::post('/banner-store', 'store')->name('banner.store');
@@ -76,7 +79,7 @@ Route::prefix('admin')->group(function () {
         route::put('/banner-update/{id}', 'update')->name('banner.update');
         route::delete('/banner-delete/{id}', 'delete')->name('banner.delete');
     });
-    route::controller(CategoryController::class)->middleware('checkLogin')->group(function (){
+    route::controller(CategoryController::class)->middleware('checkLogin')->group(function () {
         route::get('/category', 'index')->name('category');
         Route::get('/category-create', 'create')->name('category.create');
         route::post('/category-store', 'store')->name('category.store');
@@ -84,7 +87,7 @@ Route::prefix('admin')->group(function () {
         route::put('/category-update/{id}', 'update')->name('category.update');
         route::delete('/category-delete/{id}', 'delete')->name('category.delete');
     });
-    route::controller(SubCategoryController::class)->middleware('checkLogin')->group(function (){
+    route::controller(SubCategoryController::class)->middleware('checkLogin')->group(function () {
         route::get('/subcategory', 'index')->name('subcategory');
         Route::get('/subcategory-create', 'create')->name('subcategory.create');
         route::post('/subcategory-store', 'store')->name('subcategory.store');
@@ -92,7 +95,7 @@ Route::prefix('admin')->group(function () {
         route::put('/subcategory-update/{id}', 'update')->name('subcategory.update');
         route::delete('/subcategory-delete/{id}', 'delete')->name('subcategory.delete');
     });
-    route::controller(ProductsController::class)->middleware('checkLogin')->group(function (){
+    route::controller(ProductsController::class)->middleware('checkLogin')->group(function () {
         route::get('/products', 'index')->name('products');
         Route::get('/products-create', 'create')->name('products.create');
         route::post('/products-store', 'store')->name('products.store');
@@ -102,9 +105,9 @@ Route::prefix('admin')->group(function () {
         route::delete('/products-multiple', 'deleteSelected')->name('products.deleteMultiple');
         route::get('/product-expired', 'getProductsexpired')->name('products.expired');
         route::get('/product-out-of-stock', 'getProductOutOfStock')->name('products.outofstock');
-        Route::post('/product/search','searchProduct')->name('products.search');
+        Route::post('/product/search', 'searchProduct')->name('products.search');
     });
-    route::controller(BlogController::class)->middleware('checkLogin')->group(function (){
+    route::controller(BlogController::class)->middleware('checkLogin')->group(function () {
         route::get('/blog', 'index')->name('blog');
         Route::get('/blog-create', 'create')->name('blog.create');
         route::post('/blog-store', 'store')->name('blog.store');
@@ -112,29 +115,30 @@ Route::prefix('admin')->group(function () {
         route::put('/blog-update/{id}', 'update')->name('blog.update');
         route::delete('/blog-delete/{id}', 'delete')->name('blog.delete');
     });
-    route::controller(OrderController::class)->middleware('checkLogin')->group(function (){
+    route::controller(OrderController::class)->middleware('checkLogin')->group(function () {
         route::get('order', 'index')->name('order.index');
         route::get('/order-show/{id}', 'show')->name('order.show');
-        route::get('order/pdf/{id}','pdf')->name('order.pdf');
+        route::get('order/pdf/{id}', 'pdf')->name('order.pdf');
         route::get('/order-edit/{id}', 'edit')->name('order.edit');
         route::put('/order-update/{id}', 'update')->name('order.update');
         route::delete('/order/{id}', 'delete')->name('order.delete');
+        // route::get('/income', 'incomeChart')->name('product.order.income');
     });
 
-    route::controller(ProductReviewController::class)->middleware('checkLogin')->group(function (){
+    route::controller(ProductReviewController::class)->middleware('checkLogin')->group(function () {
         route::get('/reviews', 'index')->name('products.review');
         route::get('/review-edit/{id}', 'edit')->name('review.edit');
         route::put('/review-update/{id}', 'update')->name('review.update');
         route::delete('/review-delete{id}', 'delete')->name('review.delete');
     });
 
-    route::controller(messageController::class)->middleware('checkLogin')->group(function (){
+    route::controller(messageController::class)->middleware('checkLogin')->group(function () {
         route::get('/message', 'index')->name('message.index');
         route::get('/message/{id}', 'show')->name('message.show');
         route::delete('/message-delete/{id}', 'delete')->name('message.delete');
     });
 
-    route::controller(CommentController::class)->middleware('checkLogin')->group(function (){
+    route::controller(CommentController::class)->middleware('checkLogin')->group(function () {
         route::get('comment', 'index')->name('comment.index');
         route::get('/comment/{id}', 'edit')->name('comment.edit');
         route::put('/comment-update/{id}', 'update')->name('comment.update');
@@ -142,8 +146,8 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-Route::prefix('user')->group(function (){
-    route::controller(FrontendController::class)->group(function (){
+Route::prefix('user')->group(function () {
+    route::controller(FrontendController::class)->group(function () {
         route::get('user-view_login', 'viewLogin')->name('user.view-login');
         route::post('user-login', 'login')->name('user.login');
         route::get('user-logout', 'logout')->name('user.logout');
@@ -160,12 +164,12 @@ Route::prefix('user')->group(function (){
 
         route::get('/product_detail/{id}', 'productDetail')->name('product-detail');
 
-        Route::match(['get','post'],'/filter','productFilter')->name('shop.filter');
+        Route::match(['get', 'post'], '/filter', 'productFilter')->name('shop.filter');
 
-        Route::post('/product/search','productSearch')->name('product.search');
+        Route::post('/product/search', 'productSearch')->name('product.search');
 
         route::get('/user-order', 'orderIndex')->name('user.order');
-        
+
         route::get('/blog-list', 'blog')->name('blog.list');
         route::get('/blog-detail/{id}', 'blogDetail')->name('blog.detail');
 
@@ -181,33 +185,33 @@ Route::prefix('user')->group(function (){
         Route::post('/user_change_password', 'changePassword')->name('user-change-password');
     });
 
-    route::controller(cartController::class)->middleware('user')->group(function (){
+    route::controller(cartController::class)->middleware('user')->group(function () {
         route::get('cart', 'index')->name('cart');
-        route::get('/add-to-cart/{id}','addToCart')->name('add-to-cart');
-        Route::post('cart-update','cartUpdate')->name('cart.update');
-        Route::get('/cart-delete/{id}','cartdelete')->name('cart.delete');
+        route::get('/add-to-cart/{id}', 'addToCart')->name('add-to-cart');
+        Route::post('cart-update', 'cartUpdate')->name('cart.update');
+        Route::get('/cart-delete/{id}', 'cartdelete')->name('cart.delete');
         route::get('checkout', 'checkout')->name('checkout');
     });
 
-    route::controller(OrderController::class)->middleware('user')->group(function (){
-        Route::post('cart/order','store')->name('cart.order');
+    route::controller(OrderController::class)->middleware('user')->group(function () {
+        Route::post('cart/order', 'store')->name('cart.order');
     });
 
-    route::controller(ProductReviewController::class)->middleware('user')->group(function (){
-        Route::post('product/{id}/review','store')->name('review.store');
+    route::controller(ProductReviewController::class)->middleware('user')->group(function () {
+        Route::post('product/{id}/review', 'store')->name('review.store');
     });
 
-    route::controller(WishlistController::class)->middleware('user')->group(function (){
+    route::controller(WishlistController::class)->middleware('user')->group(function () {
         route::get('/wishlist', 'index')->name('wishlist');
         route::get('/wishlist/{id}', 'addWishlist')->name('add-to-wishlist');
         route::get('/wishlist-delete/{id}', 'wishlistDelete')->name('wishlist.delete');
     });
 
-    route::controller(messageController::class)->middleware('user')->group(function (){
+    route::controller(messageController::class)->middleware('user')->group(function () {
         route::post('/message', 'store')->name('message');
     });
 
-    route::controller(CommentController::class)->middleware('user')->group(function (){
+    route::controller(CommentController::class)->middleware('user')->group(function () {
         route::post('/comment/{id}', 'store')->name('comment');
     });
 });

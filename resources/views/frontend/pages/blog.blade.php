@@ -1,6 +1,6 @@
 @extends('frontend.layouts.master')
 
-@section('title','E-SHOP || Blog Page')
+@section('title','Tien Dat Bakery || Blog Page')
 
 @section('main-content')
     <!-- Breadcrumbs -->
@@ -31,12 +31,12 @@
                             <div class="col-lg-6 col-md-6 col-12">
                                 <!-- Start Single Blog  -->
                                 <div class="shop-single-blog">
-                                <img src="{{ asset('image/blog/'. $blog->image) }}" alt="{{ $blog->image }}">
+                                <img src="{{ asset('image/blog/'. $blog->image) }}" alt="{{ $blog->image }}" style="height: 250px">
                                     <div class="content">
                                         <p class="date"><i class="fa fa-calendar" aria-hidden="true"></i> {{$blog->created_at->format('d M, Y. D')}}
                                             <span class="float-right">
                                                 <i class="fa fa-user" aria-hidden="true"></i>
-                                                 {{$blog->user->email ?? 'Anonymous'}}
+                                                 {{$blog->user->name ?? 'Anonymous'}}
                                             </span>
                                         </p>
                                         <a href="{{route('blog.detail',$blog->id)}}" class="title">{{$blog->name}}</a>
@@ -71,7 +71,7 @@
                                 <!-- Single Post -->
                                 <div class="single-post">
                                     <div class="image">
-                                        <img src="" alt="">
+                                        <img src="{{ asset('image/blog/'. $blog->image) }}" alt="">
                                     </div>
                                     <div class="content">
                                         <h5><a href="#">{{$blog->name}}</a></h5>

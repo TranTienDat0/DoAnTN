@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
-
+use Illuminate\Support\Str;
 class AuthServices
 {
     // function login
@@ -68,15 +68,14 @@ class AuthServices
             return false;
         }
 
-        $token = str_random(64);
-
+        $token = Str::random(10);
         DB::table('password_resets')->insert([
             'email_address' => $email_address,
             'token' => $token,
             'created_at' => now()
         ]);
 
-        Mail::send('email_addresss.password-reset', ['token' => $token], function ($message) use ($user) {
+        Mail::send('auth.email', ['token' => $token], function ($message) use ($user) {
             $message->to($user->email_address);
             $message->subject('Reset your password');
         });

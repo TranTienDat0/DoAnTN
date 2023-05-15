@@ -5,7 +5,11 @@
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="fas fa-laugh-wink"></i>
         </div>
-        <div class="sidebar-brand-text mx-3">Admin</div>
+        @if (auth()->user()->role == 1)
+            <div class="sidebar-brand-text mx-3">Employee</div>
+        @else
+            <div class="sidebar-brand-text mx-3">Admin</div>
+        @endif
     </a>
 
     <!-- Divider -->
@@ -18,7 +22,7 @@
             <span>Dashboard</span></a>
     </li>
 
-    <!-- Divider -->    
+    <!-- Divider -->
     <hr class="sidebar-divider">
 
     <!-- Heading -->

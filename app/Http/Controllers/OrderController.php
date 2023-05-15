@@ -58,14 +58,10 @@ class OrderController extends Controller
         //send mail
         $user = $order->user;
         $orderDetails = order_detail::where('order_id', $order->id)->get();
-        // if(request('payment_method')=='paypal'){
-        //     return redirect()->route('payment', compact('id', $order->id));
-        // }
-        // else{
-        //     session()->forget('cart');
-        //     session()->forget('coupon');
-        // }
-        Mail::send('frontend.mail.order-confirmation', compact('user', 'order', 'orderDetails'), function ($message) use($user){
+        if(request('payment_method')=='paypal'){
+            return redirect()->route('payment', compact('id', $order->id));
+        }
+        Mail::send('frontend.mail.order-confirmation', compact('user', 'order', 'orderDetails'), function ($message) use ($user) {
             $message->to($user->email_address, $user->name);
             $message->subject('Order Confirmation');
         });
@@ -124,11 +120,38 @@ class OrderController extends Controller
     public function delete($id)
     {
         $order = order::find($id);
-        if ($order) {
+        if ($order && $order->status != 'delivered') {
             $order->delete();
             return redirect()->back()->with('success', 'Bạn đã xóa đơn hàng thành công.');
         } else {
-            return redirect()->back()->with('error', 'Đã có lỗi xảy ra.');
+            return redirect()->back()->with('error', 'Đã có lỗi xảy ra. Không thể xóa đơn hàng này.');
         }
+    }
+    public function incomeChart(Request $request)
+    {
+        $year = \Carbon\Carbon::now()->year;
+        // dd($year);
+        $items = Order::whereYear('created_at', $year)->where('status', 'delivered')->get()
+            ->groupBy(function ($d) {
+                return \Carbon\Carbon::parse($d->created_at)->format('m');
+            });
+        // dd($items);
+        $result = [];
+        foreach ($items as $month => $item_collections) {
+            foreach ($item_collections as $item) {
+                $amount = $item->sum('total');
+                // dd($amount);
+                $m = intval($month);
+                return $m;
+                // dd($m);
+                isset($result[$m]) ? $result[$m] += $amount : $result[$m] = $amount;
+            }
+        }
+        $data = [];
+        for ($i = 1; $i <= 12; $i++) {
+            $monthName = date('F', mktime(0, 0, 0, $i, 1));
+            $data[$monthName] = (!empty($result[$i])) ? number_format((float)($result[$i]), 2, '.', '') : 0.0;
+        }
+        return $data;
     }
 }

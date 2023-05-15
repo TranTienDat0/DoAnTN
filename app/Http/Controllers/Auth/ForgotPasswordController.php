@@ -27,14 +27,13 @@ class ForgotPasswordController extends Controller
    
     public function sendResetLinkEmail(Request $request, AuthServices $AuthServices)
     {
-        $this->validateEmail($request);
-
-        $sent = $AuthServices->sendResetLinkEmail($request->email);
+        // $this->validateEmail($request);
+        $sent = $AuthServices->sendResetLinkEmail($request->email_address);
 
         if ($sent) {
-            return back()->with('status', 'We have emailed your password reset link!');
+            return back()->with('status', 'Chúng tôi đã gửi email liên kết đặt lại mật khẩu của bạn!');
         } else {
-            return back()->withErrors(['email' => 'We could not find a user with that email address.']);
+            return back()->withErrors(['email' => 'Chúng tôi không thể tìm thấy người dùng có địa chỉ email đó.']);
         }
     }
 }

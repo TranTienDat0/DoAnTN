@@ -46,7 +46,7 @@
                                 <div class="flexslider-thumbnails">
                                     <ul class="slides">
                                         <img class="default-img" src="{{ asset('image/product/' . $productDetail->image) }}"
-                                            alt="{{ $productDetail->image }}">
+                                            alt="{{ $productDetail->image }}" width="400px">
                                     </ul>
                                 </div>
                                 <!-- End Images slider -->
@@ -254,7 +254,7 @@
                                                             <div class="single-rating">
                                                                 <div class="rating-author">
                                                                     @if ($data->user->image)
-                                                                        <img src="{{ asset('image/user/' . $data->image) }}"
+                                                                        <img src="{{ asset('image/user/' . $data->user->image) }}"
                                                                             alt="{{ $data->image }}">
                                                                     @else
                                                                         <img src="{{ asset('backend/img/avatar.png') }}"

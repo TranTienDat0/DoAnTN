@@ -22,7 +22,6 @@
                         <div class="form-group">
                             <div>
                                 <div class="p-5">
-
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
@@ -31,6 +30,9 @@
                                     @endif
                                     @if (session('Unauthorized'))
                                         <div class="alert alert-danger">{{ session('Unauthorized') }}</div>
+                                    @endif
+                                    @if (session('success'))
+                                        <div class="alert alert-success">{{ session('success') }}</div>
                                     @endif
                                     @error('acount')
                                         <p class="alert alert-danger">{{ $message }}</p>

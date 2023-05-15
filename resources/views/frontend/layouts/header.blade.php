@@ -35,7 +35,7 @@
                                         &nbsp;
                                         @if (Auth()->user()->image != null)
                                             <img class="img-profile rounded-circle"
-                                                src="{{ asset('image/user/' . Auth()->user()->image) }}" style="width: 20px;">
+                                                src="{{ asset('image/user/' . Auth()->user()->image) }}" style="width: 30px; height: 30px">
                                         @else
                                             <img class="img-profile rounded-circle"
                                                 src="{{ asset('backend/img/avatar.png') }}" style="width: 20px;">

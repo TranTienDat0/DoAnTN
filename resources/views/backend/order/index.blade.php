@@ -21,6 +21,7 @@
               <th>Name</th>
               <th>Email</th>
               <th>Total Amount</th>
+              <th>Date</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
@@ -31,6 +32,7 @@
               <th>Name</th>
               <th>Email</th>
               <th>Total Amount</th>
+              <th>Date</th>
               <th>Status</th>
               <th style="width: 100px">Action</th>
               </tr>
@@ -42,6 +44,7 @@
                     <td>{{$order->fullname}}</td>
                     <td>{{$order->email}}</td>
                     <td>{{number_format($order->total,0)}}</td>
+                    <td>{{ $order->created_at->format('D d M, Y') }}</td>
                     <td>
                         @if($order->status=='new')
                           <span class="badge badge-primary">{{$order->status}}</span>

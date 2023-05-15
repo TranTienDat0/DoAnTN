@@ -42,6 +42,7 @@ class FrontendController extends Controller
         $password = $request->password;
         $remember = $request->has('remember');
         $user = $this->frontendServices->login($email_address, $password, $remember);
+        // dd($user);
         if ($user) {
             if (Auth()->user()->role == 0) {
 
@@ -253,9 +254,15 @@ class FrontendController extends Controller
         $carts = cart::all();
         $wishlists = Wishlist::all();
         $category = categories::where('status', 1)->whereNull('deleted_at')->get();
-        $orders = order::where('user_id', Auth()->user()->id)->whereNull('deleted_at')->first();
+        $orders = order::where('user_id', Auth()->user()->id)->whereNull('deleted_at')->get();
+        // dd($orders);
         if ($orders) {
-            $orderDetail = order_detail::orderBy('id', 'DESC')->where('order_id', $orders->id)->whereNull('deleted_at')->paginate(10);
+            $orderDetails = [];
+
+            foreach ($orders as $order) {
+                $orderDetail = order_detail::where('order_id', $order->id)->whereNull('deleted_at')->get();
+                $orderDetails[$order->id] = $orderDetail;
+            }
             return view('frontend.pages.order', compact('orderDetail', 'category', 'carts', 'wishlists'));
         } else {
             return redirect()->back()->with('error', 'Hiện tại bạn chưa có đơn hàng nào.');
@@ -330,7 +337,7 @@ class FrontendController extends Controller
             }
         } catch (Exception $exception) {
             throw new Exception("Error Processing Request", 1);
-       }
+        }
     }
 
     public function userChangePassword()
