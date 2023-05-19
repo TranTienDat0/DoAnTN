@@ -93,11 +93,11 @@
                                             <form method="POST" action="{{ route('users.forcedelete', $user->id) }}">
                                                 @csrf
                                                 @method('delete')
-                                                <button class="btn btn-danger btn-sm dltBtn"
+                                                {{-- <button class="btn btn-danger btn-sm dltBtn"
                                                     style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip"
                                                     data-placement="bottom" title="Delete"
                                                     onclick="return confirm('Bạn chắc chắn muốn xóa không ?')"><i
-                                                        class="fas fa-trash-alt"></i></button>
+                                                        class="fas fa-trash-alt"></i></button> --}}
                                             </form>
                                             <form action="{{ route('users.restore', $user->id) }}" method="POST">
                                                 @csrf

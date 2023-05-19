@@ -144,7 +144,9 @@ Route::prefix('admin')->group(function () {
         route::get('/coupon', 'index')->name('coupon.index');
         route::get('/coupon-create', 'create')->name('coupon.create');
         route::post('/coupon-store', 'store')->name('coupon.store');
-        route::delete('/message-delete/{id}', 'delete')->name('message.delete');
+        route::get('/coupon/edit/{id}', 'edit')->name('coupon.edit');
+        route::put('/coupon-update/{id}', 'update')->name('coupon.update');
+        route::delete('/coupon-delete/{id}', 'delete')->name('coupon.delete');
     });
 
     route::controller(CommentController::class)->middleware('checkLogin')->group(function () {

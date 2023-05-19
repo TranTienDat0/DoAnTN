@@ -144,7 +144,7 @@
                 @csrf
                 <input type="hidden" value="{{ $total_amount }}" name="total">
                  
-                <button class="btn" type="submit" name="payUrl">Momo</button>
+                <button class="btn" type="submit" name="payUrl">Payment momo</button>
             </form>
         </div>
     </section>

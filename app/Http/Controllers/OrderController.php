@@ -252,7 +252,8 @@ class OrderController extends Controller
     {
         $order = order::find($id);
         if ($order && $order->status != 'delivered') {
-            $order->delete();
+            $order->forceDelete();
+            payment::where('id', $order->paument_id)->forceDelete();
             return redirect()->back()->with('success', 'Bạn đã xóa đơn hàng thành công.');
         } else {
             return redirect()->back()->with('error', 'Đã có lỗi xảy ra. Không thể xóa đơn hàng này.');

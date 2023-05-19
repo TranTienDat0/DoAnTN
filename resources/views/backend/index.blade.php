@@ -120,7 +120,7 @@
                     <!-- Card Body -->
                     <div class="card-body" style="overflow:hidden">
                         <div id="pie_chart" style="width:350px; height:320px;">
-                            <p>Number of administrator accounts {{ $CountAccountAdmin }}<br>
+                            <p>Number of employee accounts {{ $CountAccountAdmin }}<br>
                                 <span style="font-size: 10px">
                                     &nbsp;&nbsp;&nbsp;&nbsp;{{ $AdminInactive }} Active <br>
                                     &nbsp;&nbsp;&nbsp;&nbsp;{{ $AdminActive }} Inactive <br>

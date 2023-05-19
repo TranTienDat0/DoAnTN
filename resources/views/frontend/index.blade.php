@@ -54,7 +54,8 @@
                         <div class="col-lg-4 col-md-6 col-12">
                             <div class="single-banner">
                                 @if ($cat->image)
-                                    <img src="{{ asset('image/category/' . $cat->image) }}" alt="{{ $cat->image }}" style="width: 500px; height: 300px">
+                                    <img src="{{ asset('image/category/' . $cat->image) }}" alt="{{ $cat->image }}"
+                                        style="width: 500px; height: 300px">
                                 @else
                                     <img src="https://via.placeholder.com/600x370" alt="#">
                                 @endif
@@ -91,7 +92,8 @@
                             <ul class="nav nav-tabs filter-tope-group" id="myTab" role="tablist">
                                 @php
                                     $subcategories = DB::table('sub_categories')
-                                        ->where('status', '1')->limit(3)
+                                        ->where('status', '1')
+                                        ->limit(3)
                                         ->get();
                                 @endphp
                                 @if ($subcategories)
@@ -130,12 +132,20 @@
                                                         <a data-toggle="modal" data-target="#{{ $product->id }}"
                                                             title="Quick View" href="#"><i
                                                                 class=" ti-eye"></i><span>Quick Shop</span></a>
-                                                        <a title="Wishlist" href="{{ route('add-to-wishlist', $product->id) }}"><i
+                                                        <a title="Wishlist"
+                                                            href="{{ route('add-to-wishlist', $product->id) }}"><i
                                                                 class=" ti-heart "></i><span>Add to Wishlist</span></a>
                                                     </div>
                                                     <div class="product-action-2">
-                                                        <a title="Add to cart"
-                                                            href="{{ route('add-to-cart', $product->id) }}">Add to cart</a>
+                                                        @if ($product->quantity > 0)
+                                                            <a title="Add to cart"
+                                                                href="{{ route('add-to-cart', $product->id) }}">Add to
+                                                                cart</a>
+                                                        @else
+                                                            <a style="pointer-events: none;" title="Add to cart"
+                                                                href="{{ route('add-to-cart', $product->id) }}">Add to
+                                                                cart</a>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
@@ -173,34 +183,43 @@
             <div class="row">
                 <div class="col-12">
                     <div class="owl-carousel popular-slider">
-                        @foreach($hotProducts as $product)
-                            @if($product->hot==1)
+                        @foreach ($hotProducts as $product)
+                            @if ($product->hot == 1)
                                 <!-- Start Single Product -->
-                            <div class="single-product">
-                                <div class="product-img">
-                                    <a href="{{route('product-detail',$product->id)}}">
-                                        <img class="default-img" src="{{ asset('image/product/'. $product->image) }}" alt="" style="width: 255px; height: 200px">
-                                        <img class="hover-img" src="{{ asset('image/product/'. $product->image) }}" alt="">
-                                        {{-- <span class="out-of-stock">Hot</span> --}}
-                                    </a>
-                                    <div class="button-head">
-                                        <div class="product-action">
-                                            <a data-toggle="modal" data-target="#{{$product->id}}" title="Quick View" href="#"><i class=" ti-eye"></i><span>Quick Shop</span></a>
-                                            <a title="Wishlist" href="{{route('add-to-wishlist',$product->id)}}" ><i class=" ti-heart "></i><span>Add to Wishlist</span></a>
+                                <div class="single-product">
+                                    <div class="product-img">
+                                        <a href="{{ route('product-detail', $product->id) }}">
+                                            <img class="default-img"
+                                                src="{{ asset('image/product/' . $product->image) }}" alt=""
+                                                style="width: 255px; height: 200px">
+                                            <img class="hover-img" src="{{ asset('image/product/' . $product->image) }}"
+                                                alt="">
+                                            {{-- <span class="out-of-stock">Hot</span> --}}
+                                        </a>
+                                        <div class="button-head">
+                                            <div class="product-action">
+                                                <a data-toggle="modal" data-target="#{{ $product->id }}"
+                                                    title="Quick View" href="#"><i class=" ti-eye"></i><span>Quick
+                                                        Shop</span></a>
+                                                <a title="Wishlist"
+                                                    href="{{ route('add-to-wishlist', $product->id) }}"><i
+                                                        class=" ti-heart "></i><span>Add to Wishlist</span></a>
+                                            </div>
+                                            <div class="product-action-2">
+                                                <a href="{{ route('add-to-cart', $product->id) }}">Add to cart</a>
+                                            </div>
                                         </div>
-                                        <div class="product-action-2">
-                                            <a href="{{route('add-to-cart',$product->id)}}">Add to cart</a>
+                                    </div>
+                                    <div class="product-content">
+                                        <h3><a
+                                                href="{{ route('product-detail', $product->id) }}">{{ $product->name }}</a>
+                                        </h3>
+                                        <div class="product-price">
+                                            <span>{{ number_format($product->price, 0) }}đ</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="product-content">
-                                    <h3><a href="{{route('product-detail',$product->id)}}">{{$product->name}}</a></h3>
-                                    <div class="product-price">                         
-                                        <span>{{number_format($product->price,0)}}đ</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- End Single Product -->
+                                <!-- End Single Product -->
                             @endif
                         @endforeach
                     </div>
@@ -245,7 +264,9 @@
                                         </div>
                                         <div class="col-lg-6 col-md-6 col-12 no-padding">
                                             <div class="content">
-                                                <h4 class="title"><a href="{{ route('product-detail', $product->id) }}">{{ $product->name }}</a></h4>
+                                                <h4 class="title"><a
+                                                        href="{{ route('product-detail', $product->id) }}">{{ $product->name }}</a>
+                                                </h4>
                                                 <p class="price with-discount">{{ number_format($product->price, 0) }}đ
                                                 </p>
                                             </div>
@@ -278,10 +299,12 @@
                         <div class="col-lg-4 col-md-6 col-12">
                             <!-- Start Single Blog  -->
                             <div class="shop-single-blog">
-                                <img src="{{ asset('image/blog/' . $blog->image) }}" alt="{{ $blog->image }}" style="height: 353px;">
+                                <img src="{{ asset('image/blog/' . $blog->image) }}" alt="{{ $blog->image }}"
+                                    style="height: 353px;">
                                 <div class="content">
                                     <p class="date">{{ $blog->created_at->format('d M , Y. D') }}</p>
-                                    <a href="{{ route('blog.detail', $blog->id) }}" class="title">{{ $blog->name }}</a>
+                                    <a href="{{ route('blog.detail', $blog->id) }}"
+                                        class="title">{{ $blog->name }}</a>
                                     <a href="{{ route('blog.detail', $blog->id) }}" class="more-btn">Continue Reading</a>
                                 </div>
                             </div>
@@ -391,7 +414,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script>
         /*==================================================================
-            [ Isotope ]*/
+                    [ Isotope ]*/
         var $topeContainer = $('.isotope-grid');
         var $filter = $('.filter-tope-group');
 

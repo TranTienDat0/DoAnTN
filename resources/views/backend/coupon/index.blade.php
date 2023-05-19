@@ -17,13 +17,13 @@
         @if(count($coupons)>0)
         <table class="table table-bordered" id="banner-dataTable" width="100%" cellspacing="0">
           <thead>
-            <tr>
+            <tr style="text-align: center">
               <th>S.N.</th>
               <th>Coupon Code</th>
               <th>Type</th>
               <th>Value</th>
               <th>Status</th>
-              <th>Action</th>
+              <th style="width: 100px">Action</th>
             </tr>
           </thead>
           <tfoot>
@@ -38,7 +38,7 @@
           </tfoot>
           <tbody>
             @foreach($coupons as $coupon)   
-                <tr>
+                <tr style="text-align: center">
                     <td>{{$coupon->id}}</td>
                     <td>{{$coupon->code}}</td>
                     <td>
@@ -62,11 +62,11 @@
                         @endif
                     </td>
                     <td>
-                        <a href="" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>
-                        <form method="POST" action="s">
+                        <a href="{{ route('coupon.edit', $coupon->id) }}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>
+                        <form method="POST" action="{{ route('coupon.delete', $coupon->id) }}">
                           @csrf 
                           @method('delete')
-                              <button class="btn btn-danger btn-sm dltBtn" data-id={{$coupon->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                              <button onclick="return confirm('Bạn có chắc chắn muốn xóa không?')" class="btn btn-danger btn-sm dltBtn" data-id={{$coupon->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fas fa-trash-alt"></i></button>
                         </form>
                     </td>                 
                 </tr>  

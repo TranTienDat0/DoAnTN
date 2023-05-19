@@ -45,17 +45,13 @@ class CouponController extends Controller
         }
     }
 
-    public function show($id)
-    {
-    }
-
     public function edit($id)
     {
         $coupon = Coupon::find($id);
         if ($coupon) {
             return view('backend.coupon.edit')->with('coupon', $coupon);
         } else {
-            return view('backend.coupon.index')->with('error', 'Coupon not found');
+            return view('backend.coupon.index')->with('error', 'Page not found');
         }
     }
 
@@ -72,13 +68,11 @@ class CouponController extends Controller
 
         $status = $coupon->fill($data)->save();
         if ($status) {
-            request()->session()->flash('success', 'Coupon Successfully updated');
+            return redirect()->route('coupon.index')->with('success', 'Đã cập nhật thành công.');
         } else {
-            request()->session()->flash('error', 'Please try again!!');
+            return redirect()->route('coupon.index')->with('error', 'Đã cập nhật thất bại.');
         }
-        return redirect()->route('coupon.index');
     }
-
 
     public function delete($id)
     {
@@ -86,36 +80,12 @@ class CouponController extends Controller
         if ($coupon) {
             $status = $coupon->delete();
             if ($status) {
-                request()->session()->flash('success', 'Coupon successfully deleted');
+                return redirect()->route('coupon.index')->with('success', 'Đã xóa thành công.');
             } else {
-                request()->session()->flash('error', 'Error, Please try again');
+                return redirect()->route('coupon.index')->with('error', 'Đã xóa thất bại.');
             }
-            return redirect()->route('coupon.index');
         } else {
-            request()->session()->flash('error', 'Coupon not found');
-            return redirect()->back();
-        }
-    }
-
-    public function couponStore(Request $request)
-    {
-        // return $request->all();
-        $coupon = Coupon::where('code', $request->code)->first();
-        // dd($coupon);
-        if (!$coupon) {
-            request()->session()->flash('error', 'Invalid coupon code, Please try again');
-            return back();
-        }
-        if ($coupon) {
-            $total_price = Cart::where('user_id', auth()->user()->id)->where('order_id', null)->sum('price');
-            // dd($total_price);
-            session()->put('coupon', [
-                'id' => $coupon->id,
-                'code' => $coupon->code,
-                'value' => $coupon->discount($total_price)
-            ]);
-            request()->session()->flash('success', 'Coupon successfully applied');
-            return redirect()->back();
+            return redirect()->back()->with('error', 'Page not found');
         }
     }
 }
