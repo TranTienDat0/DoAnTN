@@ -15,7 +15,8 @@
         "laravel/sanctum": "^2.14",
         "laravel/socialite": "^5.6",
         "laravel/tinker": "^2.7",
-        "laravel/ui": "^4.2"
+        "laravel/ui": "^4.2",
+        "paypal/rest-api-sdk-php": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

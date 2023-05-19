@@ -14,7 +14,7 @@
             <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip"
                 data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add User</a>
             <a href="{{ route('users.listDelete') }}" class="btn btn-primary btn-sm float-left" data-toggle="tooltip"
-                data-placement="bottom" title="Add User"> Danh sách tài khoản bị xóa</a>
+                data-placement="bottom" title="Add User"> List of deleted accounts</a>
         </div>
         <div class="card-body">
             <div class="table-responsive">

@@ -116,6 +116,13 @@
                             <div class="row">
                                 <div class="col-lg-8 col-md-5 col-12">
                                     <div class="left">
+                                        <div class="coupon">
+                                            <form action="{{ route('cart.applyCoupon') }}" method="POST">
+                                                @csrf
+                                                <input name="code" placeholder="Enter Your Coupon">
+                                                <button class="btn">Apply</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-7 col-12">
@@ -129,8 +136,25 @@
                                         <ul>
                                             <li class="order_subtotal" data-price="">Cart
                                                 Subtotal<span>{{ number_format($sum, 0) }}đ</span></li>
-                                            <li class="coupon_price" data-price="">You
-                                                Save<span>{{ number_format($sum, 0) }}đ</span></li>
+                                            @if (session()->has('coupon'))
+                                                <li class="coupon_price"
+                                                    data-price="{{ Session::get('coupon')['value'] }}">You
+                                                    Save<span>-{{ number_format(Session::get('coupon')['value'], 0) }}đ</span>
+                                                </li>
+                                            @endif
+                                            @php
+                                                $total_amount = $sum;
+                                                if (session()->has('coupon')) {
+                                                    $total_amount = $total_amount - Session::get('coupon')['value'];
+                                                }
+                                            @endphp
+                                            @if (session()->has('coupon'))
+                                                <li class="last" id="order_total_price">You
+                                                    Pay<span>{{ number_format($total_amount, 0) }}đ</span></li>
+                                            @else
+                                                <li class="last" id="order_total_price">You
+                                                    Pay<span>{{ number_format($total_amount, 0) }}đ</span></li>
+                                            @endif
                                         </ul>
                                         <div class="button5">
                                             <a href="{{ route('checkout') }}" class="btn">Checkout</a>

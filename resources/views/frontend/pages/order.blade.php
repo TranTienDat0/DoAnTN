@@ -20,7 +20,7 @@
 
     <!-- Shopping Cart -->
     <div class="shopping-cart section">
-        @if (count($orderDetail))
+        @if (count($orderDetails))
             <div class="container">
                 <div class="row">
                     <div class="col-12">
@@ -32,63 +32,56 @@
                                     <th>NAME</th>
                                     <th class="text-center">UNIT PRICE</th>
                                     <th class="text-center">QUANTITY</th>
-                                    <th class="text-center">TOTAL</th>
-                                    <th class="text-center">STATUS</th>
-                                    {{-- <th class="text-center"><i class="ti-trash remove-icon"></i></th> --}}
                                 </tr>
                             </thead>
                             <tbody id="cart_item_list">
                                 <form action="" method="POST">
                                     @csrf
-                                    @if ($orderDetail->count() > 0)
-                                        @foreach ($orderDetail as $orderd)
-                                            <tr>
-                                                <td class="image" data-title="No"><img
-                                                        src="{{ asset('image/product/' . $orderd->products->image) }}"
-                                                        alt=""></td>
-                                                <td class="product-des" data-title="Description">
-                                                    <p class="product-name"><a
-                                                            href="{{ route('product-detail', $orderd->products->id) }}"
-                                                            target="_blank">{{ $orderd->products->name }}</a>
-                                                    </p>
-                                                </td>
-                                                <td class="qty" data-title="Qty">
-                                                    <p>{{ number_format($orderd->price, 0) }}đ</p>
-                                                </td>
-                                                <td class="qty" data-title="Qty">
-                                                    <p>{{ $orderd->quantity }}</p>
-                                                </td>
-                                                <td class="price" data-title="Price">
-                                                    <span>{{ number_format($orderd->order->total, 0) }}đ</span>
-                                                </td>
-                                                <td class="qty" data-title="Qty">
-                                                    @if ($orderd->order->status == 'new')
-                                                        <span
-                                                            class="badge badge-primary">{{ $orderd->order->status }}</span>
-                                                    @elseif($orderd->order->status == 'process')
-                                                        <span
-                                                            class="badge badge-warning">{{ $orderd->order->status }}</span>
-                                                    @elseif($orderd->order->status == 'delivered')
-                                                        <span
-                                                            class="badge badge-success">{{ $orderd->order->status }}</span>
-                                                    @else
-                                                        <span
-                                                            class="badge badge-danger">{{ $orderd->order->status }}</span>
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                        @if ($orderd->order->status == 'new')
+                                    @foreach ($orders as $item)
+                                        @if (count($orderDetails) > 0)
+                                            @foreach ($item->order_detail as $orderd)
+                                                <tr style="text-align: center">
+                                                    <td class="image" data-title="No"><img
+                                                            src="{{ asset('image/product/' . $orderd->products->image) }}"
+                                                            alt=""></td>
+                                                    <td class="product-des" data-title="Description">
+                                                        <p class="product-name"><a
+                                                                href="{{ route('product-detail', $orderd->products->id) }}"
+                                                                target="_blank">{{ $orderd->products->name }}</a>
+                                                        </p>
+                                                    </td>
+                                                    <td class="qty" data-title="Qty">
+                                                        <p>{{ number_format($orderd->price, 0) }}đ</p>
+                                                    </td>
+                                                    <td class="qty" data-title="Qty">
+                                                        <p>{{ $orderd->quantity }}</p>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
+                                        @if ($item->status == 'new')
                                             <td colspan="2" class="action" data-title="Remove"><a
-                                                    href="{{ route('order.cancle', $orderd->order->id) }}"
-                                                    onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')">Cancle</a>
+                                                    href="{{ route('order.cancle', $item->id) }}"
+                                                    onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')"><b style="font-size: 25px">Cancle</b></a>
                                             </td>
                                         @else
                                             <td colspan="2" class="action" data-title="Remove"><a
-                                                    style="pointer-events: none;" href="#">Cancle</a>
+                                                    style="pointer-events: none;" href="#"><b style="font-size: 25px">Cancle</b></a>
                                             </td>
                                         @endif
-                                    @endif
+                                        <td class="qty" data-title="Qty" style="font-size: 25px">
+                                            @if ($orderd->order->status == 'new')
+                                                <span class="badge badge-primary">{{ $orderd->order->status }}</span>
+                                            @elseif($orderd->order->status == 'process')
+                                                <span class="badge badge-warning">{{ $orderd->order->status }}</span>
+                                            @elseif($orderd->order->status == 'delivered')
+                                                <span class="badge badge-success">{{ $orderd->order->status }}</span>
+                                            @else
+                                                <span class="badge badge-danger">{{ $orderd->order->status }}</span>
+                                            @endif
+                                        </td>
+                                        <td style="float: right; font-size: 25px"><b>Total: {{ number_format($item->total) }}đ</b></td>
+                                    @endforeach
                                 </form>
                             </tbody>
                         </table>

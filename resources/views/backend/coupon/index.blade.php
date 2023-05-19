@@ -9,69 +9,73 @@
          </div>
      </div>
     <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary float-left">Order Lists</h6>
+      <h6 class="m-0 font-weight-bold text-primary float-left">Coupon List</h6>
+      <a href="{{route('coupon.create')}}" class="btn btn-primary btn-sm float-right" data-toggle="tooltip" data-placement="bottom" title="Add User"><i class="fas fa-plus"></i> Add Coupon</a>
     </div>
     <div class="card-body">
       <div class="table-responsive">
-        @if(count($orders)>0)
-        <table class="table table-bordered" id="order-dataTable" width="100%" cellspacing="0">
+        @if(count($coupons)>0)
+        <table class="table table-bordered" id="banner-dataTable" width="100%" cellspacing="0">
           <thead>
-            <tr style="text-align: center">
+            <tr>
               <th>S.N.</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Total Amount</th>
-              <th>Date</th>
+              <th>Coupon Code</th>
+              <th>Type</th>
+              <th>Value</th>
               <th>Status</th>
               <th>Action</th>
             </tr>
           </thead>
           <tfoot>
-            <tr style="text-align: center">
-              <th>S.N.</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Total Amount</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th style="width: 100px">Action</th>
+            <tr>
+                <th>S.N.</th>
+                <th>Coupon Code</th>
+                <th>Type</th>
+                <th>Value</th>
+                <th>Status</th>
+                <th>Action</th>
               </tr>
           </tfoot>
           <tbody>
-            @foreach($orders as $order)
-                <tr style="text-align: center">
-                    <td>{{$order->id}}</td>
-                    <td>{{$order->fullname}}</td>
-                    <td>{{$order->email}}</td>
-                    <td>{{number_format($order->total,0)}}</td>
-                    <td>{{ $order->created_at->format('D d M, Y') }}</td>
+            @foreach($coupons as $coupon)   
+                <tr>
+                    <td>{{$coupon->id}}</td>
+                    <td>{{$coupon->code}}</td>
                     <td>
-                        @if($order->status=='new')
-                          <span class="badge badge-primary">{{$order->status}}</span>
-                        @elseif($order->status=='process')
-                          <span class="badge badge-warning">{{$order->status}}</span>
-                        @elseif($order->status=='delivered')
-                          <span class="badge badge-success">{{$order->status}}</span>
+                        @if($coupon->type=='fixed')
+                            <span class="badge badge-primary">{{$coupon->type}}</span>
                         @else
-                          <span class="badge badge-danger">{{$order->status}}</span>
+                            <span class="badge badge-warning">{{$coupon->type}}</span>
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('order.show',$order->id) }}" class="btn btn-warning btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="view" data-placement="bottom"><i class="fas fa-eye"></i></a>
-                        <a href="{{ route('order.edit', $order->id) }}" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>
-                        <form method="POST" action="{{ route('order.delete', $order->id) }}">
+                        @if($coupon->type=='fixed')
+                            {{number_format($coupon->value,0)}}đ
+                        @else
+                            {{$coupon->value}}%
+                        @endif</td>
+                    <td>
+                        @if($coupon->status=='active')
+                            <span class="badge badge-success">{{$coupon->status}}</span>
+                        @else
+                            <span class="badge badge-warning">{{$coupon->status}}</span>
+                        @endif
+                    </td>
+                    <td>
+                        <a href="" class="btn btn-primary btn-sm float-left mr-1" style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" title="edit" data-placement="bottom"><i class="fas fa-edit"></i></a>
+                        <form method="POST" action="s">
                           @csrf 
                           @method('delete')
-                              <button onclick="return confirm('Bạn có chắc chắn muốn xóa không?')" class="btn btn-danger btn-sm dltBtn" data-id={{$order->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                              <button class="btn btn-danger btn-sm dltBtn" data-id={{$coupon->id}} style="height:30px; width:30px;border-radius:50%" data-toggle="tooltip" data-placement="bottom" title="Delete"><i class="fas fa-trash-alt"></i></button>
                         </form>
-                    </td>
+                    </td>                 
                 </tr>  
             @endforeach
           </tbody>
         </table>
-        <span style="float:right">{{ $orders->links('pagination::bootstrap-4') }}</span>
+        <span style="float:right">{{$coupons->links('pagination::bootstrap-4')}}</span>
         @else
-          <h6 class="text-center">No orders found!!! Please order some products</h6>
+          <h6 class="text-center">No Coupon found!!! Please create coupon</h6>
         @endif
       </div>
     </div>
@@ -84,6 +88,13 @@
   <style>
       div.dataTables_wrapper div.dataTables_paginate{
           display: none;
+      }
+      .zoom {
+        transition: transform .2s; /* Animation */
+      }
+
+      .zoom:hover {
+        transform: scale(3.2);
       }
   </style>
 @endpush
@@ -99,11 +110,11 @@
   <script src="{{asset('backend/js/demo/datatables-demo.js')}}"></script>
   <script>
       
-      $('#order-dataTable').DataTable( {
+      $('#banner-dataTable').DataTable( {
             "columnDefs":[
                 {
                     "orderable":false,
-                    "targets":[8]
+                    "targets":[4,5]
                 }
             ]
         } );

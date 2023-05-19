@@ -49,8 +49,8 @@
           @enderror
         </div>
         <div class="form-group mb-3">
-          <button type="reset" class="btn btn-warning">Reset</button>
            <button class="btn btn-success" type="submit">Create</button>
+           <a href="{{ route('banner') }}" class="btn btn-danger">Cancel</a>
         </div>
       </form>
     </div>

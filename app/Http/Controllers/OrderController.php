@@ -12,13 +12,136 @@ use App\Models\products;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use PDF;
+use App\Models\categories;
+use App\Models\Wishlist;
 use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
+    public function execPostRequest($url, $data)
+    {
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt(
+            $ch,
+            CURLOPT_HTTPHEADER,
+            array(
+                'Content-Type: application/json',
+                'Content-Length: ' . strlen($data)
+            )
+        );
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+        //execute post
+        $result = curl_exec($ch);
+        //close connection
+        curl_close($ch);
+        return $result;
+    }
+
+    public function momo(Request $request)
+    {
+        // dd($request);
+        // $carts = cart::where('user_id', Auth()->user()->id)->get();
+        // // dd($carts);
+        // foreach ($carts as $item) {
+        //     $product = products::find($item->product_id);
+        //     $product->quantity -= $item->quantity;
+        //     $product->save();
+        //     $item->delete();
+        // }
+        if (empty(Cart::where('user_id', auth()->user()->id)->where('order_id', null)->first())) {
+            return back()->with('error', 'Đã xảy ra lỗi! Giỏ hàng của bạn đang rỗng.');
+        }
+        $cart = new cart();
+        //create payment
+        $payment = payment::create([
+            'payment_method' => 'Momo',
+            'payment_status' => 'paid',
+        ]);
+        //create order
+        $order = order::create([
+            'status' => 'new',
+            'total' => $cart->totalCartPrice(),
+            'fullname' => 'Trần Tiến Đạt',
+            'email' => 'tiendat09022k1@gmail.com',
+            'address' => 'Nam Định',
+            'phone' => '0978084301',
+            'user_id' => Auth()->user()->id,
+            'payment_id' => $payment->id,
+        ]);
+        //create order detail
+        foreach ($cart->getAllCart() as $product) {
+            $orderDetail = order_detail::create([
+                'price' => $product->price,
+                'quantity' => $product->quantity,
+                'products_id' => $product->product_id,
+                'order_id' => $order->id,
+            ]);
+        }
+        //send mail
+        $user = $order->user;
+        $orderDetails = order_detail::where('order_id', $order->id)->get();
+        
+        Mail::send('frontend.mail.order-confirmation', compact('user', 'order', 'orderDetails'), function ($message) use ($user) {
+            $message->to($user->email_address, $user->name);
+            $message->subject('Order Confirmation');
+        });
+
+        cart::where('user_id', Auth()->user()->id)->delete();
+        foreach ($order->order_detail as $orderDetail) {
+            $product = products::find($orderDetail->products_id);
+            $product->quantity -= $orderDetail->quantity;
+            $product->save();
+        }
+
+        $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+        $partnerCode = 'MOMOBKUN20180529';
+        $accessKey = 'klm05TvNBzhg7h7j';
+        $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+        $orderInfo = "Thanh toán qua MoMo";
+        $amount = (int)$request->total;
+        // dd($amount);
+        $orderId = time() . "";
+        $redirectUrl = "http://127.0.0.1:8000/user/view_home";
+        $ipnUrl = "http://127.0.0.1:8000/user/view_home";
+        $extraData = "";
+
+        $requestId = time() . "";
+        $requestType = "payWithATM";
+        // $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
+        //before sign HMAC SHA256 signature
+        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+        $signature = hash_hmac("sha256", $rawHash, $secretKey);
+        $data = array(
+            'partnerCode' => $partnerCode,
+            'partnerName' => "Test",
+            "storeId" => "MomoTestStore",
+            'requestId' => $requestId,
+            'amount' => $amount,
+            'orderId' => $orderId,
+            'orderInfo' => $orderInfo,
+            'redirectUrl' => $redirectUrl,
+            'ipnUrl' => $ipnUrl,
+            'lang' => 'vi',
+            'extraData' => $extraData,
+            'requestType' => $requestType,
+            'signature' => $signature
+        );
+        $result = $this->execPostRequest($endpoint, json_encode($data));
+        // dd($result);
+        $jsonResult = json_decode($result, true);  // decode json
+
+        //Just a example, please check more in there
+        return redirect()->to($jsonResult['payUrl']);
+
+        // header('Location: ' . $jsonResult['payUrl']);
+    }
+
     public function store(Request $request)
     {
-
         if (empty(Cart::where('user_id', auth()->user()->id)->where('order_id', null)->first())) {
             return back()->with('error', 'Đã xảy ra lỗi! Giỏ hàng của bạn đang rỗng.');
         }
@@ -58,15 +181,23 @@ class OrderController extends Controller
         //send mail
         $user = $order->user;
         $orderDetails = order_detail::where('order_id', $order->id)->get();
-        if(request('payment_method')=='paypal'){
-            return redirect()->route('payment', compact('id', $order->id));
-        }
+        // if (request('payment_method') == 'paypal') {
+        //     $carts = cart::get();
+        //     $wishlists = Wishlist::get();
+        //     $category = categories::where('status', 1)->get();
+        //     return view('frontend.payment.checkout', compact('category', 'wishlists', 'carts'));
+        // }
         Mail::send('frontend.mail.order-confirmation', compact('user', 'order', 'orderDetails'), function ($message) use ($user) {
             $message->to($user->email_address, $user->name);
             $message->subject('Order Confirmation');
         });
 
         cart::where('user_id', Auth()->user()->id)->delete();
+        foreach ($order->order_detail as $orderDetail) {
+            $product = products::find($orderDetail->products_id);
+            $product->quantity -= $orderDetail->quantity;
+            $product->save();
+        }
         return redirect()->route('home-user')->with('success', 'Bạn đã đặt hành thành công.');
     }
     public function index()
@@ -103,13 +234,13 @@ class OrderController extends Controller
         $order->update([
             'status' => $request->status,
         ]);
-        if ($request->status == 'delivered') {
-            foreach ($order->order_detail as $orderDetail) {
-                $product = products::find($orderDetail->products_id);
-                $product->quantity -= $orderDetail->quantity;
-                $product->save();
-            }
-        }
+        // if ($request->status == 'delivered') {
+        //     foreach ($order->order_detail as $orderDetail) {
+        //         $product = products::find($orderDetail->products_id);
+        //         $product->quantity -= $orderDetail->quantity;
+        //         $product->save();
+        //     }
+        // }
         if ($order) {
             return redirect()->route('order.index')->with('success', 'Successfully updated order');
         } else {

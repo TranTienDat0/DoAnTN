@@ -19,6 +19,8 @@ use Illuminate\Http\Request;
 use Exception;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\ChangePasswordRequest;
+use App\Models\Coupon;
+use Illuminate\Support\Facades\Mail;
 
 class FrontendController extends Controller
 {
@@ -250,20 +252,18 @@ class FrontendController extends Controller
 
     public function orderIndex()
     {
-
         $carts = cart::all();
         $wishlists = Wishlist::all();
         $category = categories::where('status', 1)->whereNull('deleted_at')->get();
-        $orders = order::where('user_id', Auth()->user()->id)->whereNull('deleted_at')->get();
-        // dd($orders);
+        $orders = order::orderByDesc('id')->where('user_id', Auth()->user()->id)->whereNull('deleted_at')->get();
+        $orderDetails = [];
         if ($orders) {
-            $orderDetails = [];
-
             foreach ($orders as $order) {
-                $orderDetail = order_detail::where('order_id', $order->id)->whereNull('deleted_at')->get();
-                $orderDetails[$order->id] = $orderDetail;
+
+                $orderDetail = order_detail::where('order_id', $order->id)->whereNull('deleted_at')->first();
+                $orderDetails[] = $orderDetail;
             }
-            return view('frontend.pages.order', compact('orderDetail', 'category', 'carts', 'wishlists'));
+            return view('frontend.pages.order', compact('orders', 'orderDetails', 'category', 'carts', 'wishlists'));
         } else {
             return redirect()->back()->with('error', 'Hiện tại bạn chưa có đơn hàng nào.');
         }
@@ -312,6 +312,11 @@ class FrontendController extends Controller
             $order->update([
                 'status' => 'cancel',
             ]);
+            foreach ($order->order_detail as $orderDetail) {
+                $product = products::find($orderDetail->products_id);
+                $product->quantity += $orderDetail->quantity;
+                $product->save();
+            }
             return back()->with('success', 'Bạn đã hủy thành công đơn hàng này.');
         } else {
             return back()->with('error', 'Bạn không thể hủy đơn hàng này.');
@@ -360,5 +365,34 @@ class FrontendController extends Controller
         } else {
             return redirect()->back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
         }
+    }
+
+    public function couponStore(Request $request)
+    {
+        $coupon = Coupon::where('code', $request->code)->first();
+        if (!$coupon) {
+            return back()->with('error', 'Mã giảm giá không hợp lệ, vui lòng thử lại');
+        }
+        if ($coupon) {
+            $total_price = Cart::where('user_id', auth()->user()->id)->where('order_id', null)->sum('price');
+            session()->put('coupon', [
+                'id' => $coupon->id,
+                'code' => $coupon->code,
+                'value' => $coupon->discount($total_price)
+            ]);
+            return redirect()->back()->with('success', 'Đã áp dụng mã giảm giá thành công.');
+        }
+    }
+
+    public function sendCoupon(Request $request)
+    {
+        $mail = $request->email;
+        $coupon = Coupon::where('status', 'active')->inRandomOrder()->first();
+        Mail::send('frontend.mail.coupon', compact('coupon'), function ($message) use ($mail) {
+            $message->to($mail);
+            $message->subject('Discount code');
+        });
+
+        return redirect()->back()->with('success', 'Bạn đã đăng ký thành công.');
     }
 }

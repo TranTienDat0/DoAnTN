@@ -44,7 +44,7 @@ class HomeAdminServices
 
     public function countOrder()
     {
-        $countOrder = order::count();
+        $countOrder = order::where('status', 'delivered')->whereNull('deleted_at')->count();
 
         if ($countOrder) {
             return $countOrder;

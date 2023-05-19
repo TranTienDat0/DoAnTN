@@ -24,7 +24,7 @@
               <th>Rate</th>
               <th>Date</th>
               <th>Status</th>
-              <th>Action</th>
+              <th style="width: 100px">Action</th>
             </tr>
           </thead>
           <tfoot>

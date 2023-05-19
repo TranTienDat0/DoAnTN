@@ -150,7 +150,11 @@
         </a>
     </li>
 
-
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('coupon.index') }}">
+            <i class="fas fa-table"></i>
+            <span>Coupon</span></a>
+    </li>
     <!-- Users -->
     @if (Auth()->user()->role == 2)
         <hr class="sidebar-divider d-none d-md-block">

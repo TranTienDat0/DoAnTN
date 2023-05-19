@@ -93,7 +93,7 @@
         </div>
         <div class="row">
             <!-- Area Chart -->
-            <div class="col-xl-8 col-lg-7">
+            <div class="col-xl-9 col-lg-7">
                 <div class="card shadow mb-4">
                     <!-- Card Header - Dropdown -->
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -103,7 +103,7 @@
                     <div class="card-body">
                         <div class="chart-area">
                             {{-- <canvas id="curve_chart"></canvas> --}}
-                            <div id="curve_chart" style="width: 900px; height: 300px"></div>
+                            <div id="chart_div" style="width: 100%; height: 300px;"></div>
                             {{-- @include('revenue-chart') --}}
                         </div>
                     </div>
@@ -111,7 +111,7 @@
             </div>
 
             <!-- Pie Chart -->
-            <div class="col-xl-4 col-lg-5">
+            <div class="col-xl-3 col-lg-5">
                 <div class="card shadow mb-4">
                     <!-- Card Header - Dropdown -->
                     <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
@@ -192,44 +192,49 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($reviews as $review)
-                                    @if($loop->first || $reviews[$loop->index - 1]->products_id != $review->products_id)
-                                        <tr style="text-align: center">
-                                            <td>{{ $review->id }}</td>
-                                            {{-- <td rowspan="{{ $reviewCounts[$review->products_id] }}">{{ $review->products_id }}</td> --}}
-                                            <td rowspan="{{ $reviewCounts[$review->products_id] }}">{{ $review->products->name }}</td>                                               
-                                            <td>
-                                                <ul style="list-style:none">
-                                                    @for ($i = 1; $i <= 5; $i++)
-                                                        @if ($review->rate >= $i)
-                                                            <li style="float:left;color:#F7941D;"><i class="fa fa-star"></i></li>
-                                                        @else
-                                                            <li style="float:left;color:#F7941D;"><i class="far fa-star"></i></li>
-                                                        @endif
-                                                    @endfor
-                                                </ul>
-                                            </td>
-                                            <td rowspan="{{ $reviewCounts[$review->products_id] }}">
-                                                {{ $reviewCounts[$review->products_id] }}
-                                            </td>  
-                                        </tr>
-                                    @else
-                                        <tr style="text-align: center">
-                                            <td>{{ $review->id }}</td>
-                                            <td>
-                                                <ul style="list-style:none">
-                                                    @for ($i = 1; $i <= 5; $i++)
-                                                        @if ($review->rate >= $i)
-                                                            <li style="float:left;color:#F7941D;"><i class="fa fa-star"></i></li>
-                                                        @else
-                                                            <li style="float:left;color:#F7941D;"><i class="far fa-star"></i></li>
-                                                        @endif
-                                                    @endfor
-                                                </ul>
-                                            </td>
-                                        </tr>
-                                    @endif
-                                @endforeach
-                                
+                                        @if ($loop->first || $reviews[$loop->index - 1]->products_id != $review->products_id)
+                                            <tr style="text-align: center">
+                                                <td>{{ $review->id }}</td>
+                                                {{-- <td rowspan="{{ $reviewCounts[$review->products_id] }}">{{ $review->products_id }}</td> --}}
+                                                <td rowspan="{{ $reviewCounts[$review->products_id] }}">
+                                                    {{ $review->products->name }}</td>
+                                                <td>
+                                                    <ul style="list-style:none">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            @if ($review->rate >= $i)
+                                                                <li style="float:left;color:#F7941D;"><i
+                                                                        class="fa fa-star"></i></li>
+                                                            @else
+                                                                <li style="float:left;color:#F7941D;"><i
+                                                                        class="far fa-star"></i></li>
+                                                            @endif
+                                                        @endfor
+                                                    </ul>
+                                                </td>
+                                                <td rowspan="{{ $reviewCounts[$review->products_id] }}">
+                                                    {{ $reviewCounts[$review->products_id] }}
+                                                </td>
+                                            </tr>
+                                        @else
+                                            <tr style="text-align: center">
+                                                <td>{{ $review->id }}</td>
+                                                <td>
+                                                    <ul style="list-style:none">
+                                                        @for ($i = 1; $i <= 5; $i++)
+                                                            @if ($review->rate >= $i)
+                                                                <li style="float:left;color:#F7941D;"><i
+                                                                        class="fa fa-star"></i></li>
+                                                            @else
+                                                                <li style="float:left;color:#F7941D;"><i
+                                                                        class="far fa-star"></i></li>
+                                                            @endif
+                                                        @endfor
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @endforeach
+
                                 </tbody>
                             </table>
                         </div>

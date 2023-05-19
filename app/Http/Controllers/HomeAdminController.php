@@ -50,16 +50,24 @@ class HomeAdminController extends Controller
             ->pluck('count', 'blog_id');
         $blogs = blog::all(); // lấy danh sách các blog
         //bieu do
-        $revenues = DB::table('order')
+        $dailyRevenues = DB::table('order')
+            ->where('status', 'delivered')
+            ->whereNull('deleted_at')
+            ->select(DB::raw('DATE(created_at) as date'), DB::raw('SUM(total) as revenue'))
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->get();
+
+        // Lấy doanh thu theo tháng
+        $monthlyRevenues = DB::table('order')
+            ->where('status', 'delivered')
+            ->whereNull('deleted_at')
             ->select(DB::raw('MONTH(created_at) as month'), DB::raw('SUM(total) as revenue'))
             ->groupBy(DB::raw('MONTH(created_at)'))
             ->get();
 
-        $chartData = [['Month', 'Revenue']];
-        foreach ($revenues as $revenue) {
-            $chartData[] = [date('F', mktime(0, 0, 0, $revenue->month, 1)), $revenue->revenue];
-        }
-        return view('backend.index', ['chartData' => json_encode($chartData)], compact(
+        return view('backend.index', compact(
+            'dailyRevenues',
+            'monthlyRevenues',
             'blogs',
             'commentCounts',
             'reviewCounts',

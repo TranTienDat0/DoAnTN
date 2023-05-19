@@ -20,24 +20,32 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         google.charts.load('current', {
-            'packages': ['corechart']
+            packages: ['corechart']
         });
         google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
-            var data = google.visualization.arrayToDataTable({!! $chartData !!});
+            var data = google.visualization.arrayToDataTable([
+                ['Date', 'Daily Revenue', 'Monthly Revenue'],
+                @foreach ($dailyRevenues as $dailyRevenue)
+                    ['{{ $dailyRevenue->date }}', {{ $dailyRevenue->revenue }}, null],
+                @endforeach
+                @foreach ($monthlyRevenues as $monthlyRevenue)
+                    [{{ $monthlyRevenue->month }}, null, {{ $monthlyRevenue->revenue }}],
+                @endforeach
+            ]);
 
             var options = {
-                title: 'Monthly Revenue',
+                title: 'Revenue Chart',
                 curveType: 'function',
                 legend: {
                     position: 'bottom'
                 }
             };
 
-            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-
+            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
             chart.draw(data, options);
         }
     </script>
+
 </head>

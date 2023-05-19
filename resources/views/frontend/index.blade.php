@@ -196,7 +196,7 @@
                                 <div class="product-content">
                                     <h3><a href="{{route('product-detail',$product->id)}}">{{$product->name}}</a></h3>
                                     <div class="product-price">                         
-                                        <span>${{number_format($product->price,0)}}đ</span>
+                                        <span>{{number_format($product->price,0)}}đ</span>
                                     </div>
                                 </div>
                             </div>
@@ -278,7 +278,7 @@
                         <div class="col-lg-4 col-md-6 col-12">
                             <!-- Start Single Blog  -->
                             <div class="shop-single-blog">
-                                <img src="{{ asset('image/blog/' . $blog->image) }}" alt="{{ $blog->image }}">
+                                <img src="{{ asset('image/blog/' . $blog->image) }}" alt="{{ $blog->image }}" style="height: 353px;">
                                 <div class="content">
                                     <p class="date">{{ $blog->created_at->format('d M , Y. D') }}</p>
                                     <a href="{{ route('blog.detail', $blog->id) }}" class="title">{{ $blog->name }}</a>
@@ -338,6 +338,7 @@
         </div>
     </section>
     <!-- End Shop Services Area -->
+    @include('frontend.layouts.newsletter')
 @endsection
 
 @push('styles')

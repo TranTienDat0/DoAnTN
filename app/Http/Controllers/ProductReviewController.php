@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\order;
+use App\Models\order_detail;
 use App\Models\ProductReview;
 use App\Models\products;
 use Illuminate\Http\Request;
@@ -26,6 +28,27 @@ class ProductReviewController extends Controller
                 'rate.required' => 'Vui lòng chọn số sao đánh giá.'
             ]
         );
+        // $orders = order::orderByDesc('id')->where('status', 'delivered')->where('user_id', Auth()->user()->id)->whereNull('deleted_at')->get();
+        // foreach($orders as $order){
+        //     $orderDetails = order_detail::->where('orders_id', $order->id)->first();
+        // }
+
+        // foreach ($orders as $item) {
+        //     foreach ($item->order_detail as $orderd) {
+        //         if ((int)$request->id === $orderd->products_id) {
+        //             $productReview[] = [
+        //                 'review' => $request->review,
+        //                 'rate' => $request->rate,
+        //                 'products_id' => (int)$request->id,
+        //                 'user_id' => Auth()->user()->id,
+        //                 'status' => 'active'
+        //             ];
+        //         } else {
+        //             return redirect()->back()->with('error', 'Bạn không thể thực hiện đánh giá khi chưa mua sản phẩm này!!!');
+        //         }
+        //     }
+        // }
+        // $pro = ProductReview::insert($productReview);
         $productReview = ProductReview::create([
             'review' => $request->review,
             'rate' => $request->rate,
@@ -33,7 +56,6 @@ class ProductReviewController extends Controller
             'user_id' => Auth()->user()->id,
             'status' => 'active'
         ]);
-
         if ($productReview) {
             return redirect()->back()->with('success', 'Cảm ơn phản hồi của bạn.');
         } else {
@@ -63,17 +85,17 @@ class ProductReviewController extends Controller
         ]);
         if ($review) {
             return redirect()->route('products.review')->with('success', 'Sửa đánh giá thành công.');
-        }else{
+        } else {
             return redirect()->back()->with('error', 'Đã có lỗi xảy ra! Vui lòng thử lại!!');
         }
     }
     public function delete($id)
     {
         $review = ProductReview::find($id);
-        if($review){
+        if ($review) {
             $review->delete();
             return redirect()->back()->with('success', 'Xóa thành công đánh giá.');
-        }else{
+        } else {
             return redirect()->back()->with('error', 'Đã có lỗi xảy ra! Vui lòng thử lại!!');
         }
     }

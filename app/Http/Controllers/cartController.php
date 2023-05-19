@@ -51,7 +51,7 @@ class cartController extends Controller
             $cart->save();
             //$wishlist = Wishlist::where('user_id', auth()->user()->id)->where('cart_id', null)->update(['cart_id' => $cart->id]);
         }
-        return back()->with('success', 'Product successfully added to cart');
+        return back()->with('success', 'Thêm vào giỏ hàng thành công.');
     }
 
     public function cartUpdate(Request $request)

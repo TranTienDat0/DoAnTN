@@ -7,8 +7,8 @@
                     <!-- Start Newsletter Inner -->
                     <div class="inner">
                         <h4>Newsletter</h4>
-                        <p> Subscribe to our newsletter and get <span>10%</span> off your first purchase</p>
-                        <form action="" method="post" class="newsletter-inner">
+                        <p> Sign up for our newsletter and get a discount code for your first purchase</p>
+                        <form action="{{ route('mail.sendCoupon') }}" method="post" class="newsletter-inner">
                             @csrf
                             <input name="email" placeholder="Your email address" required="" type="email">
                             <button class="btn" type="submit">Subscribe</button>

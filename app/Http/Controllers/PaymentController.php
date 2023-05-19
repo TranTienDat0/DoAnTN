@@ -2,48 +2,104 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\cart;
-use App\Models\products;
-use Srmklive\PayPal\Services\ExpressCheckout;
+// use Illuminate\Support\Facades\Config;
+
+use PayPal\Api\Item;
+use PayPal\Api\Payer;
+use PayPal\Api\Amount;
+use PayPal\Api\Payment;
+use PayPal\Api\ItemList;
+use PayPal\Api\Transaction;
+use PayPal\Rest\ApiContext;
+use Illuminate\Http\Request;
+use PayPal\Api\RedirectUrls;
+use PayPal\Api\PaymentExecution;
+use PayPal\Auth\OAuthTokenCredential;
 
 class PaymentController extends Controller
 {
-    public function payment()
+    private $apiContext;
+
+    public function __construct()
     {
-        $cart = cart::where('user_id', auth()->user()->id)->where('order_id', null)->get()->toArray();
+        $paypalConfig = config('paypal');
+        $this->apiContext = new ApiContext(new OAuthTokenCredential(
+            $paypalConfig['client_id'],
+            $paypalConfig['secret']
+        ));
+        $this->apiContext->setConfig($paypalConfig['settings']);
+    }
 
-        $data = [];
+    public function getCheckout()
+    {
+        return view('frontend.payment.checkout');
+    }
 
-        // return $cart;
-        $data['items'] = array_map(function ($item) use ($cart) {
-            $name = products::where('id', $item['product_id'])->pluck('name');
-            return [
-                'name' => $name,
-                'price' => $item['price'],
-                'desc'  => 'Thank you for using paypal',
-                'qty' => $item['quantity']
-            ];
-        }, $cart);
+    public function postPayWithPayPal(Request $request)
+    {
+        $payer = new Payer();
+        $payer->setPaymentMethod('paypal');
 
-        $data['invoice_id'] = 'ORD-' . strtoupper(uniqid());
-        $data['invoice_description'] = "Order #{$data['invoice_id']} Invoice";
-        $data['return_url'] = route('payment.success');
-        $data['cancel_url'] = route('payment.cancel');
+        $item = new Item();
+        $item->setName('Product Name')
+            ->setCurrency('USD')
+            ->setQuantity(1)
+            ->setPrice($request->get('amount'));
 
-        $total = 0;
-        foreach ($data['items'] as $item) {
-            $total += $item['price'] * $item['qty'];
+        $itemList = new ItemList();
+        $itemList->setItems([$item]);
+
+        $amount = new Amount();
+        $amount->setCurrency('USD')
+            ->setTotal($request->get('amount'));
+
+        $transaction = new Transaction();
+        $transaction->setAmount($amount)
+            ->setDescription('Product description')
+            ->setItemList($itemList);
+
+        $redirectUrls = new RedirectUrls();
+        $redirectUrls->setReturnUrl(route('paypal.status'))
+            ->setCancelUrl(route('paypal.status'));
+
+        $payment = new Payment();
+        $payment->setIntent('sale')
+            ->setPayer($payer)
+            ->setRedirectUrls($redirectUrls)
+            ->setTransactions([$transaction]);
+
+        try {
+            $payment->create($this->apiContext);
+            return redirect()->to($payment->getApprovalLink());
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors('Đã có lỗi xảy ra. Vui lòng thử lại ' . $e->getMessage());
+        }
+    }
+
+    public function status(Request $request)
+    {
+        $paymentId = $request->get('paymentId');
+        $payerId = $request->get('PayerID');
+        $token = $request->get('token');
+
+        if (!$paymentId || !$payerId || !$token) {
+            return redirect()->route('home-user')->withErrors('Error processing PayPal payment');
         }
 
-        $data['total'] = $total;
-       
-        Cart::where('user_id', auth()->user()->id)->where('order_id', null)->update(['order_id' => session()->get('id')]);
+        $payment = Payment::get($paymentId, $this->apiContext);
+        $execution = new PaymentExecution();
+        $execution->setPayerId($payerId);
 
-        // return session()->get('id');
-        $provider = new ExpressCheckout;
-
-        $response = $provider->setExpressCheckout($data);
-
-        return redirect($response['paypal_link']);
+        try {
+            $result = $payment->execute($execution, $this->apiContext);
+            if ($result->getState() === 'approved') {
+                // Payment successful, save data or do other things
+                return redirect()->route('home-user')->with('success', 'Payment completed successfully');
+            } else {
+                return redirect()->route('home-user')->withErrors('Payment was not completed successfully');
+            }
+        } catch (\Exception $e) {
+            return redirect()->route('home-user')->withErrors('Error processing PayPal payment: ' . $e->getMessage());
+        }
     }
 }

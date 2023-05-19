@@ -83,18 +83,22 @@
                                 foreach ($carts as $value) {
                                     $sum += $value->price * $value->quantity;
                                 }
+                                $total_amount = $sum;
+                                if (session()->has('coupon')) {
+                                    $total_amount = $total_amount - Session::get('coupon')['value'];
+                                }
                             @endphp
                             <div class="single-widget">
                                 <h2>CART TOTALS</h2>
                                 <div class="content">
                                     <ul>
                                         <li class="order_subtotal" data-price="{{ $sum }}">Cart
-                                            Subtotal<span>{{ number_format($sum, 0) }}đ</span></li>
+                                            Subtotal<span>{{ number_format($total_amount, 0) }}đ</span></li>
                                         <li class="shipping">
                                             Shipping Cost <span>Free</span>
                                         </li>
-                                        <li class="last" id="order_total_price">
-                                            Total<span>{{ number_format($sum, 0) }}đ</span></li>
+                                        <li class="last" id="order_total_price" name="total">
+                                            Total<span>{{ number_format($total_amount, 0) }}đ</span></li>
                                     </ul>
                                 </div>
                             </div>
@@ -108,8 +112,8 @@
                                         <form-group>
                                             <input name="payment_method" type="radio" value="cod"> <label> Cash On
                                                 Delivery</label><br>
-                                            <input name="payment_method" type="radio" value="paypal"> <label>
-                                                PayPal</label>
+                                            {{-- <input name="payment_method" type="radio" value="paypal"> <label>
+                                                PayPal</label>                                           --}}
                                         </form-group>
 
                                     </div>
@@ -136,10 +140,15 @@
                     </div>
                 </div>
             </form>
+            <form action="{{ route('user.checkout.momo') }}" method="POST">
+                @csrf
+                <input type="hidden" value="{{ $total_amount }}" name="total">
+                 
+                <button class="btn" type="submit" name="payUrl">Momo</button>
+            </form>
         </div>
     </section>
     <!--/ End Checkout -->
-
     <!-- Start Shop Services Area  -->
     <section class="shop-services section home">
         <div class="container">
