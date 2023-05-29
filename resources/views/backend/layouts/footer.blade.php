@@ -63,3 +63,7 @@
         $('.alert').slideUp();
     }, 4000);
 </script>
+<script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
+{{-- <script>
+    CKEDITOR.replace('content');
+</script> --}}

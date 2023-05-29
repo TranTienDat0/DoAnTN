@@ -18,4 +18,6 @@ yarn-error.log
 .vite.config.json
 /resources/sass
 /resources/js
-/public/image
+/resources/lang
+/public
+/config

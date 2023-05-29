@@ -10,8 +10,18 @@ class sub_categories extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const STATUS_NO = 0;
+    public const STATUS_YES = 1;
+
+    public static $status = [
+        self::STATUS_NO => 'Inactive',
+        self::STATUS_YES => 'Active',
+    ];
     protected $fillable = [
         'name',
+        'slug',
+        'image',
+        'status',
         'categories_id'
     ];
 
@@ -20,4 +30,13 @@ class sub_categories extends Model
         'updated_at',
         'deleted_at',
     ];
+
+    public function categories()
+    {
+        return $this->belongsTo(categories::class);
+    }
+
+    public function products(){
+        return $this->hasMany(products::class);
+    }
 }

@@ -13,45 +13,54 @@ class UserServices
     public function getAllUsers()
     {
 
-        $users = User::orderBy('id', 'ASC')->paginate(25);
+        $users = User::orderBy('id', 'ASC')->where('role', '!=', 2)->paginate(25);
         return $users;
     }
-
+    public function getAllUserDelete()
+    {
+        $users = User::orderBy('id', 'ASC')->onlyTrashed()->paginate(25);
+        return $users;
+    }
     public function store(Request $request)
     {
-        if ($request->role == 'admin') {
-            $role = 1;
-        } else {
-            $role = 0;
-        }
+        try {
+            DB::beginTransaction();
 
-        $users = User::create([
-            'name' => $request->name,
-            'email_address' => $request->email_address,
-            'password' => Hash::make($request->password),
-            'address' => $request->address,
-            'phone' => $request->phone,
-            'role' => $role,
-        ]);
+            if ($request->role == 'employee') {
+                $role = 1;
+            } else {
+                $role = 0;
+            }
+            $users = User::create([
+                'name' => $request->name,
+                'email_address' => $request->email_address,
+                'password' => Hash::make($request->password),
+                'address' => $request->address,
+                'phone' => $request->phone,
+                'role' => $role,
+            ]);
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
+        }
 
         return $users;
     }
 
     public function update(Request $request, $id)
     {
-        if ($request->role == 'admin') {
-            $role = 1;
-        } else {
-            $role = 0;
+        try {
+            DB::beginTransaction();
+
+            $users = User::find($id)->update([
+                'name' => $request->name,
+                'address' => $request->address,
+                'phone' => $request->phone,
+            ]);
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
         }
-
-        $users = User::find($id)->update([
-            'name' => $request->name,
-            'address' => $request->address,
-            'phone' => $request->phone,
-            'role' => $role
-        ]);
-
         return $users;
     }
 
@@ -66,7 +75,30 @@ class UserServices
         } catch (Exception $ex) {
             DB::rollBack();
         }
+        return $user;
+    }
 
+    public function forceDelete($id)
+    {
+        try {
+            DB::beginTransaction();
+
+            $user = User::find($id)->forceDelete();
+
+            DB::commit();
+        } catch (Exception $ex) {
+            DB::rollBack();
+        }
+        return $user;
+    }
+
+    public function restoreUser($id)
+    {
+        $user = User::withTrashed()->find($id);
+        if (!$user) {
+            throw new Exception("User not found");
+        }
+        $user->restore();
         return $user;
     }
 }

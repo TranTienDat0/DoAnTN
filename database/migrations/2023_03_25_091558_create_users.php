@@ -21,7 +21,8 @@ return new class extends Migration
             $table->string('address');
             $table->string('password');
             $table->string('phone');
-            $table->string('remember_token');
+            $table->string('image')->nullable();
+            $table->string('remember_token')->nullable();
             $table->tinyInteger('role')->default(0);
             $table->timestamps();
             $table->softDeletes();

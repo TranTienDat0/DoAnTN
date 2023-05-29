@@ -15,12 +15,13 @@ return new class extends Migration
     {
         Schema::create('order', function (Blueprint $table) {
             $table->id();
-            $table->tinyInteger('status');
+            $table->enum('status',['new','process','delivered','cancel'])->default('new');
             $table->date('date');
             $table->double('total');
-            $table->foreignId('shipping_id')->nullable()
-                ->constrained('shipping')
-                ->onDelete('cascade');
+            $table->string('fullname');
+            $table->string('address');
+            $table->string('phone');
+            $table->string('email');
             $table->foreignId('user_id')->nullable()
                 ->constrained('users')
                 ->onDelete('cascade');
